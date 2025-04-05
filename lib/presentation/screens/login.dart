@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// Import the extracted widgets
+import 'package:medihub_app/core/widgets/button.dart';
+import 'package:medihub_app/core/widgets/social_login_options';
+import 'package:medihub_app/core/widgets/text.dart';  
+import 'package:medihub_app/core/widgets/password_input_field.dart';
+import 'package:medihub_app/core/widgets/phone_input_field.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -28,7 +35,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 30),
               // Logo
               Image.asset(
-                'assets/vietnam_flag.png',
+                'assets/images/vietnam_flag.png',
                 height: 70,
               ),
               const SizedBox(height: 8),
@@ -36,7 +43,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 'Giải pháp tiếp cận y tế thông minh',
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Colors.blue,
                   fontSize: 14,
                 ),
               ),
@@ -140,214 +147,14 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 16),
         // Register link
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Bạn chưa có tài khoản? ',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
-            ),
-            TextButton(
-              onPressed: () {
-                // Handle registration
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(50, 30),
-              ),
-              child: const Text(
-                'Đăng ký',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
+        AuthLinkText(
+          text: 'Bạn chưa có tài khoản? ',
+          linkText: 'Đăng ký',
+          onLinkTap: () {
+            // Handle registration
+          },
         ),
       ],
-    );
-  }
-}
-
-class PhoneInputField extends StatelessWidget {
-  final TextEditingController controller;
-
-  const PhoneInputField({
-    super.key,
-    required this.controller,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          // Country code selector
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            decoration: BoxDecoration(
-              border: Border(right: BorderSide(color: Colors.grey.shade300)),
-            ),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/vietnam_flag.png',
-                  width: 24,
-                  height: 16,
-                ),
-                const SizedBox(width: 4),
-                const Text(
-                  '+84',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          // Phone input
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                hintText: 'Số điện thoại',
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PasswordInputField extends StatelessWidget {
-  final TextEditingController controller;
-  final bool obscureText;
-  final VoidCallback onToggleVisibility;
-
-  const PasswordInputField({
-    super.key,
-    required this.controller,
-    required this.obscureText,
-    required this.onToggleVisibility,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          hintText: 'Mật khẩu',
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey,
-            ),
-            onPressed: onToggleVisibility,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PrimaryButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const PrimaryButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 48,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SocialLoginOptions extends StatelessWidget {
-  const SocialLoginOptions({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialButton(Icons.message, () {
-          // Messenger login
-        }, Colors.blueAccent),
-        const SizedBox(width: 16),
-        _buildSocialButton(Icons.facebook, () {
-          // Facebook login
-        }, Colors.blue),
-        const SizedBox(width: 16),
-        _buildSocialButton(Icons.g_mobiledata, () {
-          // Google login
-        }, Colors.red),
-        const SizedBox(width: 16),
-        _buildSocialButton(Icons.apple, () {
-          // Apple login
-        }, Colors.black),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton(IconData icon, VoidCallback onPressed, Color iconColor) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Center(
-          child: Icon(
-            icon,
-            size: 24,
-            color: iconColor,
-          ),
-        ),
-      ),
     );
   }
 }
