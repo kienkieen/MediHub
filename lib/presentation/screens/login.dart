@@ -6,6 +6,8 @@ import 'package:medihub_app/core/widgets/social_login_options';
 import 'package:medihub_app/core/widgets/text.dart';  
 import 'package:medihub_app/core/widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/phone_input_field.dart';
+import 'package:medihub_app/presentation/screens/fogot_password.dart';
+import 'package:medihub_app/presentation/screens/register.dart';
 
 
 class LoginScreen extends StatelessWidget {
@@ -122,7 +124,13 @@ class _LoginFormState extends State<LoginForm> {
           alignment: Alignment.centerRight,
           child: TextButton(
             onPressed: () {
-              // Handle forgot password
+              // Điều hướng tới màn hình ForgotPasswordScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ForgotPasswordScreen(),
+                ),
+              );
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -137,6 +145,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
         ),
+
         const SizedBox(height: 20),
         // Login button
         PrimaryButton(
@@ -151,7 +160,10 @@ class _LoginFormState extends State<LoginForm> {
           text: 'Bạn chưa có tài khoản? ',
           linkText: 'Đăng ký',
           onLinkTap: () {
-            // Handle registration
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterScreen()),
+            );
           },
         ),
       ],
