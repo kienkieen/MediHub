@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:medihub_app/core/widgets/auto_image_slider.dart';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
 
 
@@ -42,8 +42,8 @@ class MedihubHomeScreen extends StatelessWidget {
                       // Partnered hospitals section
                       _buildPartneredHospitalsSection(),
                       
-                      // Vaccination banner
-                      _buildVaccinationBanner(),
+                      const SizedBox(height: 16), // Space between sections
+                      AutoImageSlider(),
                       
                       const SizedBox(height: 70), // Space for bottom navigation
                     ],
@@ -379,89 +379,6 @@ class MedihubHomeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildVaccinationBanner() {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        final PageController pageController = PageController(viewportFraction: 0.9);
-        final List<String> imagePaths = [
-          "assets/images/image_1.png",
-          "assets/images/image_5.png",
-          "assets/images/image_7.png",
-          "assets/images/image_1.png",
-          "assets/images/image_5.png",
-          "assets/images/image_7.png",
-        ];
-        
-        // Biến theo dõi trang hiện tại
-        int currentPage = 0;
-
-        // Tự động cuộn banner
-        Timer.periodic(const Duration(seconds: 3), (Timer timer) {
-          if (pageController.hasClients) {
-            int nextPage = (currentPage + 1) % imagePaths.length;
-            pageController.animateToPage(
-              nextPage,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
-            setState(() {
-              currentPage = nextPage; // Cập nhật trang hiện tại
-            });
-          }
-        });
-
-        return Column(
-          children: [
-            SizedBox(
-              height: 160,
-              child: PageView.builder(
-                controller: pageController,
-                itemCount: imagePaths.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        imagePaths[index],
-                        fit: BoxFit.contain, // Đảm bảo hình ảnh vừa khung
-                      ),
-                    ),
-                  );
-                },
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPage = index; // Cập nhật trang hiện tại khi người dùng vuốt
-                  });
-                },
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Dấu chấm chỉ báo (indicators)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                imagePaths.length,
-                (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  height: 8,
-                  width: currentPage == index ? 24 : 8, // Dấu chấm hiện tại sẽ dài hơn
-                  decoration: BoxDecoration(
-                    color: currentPage == index 
-                        ? Theme.of(context).primaryColor 
-                        : Colors.grey.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      }
     );
   }
 
