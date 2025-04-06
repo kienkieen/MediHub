@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
 
 
@@ -15,6 +16,7 @@ class MedihubHomeScreen extends StatelessWidget {
             colors: [
               Color(0xFFCCE5F9), // Màu xanh nhạt ở trên
               Colors.white,      // Màu trắng ở dưới
+              Colors.white, // Màu trắng ở giữa
               Color(0xFFCCE5F9),
             ],
           ),
@@ -298,15 +300,31 @@ class MedihubHomeScreen extends StatelessWidget {
                   children: [
                     HospitalCard(
                       name: "Bệnh viện Đại học Y Dược TP.HCM",
-                      imagePath: "assets/images/hospital_1.png",
+                      imagePath: "assets/images/image_10.png",
                     ),
                     HospitalCard(
                       name: "Bệnh viện Nhi Đồng 1",
-                      imagePath: "assets/images/hospital_2.png",
+                      imagePath: "assets/images/image_11.png",
                     ),
                     HospitalCard(
-                      name: "Bệnh viện Chợ Rẫy",
-                      imagePath: "assets/images/hospital_3.png",
+                      name: "Bệnh viện Chấn Thương Chỉnh Hình",
+                      imagePath: "assets/images/image_14.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Nhi Đồng Thành Phố",
+                      imagePath: "assets/images/image_12.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Da Liễu TP.HCM",
+                      imagePath: "assets/images/image_13.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Mắt TP.HCM",
+                      imagePath: "assets/images/image_15.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Quận Bình Thạch",
+                      imagePath: "assets/images/image_16.png",
                     ),
                   ],
                 ),
@@ -365,77 +383,85 @@ class MedihubHomeScreen extends StatelessWidget {
   }
 
   Widget _buildVaccinationBanner() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        height: 160,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Color(0xFF0066CC), Color(0xFF0099FF)],
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
+    return StatefulBuilder(
+      builder: (context, setState) {
+        final PageController pageController = PageController(viewportFraction: 0.9);
+        final List<String> imagePaths = [
+          "assets/images/image_1.png",
+          "assets/images/image_5.png",
+          "assets/images/image_7.png",
+          "assets/images/image_1.png",
+          "assets/images/image_5.png",
+          "assets/images/image_7.png",
+        ];
+        
+        // Biến theo dõi trang hiện tại
+        int currentPage = 0;
+
+        // Tự động cuộn banner
+        Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+          if (pageController.hasClients) {
+            int nextPage = (currentPage + 1) % imagePaths.length;
+            pageController.animateToPage(
+              nextPage,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+            setState(() {
+              currentPage = nextPage; // Cập nhật trang hiện tại
+            });
+          }
+        });
+
+        return Column(
           children: [
-            Expanded(
-              flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "MUỐN VẮN GỌI TIÊM CHỦNG",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+            SizedBox(
+              height: 160,
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: imagePaths.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.asset(
+                        imagePaths[index],
+                        fit: BoxFit.contain, // Đảm bảo hình ảnh vừa khung
                       ),
                     ),
-                    Text(
-                      "AN TÂM\nKHÔNG ĐỢI CHỜ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        "ĐẶT LỊCH NGAY",
-                        style: TextStyle(
-                          color: Color(0xFF0099CC),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
+                  );
+                },
+                onPageChanged: (index) {
+                  setState(() {
+                    currentPage = index; // Cập nhật trang hiện tại khi người dùng vuốt
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Dấu chấm chỉ báo (indicators)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                imagePaths.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 8,
+                  width: currentPage == index ? 24 : 8, // Dấu chấm hiện tại sẽ dài hơn
+                  decoration: BoxDecoration(
+                    color: currentPage == index 
+                        ? Theme.of(context).primaryColor 
+                        : Colors.grey.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: Image.network(
-                "/api/placeholder/250/160",
-                fit: BoxFit.contain,
-              ),
-            ),
           ],
-        ),
-      ),
+        );
+      }
     );
   }
 
