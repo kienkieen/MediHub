@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/core/widgets/hospital_card.dart';
 
 
 class MedihubHomeScreen extends StatelessWidget {
   const MedihubHomeScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -254,9 +254,9 @@ class MedihubHomeScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildPartneredHospitalsSection() {
+    final ScrollController _scrollController = ScrollController();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
@@ -273,56 +273,66 @@ class MedihubHomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 100,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+            height: 120, // Tăng chiều cao để chứa cả mũi tên
+            child: Stack(
               children: [
-                _buildHospitalCard("Bệnh viện Đại học Y Dược TP.HCM"),
-                _buildHospitalCard("Bệnh viện Nhi Đồng 1"),
-                _buildHospitalCard("Bệnh viện Chợ Rẫy"),
+                // ListView hiển thị các bệnh viện
+                ListView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    HospitalCard(name: "Bệnh viện Đại học Y Dược TP.HCM"),
+                    HospitalCard(name: "Bệnh viện Nhi Đồng 1"),
+                    HospitalCard(name: "Bệnh viện Chợ Rẫy"),
+                  ],
+                ),
+                // Mũi tên bên trái
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset - 120, // Cuộn sang trái
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    child: Container(
+                      width: 40,
+                      color: Colors.transparent, // Để dễ nhấn
+                      child: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Color(0xFF0099CC),
+                      ),
+                    ),
+                  ),
+                ),
+                // Mũi tên bên phải
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: () {
+                      _scrollController.animateTo(
+                        _scrollController.offset + 120, // Cuộn sang phải
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    child: Container(
+                      width: 40,
+                      color: Colors.transparent, // Để dễ nhấn
+                      child: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Color(0xFF0099CC),
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHospitalCard(String name) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.local_hospital,
-            color: Color(0xFF0099CC),
-            size: 32,
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              name,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
