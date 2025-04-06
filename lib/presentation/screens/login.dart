@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // Import the extracted widgets
 import 'package:medihub_app/core/widgets/button.dart';
-import 'package:medihub_app/core/widgets/social_login_options';
+import 'package:medihub_app/core/widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/text.dart';  
 import 'package:medihub_app/core/widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/phone_input_field.dart';
