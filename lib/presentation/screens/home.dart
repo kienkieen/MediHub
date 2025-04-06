@@ -7,36 +7,49 @@ class MedihubHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header section
-            _buildHeader(),
-            
-            // Search bar
-            _buildSearchBar(),
-            
-            // Services cards
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Main services
-                    _buildServicesGrid(),
-                    
-                    // Partnered hospitals section
-                    _buildPartneredHospitalsSection(),
-                    
-                    // Vaccination banner
-                    _buildVaccinationBanner(),
-                    
-                    const SizedBox(height: 70), // Space for bottom navigation
-                  ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFCCE5F9), // Màu xanh nhạt ở trên
+              Colors.white,      // Màu trắng ở dưới
+              Color(0xFFCCE5F9),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header section
+              _buildHeader(),
+              
+              // Search bar
+              _buildSearchBar(),
+              
+              // Services cards
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Main services
+                      _buildServicesGrid(),
+                      
+                      // Partnered hospitals section
+                      _buildPartneredHospitalsSection(),
+                      
+                      // Vaccination banner
+                      _buildVaccinationBanner(),
+                      
+                      const SizedBox(height: 70), // Space for bottom navigation
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: _buildBottomNavigation(),
@@ -73,13 +86,15 @@ class MedihubHomeScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Flexible(
                   child: Text(
-                    "MediHub xin chào,",
+                    "MediHub\nXin chào,",
                     style: TextStyle(
                       color: Color(0xFF004466),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
-                    overflow: TextOverflow.ellipsis, // Đảm bảo chữ không tràn
+                    textAlign: TextAlign.start,
+                    // overflow: TextOverflow.ellipsis, // Đảm bảo chữ không tràn
+                    softWrap: true, // Cho phép xuống dòng
                   ),
                 ),
               ],
@@ -89,8 +104,9 @@ class MedihubHomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
+              color: Colors.white,
               border: Border.all(color: Color(0xFF0099CC)),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -98,8 +114,7 @@ class MedihubHomeScreen extends StatelessWidget {
                 Text(
                   "Tất cả/VI",
                   style: TextStyle(
-                    color: Color(0xFF0099CC),
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 Icon(
@@ -281,9 +296,18 @@ class MedihubHomeScreen extends StatelessWidget {
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
                   children: [
-                    HospitalCard(name: "Bệnh viện Đại học Y Dược TP.HCM"),
-                    HospitalCard(name: "Bệnh viện Nhi Đồng 1"),
-                    HospitalCard(name: "Bệnh viện Chợ Rẫy"),
+                    HospitalCard(
+                      name: "Bệnh viện Đại học Y Dược TP.HCM",
+                      imagePath: "assets/images/hospital_1.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Nhi Đồng 1",
+                      imagePath: "assets/images/hospital_2.png",
+                    ),
+                    HospitalCard(
+                      name: "Bệnh viện Chợ Rẫy",
+                      imagePath: "assets/images/hospital_3.png",
+                    ),
                   ],
                 ),
                 // Mũi tên bên trái

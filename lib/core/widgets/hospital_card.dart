@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class HospitalCard extends StatelessWidget {
   final String name;
+  final String imagePath; // Đường dẫn hình ảnh
 
-  const HospitalCard({super.key, required this.name}); // Sử dụng super.key
+  const HospitalCard({super.key, required this.name, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,14 @@ class HospitalCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.local_hospital,
-            color: Color(0xFF0099CC),
-            size: 32,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8), // Bo góc cho hình ảnh
+            child: Image.asset(
+              imagePath, // Đường dẫn hình ảnh
+              width: 50, // Chiều rộng hình ảnh
+              height: 50, // Chiều cao hình ảnh
+              fit: BoxFit.cover, // Đảm bảo hình ảnh vừa khung
+            ),
           ),
           const SizedBox(height: 8),
           Padding(
