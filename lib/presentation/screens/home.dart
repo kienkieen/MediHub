@@ -46,6 +46,7 @@ class MedihubHomeScreen extends StatelessWidget {
                       const SizedBox(height: 16), // Space between sections
                       AutoImageSlider(),
                       
+                      // const MedicalFacilitiesSection(),
                       const SizedBox(height: 70), // Space for bottom navigation
                     ],
                   ),
@@ -383,6 +384,7 @@ class MedihubHomeScreen extends StatelessWidget {
     );
   }
 
+  
   Widget _buildBottomNavigation() {
     return Container(
       decoration: BoxDecoration(
@@ -420,7 +422,7 @@ class MedihubHomeScreen extends StatelessWidget {
           height: 24,
           width: 24,
           colorFilter: ColorFilter.mode(
-            isSelected ? Color(0xFF0099CC) : Colors.grey,
+            isSelected ? Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
             BlendMode.srcIn,
           ),
         ),
@@ -428,7 +430,7 @@ class MedihubHomeScreen extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: isSelected ? Color(0xFF0099CC) : Colors.grey,
+            color: isSelected ? Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
