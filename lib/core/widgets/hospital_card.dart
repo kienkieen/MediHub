@@ -42,7 +42,7 @@ class HospitalCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

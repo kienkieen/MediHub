@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/auto_image_slider.dart';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 class MedihubHomeScreen extends StatelessWidget {
@@ -258,7 +259,7 @@ class MedihubHomeScreen extends StatelessWidget {
                 width: 80, // Giới hạn chiều rộng để chữ xuống dòng
                 child: Text(
                   service['label'],
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis, // Ẩn nếu quá dài
@@ -399,24 +400,29 @@ class MedihubHomeScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildNavItem(Icons.home, "Trang chủ", isSelected: true),
-            _buildNavItem(Icons.folder_open, "Hồ sơ"),
-            _buildNavItem(Icons.assignment, "Phiếu khám"),
-            _buildNavItem(Icons.notifications_none, "Thông báo"),
-            _buildNavItem(Icons.person_outline, "Tài khoản"),
+            _buildNavItem("assets/icons/home.svg", "Trang chủ", isSelected: true),
+            _buildNavItem("assets/icons/folder.svg", "Hồ sơ"),
+            _buildNavItem("assets/icons/medical_note.svg", "Phiếu khám"),
+            _buildNavItem("assets/icons/notification.svg", "Thông báo"),
+            _buildNavItem("assets/icons/user.svg", "Tài khoản"),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, {bool isSelected = false}) {
+  Widget _buildNavItem(String iconPath, String label, {bool isSelected = false}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          color: isSelected ? Color(0xFF0099CC) : Colors.grey,
+        SvgPicture.asset(
+          iconPath,
+          height: 24,
+          width: 24,
+          colorFilter: ColorFilter.mode(
+            isSelected ? Color(0xFF0099CC) : Colors.grey,
+            BlendMode.srcIn,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
@@ -424,9 +430,10 @@ class MedihubHomeScreen extends StatelessWidget {
           style: TextStyle(
             color: isSelected ? Color(0xFF0099CC) : Colors.grey,
             fontSize: 12,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
-  }
+  } 
 }
