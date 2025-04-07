@@ -460,7 +460,7 @@ class MedihubHomeScreen extends StatelessWidget {
                 imagePath: "assets/images/image_11.png",
               ),
               HospitalCardDetail(
-                name: "Bệnh viện Chấn Thương Chỉnh Hình",
+                name: "Bệnh viện Nhi Đồng Thành Phố",
                 address: "Quận 5, TP.HCM",
                 rating: 4.8,
                 ratingCount: 120,
@@ -474,15 +474,15 @@ class MedihubHomeScreen extends StatelessWidget {
                 imagePath: "assets/images/image_13.png",
               ),
               HospitalCardDetail(
-                name: "Bệnh viện Mắt TP.HCM",
-                address: "Quận 3, TP.HCM",
+                name: "Bệnh viện Chấn Thương Chỉnh Hình",
+                address: "Quận 5, TP.HCM",
                 rating: 4.4,
                 ratingCount: 60,
                 imagePath: "assets/images/image_14.png",
               ),
               HospitalCardDetail(
-                name: "Bệnh viện Nhi Đồng Thành Phố",
-                address: "Bình Chánh, TP.HCM",
+                name: "Bệnh viện Mắt TP.HCM",
+                address: "Quận 3, TP.HCM",
                 rating: 4.7,
                 ratingCount: 95,
                 imagePath: "assets/images/image_15.png",

@@ -74,7 +74,7 @@ class HospitalCardDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4, // Điều chỉnh chiều rộng phù hợp hơn
+      width: MediaQuery.of(context).size.width * 0.4,
       margin: const EdgeInsets.only(right: 12.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -91,13 +91,14 @@ class HospitalCardDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Image section with fixed height
           ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(12),
               topRight: Radius.circular(12),
             ),
             child: SizedBox(
-              height: 70, // Cố định chiều cao cho ảnh
+              height: 70,
               width: double.infinity,
               child: Image.asset(
                 imagePath,
@@ -105,24 +106,35 @@ class HospitalCardDetail extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
+          
+          // Content section with fixed heights
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Fixed height for hospital name
+                SizedBox(
+                  height: 36, // Height for 2 lines of text
+                  child: Text(
                     name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                       color: Color(0xFF333333),
                     ),
-                    maxLines: 2, // Giới hạn số dòng
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
-                  Row(
+                ),
+                
+                const SizedBox(height: 4),
+                
+                // Fixed height for address
+                SizedBox(
+                  height: 30, // Height for 2 lines of text
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.location_on,
@@ -137,62 +149,66 @@ class HospitalCardDetail extends StatelessWidget {
                             fontSize: 11,
                             color: Colors.grey[600],
                           ),
-                          maxLines: 2, // Giới hạn thành 1 dòng thay vì 2
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                  const Spacer(), // Đẩy nội dung phía trên lên
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        size: 12,
-                        color: Colors.amber,
+                ),
+                
+                const SizedBox(height: 8),
+                
+                // Rating row with fixed position
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      size: 12,
+                      color: Colors.amber,
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      rating.toString(),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(width: 2),
-                      Text(
-                        rating.toString(),
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      '($ratingCount)',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[600],
                       ),
-                      const SizedBox(width: 2),
-                      Text(
-                        '($ratingCount)',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
+          
+          // Button section with fixed position
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10), // Thêm khoảng cách trái, phải và dưới
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: SizedBox(
               width: double.infinity,
               height: 30,
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00BFFF), // Màu xanh giống hình hơn
+                  backgroundColor: const Color(0xFF00BFFF),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5), // Bo tròn đều các góc
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   padding: EdgeInsets.zero,
-                  elevation: 0, // Không đổ bóng nếu muốn giống hình
+                  elevation: 0,
                 ),
                 child: const Text(
                   'Đặt khám ngay',
                   style: TextStyle(
-                    fontSize: 14, // Tăng size một chút như hình
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -205,3 +221,4 @@ class HospitalCardDetail extends StatelessWidget {
     );
   }
 }
+
