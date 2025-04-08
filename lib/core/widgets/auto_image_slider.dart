@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class AutoImageSlider extends StatefulWidget {
+  const AutoImageSlider({Key? key}) : super(key: key); // Thêm `Key` vào constructor
+
   @override
   _AutoImageSliderState createState() => _AutoImageSliderState();
 }
@@ -26,17 +28,19 @@ class _AutoImageSliderState extends State<AutoImageSlider> {
     _pageController = PageController(initialPage: 0, viewportFraction: 0.92);
 
     // Set up auto page switching every 5 seconds
-    _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
       if (_currentPage < _images.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
       }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+      if (mounted) {
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
     });
   }
 
@@ -70,7 +74,7 @@ class _AutoImageSliderState extends State<AutoImageSlider> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 8,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -93,12 +97,12 @@ class _AutoImageSliderState extends State<AutoImageSlider> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(_images.length, (index) {
             return AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              margin: EdgeInsets.symmetric(horizontal: 4),
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
               width: _currentPage == index ? 16 : 8,
               height: 5,
               decoration: BoxDecoration(
-                color: _currentPage == index ? Color(0xFF0099CC) : Colors.grey.withOpacity(0.3),
+                color: _currentPage == index ? const Color(0xFF0099CC) : Colors.grey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
             );

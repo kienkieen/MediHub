@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medihub_app/presentation/screens/home/navigation_bottom.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 // import 'package:medihub_app/presentation/screens/login.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0091FF)),
         useMaterial3: true,
       ),
-      home: const NavigationBotttom(),
+      home: const NavigationBottom(),
     );
   }
 }

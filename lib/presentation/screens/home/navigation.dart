@@ -6,14 +6,14 @@ import 'package:medihub_app/presentation/screens/home/medicalnote.dart';
 import 'package:medihub_app/presentation/screens/home/notification.dart';
 import 'package:medihub_app/presentation/screens/home/profile.dart';
 
-class NavigationBotttom extends StatefulWidget {
-  const NavigationBotttom({Key? key}) : super(key: key);
+class NavigationBottom extends StatefulWidget {
+  const NavigationBottom({Key? key}) : super(key: key);
 
   @override
-  State<NavigationBotttom> createState() => _NavigationBotttomState();
+  State<NavigationBottom> createState() => _NavigationBottomState();
 }
 
-class _NavigationBotttomState extends State<NavigationBotttom> {
+class _NavigationBottomState extends State<NavigationBottom> {
   int _selectedIndex = 0; // Theo dõi mục được chọn
 
   final List<Widget> _pages = [

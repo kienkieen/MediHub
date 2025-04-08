@@ -7,7 +7,7 @@ import 'package:medihub_app/core/widgets/text.dart';
 import 'package:medihub_app/core/widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/phone_input_field.dart';
 import 'package:medihub_app/presentation/screens/fogot_password.dart';
-import 'package:medihub_app/presentation/screens/home/navigation_bottom.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/register.dart';
 
 
@@ -155,7 +155,7 @@ class _LoginFormState extends State<LoginForm> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NavigationBotttom(),
+                  builder: (context) => NavigationBottom(),
                 ),
               );
           },

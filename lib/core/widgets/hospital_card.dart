@@ -54,7 +54,7 @@ class HospitalCard extends StatelessWidget {
   }
 }
 
-// HospitalCardDetail widget _buildMedicalFacilitiesSection
+// HospitalCardDetail widget MedicalFacilitiesSection
 class HospitalCardDetail extends StatelessWidget {
   final String name;
   final String address;
@@ -232,4 +232,3 @@ class HospitalCardDetail extends StatelessWidget {
     );
   }
 }
-
