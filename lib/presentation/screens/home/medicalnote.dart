@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/core/widgets/button.dart';
 
 class MedicalExaminationFormScreen extends StatefulWidget {
   const MedicalExaminationFormScreen({super.key});
@@ -13,13 +14,13 @@ class _MedicalExaminationFormScreenState
     extends State<MedicalExaminationFormScreen> {
   int _selectedFilter = 1; // 1 = Đã thanh toán (mặc định)
 
-  // Các nội dung tương ứng với từng filter
-  final Map<int, Widget> _filterContents = {
-    1: _buildPaidContent(),
-    2: _buildUnpaidContent(),
-    3: _buildExaminedContent(),
-    4: _buildCancelledContent(),
-  };
+  // Danh sách filter để dễ dàng thay đổi
+  final List<Map<String, dynamic>> _filters = [
+    {'id': 1, 'title': 'Đã thanh toán'},
+    {'id': 2, 'title': 'Chưa thanh toán'},
+    {'id': 3, 'title': 'Đã khám'},
+    {'id': 4, 'title': 'Đã huỷ'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -27,123 +28,66 @@ class _MedicalExaminationFormScreenState
       appBar: AppbarWidget(title: 'Danh sách phiếu khám'),
       body: Column(
         children: [
-          Expanded(flex: 1, child: _buildFilters()),
+          _buildFilterBar(),
           Expanded(
-            flex: 9,
-            child: Center(
-              child: _filterContents[_selectedFilter] ?? _buildPaidContent(),
-            ),
+            child: _buildContent(),
           ),
         ],
       ),
     );
   }
 
-  // Các hàm build content
-  static Widget _buildPaidContent() {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Text('Danh sách phiếu đã thanh toán'),
-        SizedBox(height: 20),
-        Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-      ],
-    );
-  }
-
-  static Widget _buildUnpaidContent() {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Text('Danh sách phiếu chưa thanh toán'),
-        SizedBox(height: 20),
-        Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-      ],
-    );
-  }
-
-  static Widget _buildExaminedContent() {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Text('Danh sách phiếu đã khám'),
-        SizedBox(height: 20),
-        Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-      ],
-    );
-  }
-
-  static Widget _buildCancelledContent() {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        Text('Danh sách phiếu chưa đã huỷ'),
-        SizedBox(height: 20),
-        Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-      ],
-    );
-  }
-
-  Widget _buildFiltersButton(int key, String title) {
-    return Container(
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-        gradient:
-            _selectedFilter == key
-                ? LinearGradient(
-                  colors: [Color(0xFF019BD3), Color(0xA701CBEE)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                )
-                : null,
-        color: _selectedFilter != key ? Colors.grey.shade200 : null,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _selectedFilter = key; // Cập nhật state khi nhấn
-          });
-        },
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: EdgeInsets.all(12),
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: _selectedFilter == key ? Colors.white : Colors.grey.shade800,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilters() {
+  Widget _buildFilterBar() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: SingleChildScrollView(
+      height: 70, // Fixed height for filter bar
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: 15),
-            _buildFiltersButton(1, 'Đã thanh toán'),
-            SizedBox(width: 15),
-            _buildFiltersButton(2, 'Chưa thanh toán'),
-            SizedBox(width: 15),
-            _buildFiltersButton(3, 'Đã khám'),
-            SizedBox(width: 15),
-            _buildFiltersButton(4, 'Đã huỷ'),
-            SizedBox(width: 15),
-          ],
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        itemCount: _filters.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 15),
+        itemBuilder: (context, index) {
+          final filter = _filters[index];
+          return FilterButton(
+            title: filter['title'],
+            isSelected: _selectedFilter == filter['id'],
+            onPressed: () => setState(() => _selectedFilter = filter['id']),
+          );
+        },
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    switch (_selectedFilter) {
+      case 1:
+        return _buildStatusContent('Danh sách phiếu đã thanh toán');
+      case 2:
+        return _buildStatusContent('Danh sách phiếu chưa thanh toán');
+      case 3:
+        return _buildStatusContent('Danh sách phiếu đã khám');
+      case 4:
+        return _buildStatusContent('Danh sách phiếu đã huỷ');
+      default:
+        return _buildStatusContent('Danh sách phiếu đã thanh toán');
+    }
+  }
+
+  Widget _buildStatusContent(String title) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 20),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
+      ],
     );
   }
 }

@@ -3,82 +3,72 @@ import 'package:medihub_app/core/widgets/button2.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
-// import 'package:medihub_app/core/widgets/phone_input_field.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarWidget(title: 'Hồ sơ bệnh nhân'),
-      body: Column(
-        children: [
-          buildNoti(
-            content:
-                'Bạn chưa có hồ sơ bệnh nhân. Vui lòng tạo mới hồ sơ để được đặt khám.',
-            icon: Icons.error_outline,
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 15),
-
-                Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-
-                SizedBox(height: 30),
-                Text('Tạo hồ sơ bệnh nhân', style: TextStyle(fontSize: 20)),
-
-                Text(
-                  'Bạn được phép tạo tối đa 10 hồ sơ (Cá nhân và người thân trong gia đình)',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
-                ),
-
-                SizedBox(height: 30),
-                PrimaryGradientButton(
-                  text: 'CHƯA TỪNG ĐĂNG KÝ MỚI',
-                  icon: Icons.person_add,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CreateProfile(),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 12),
-                // PrimaryButton(
-                //   text: 'QUÉT MÃ BHYT / CCCD',
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => const Naviga,
-                //       ),
-                //     );
-                //   },
-                //   icon: Icons.qr_code_scanner,
-                //   backgroundColor: Colors.transparent,
-                //   textColor: Color(0xFF019BD3),
-                //   borderColor: Color(0xFF019BD3),
-                //   borderRadius: 10,
-                // ),
-
-                SizedBox(height: 16),
-              ],
+      appBar: const AppbarWidget(title: 'Hồ sơ bệnh nhân'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0), // Thêm padding cho đẹp
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildNoti(
+              content:
+                  'Bạn chưa có hồ sơ bệnh nhân.\nVui lòng tạo mới hồ sơ để được đặt khám.',
+              icon: Icons.error_outline,
+              
             ),
+            const SizedBox(height: 20), // Khoảng cách giữa các thành phần
+            const _EmptyProfileContent(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyProfileContent extends StatelessWidget {
+  const _EmptyProfileContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 15),
+          Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
+          const SizedBox(height: 30),
+          const Text('Tạo hồ sơ bệnh nhân', 
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          const Text(
+            'Bạn được phép tạo tối đa 10 hồ sơ (Cá nhân và người thân trong gia đình)',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
           ),
+          const SizedBox(height: 30),
+          PrimaryGradientButton(
+            text: 'CHƯA TỪNG ĐĂNG KÝ MỚI',
+            icon: Icons.person_add,
+            onPressed: () => _navigateToCreateProfile(context),
+          ),
+          const SizedBox(height: 16),
         ],
+      ),
+    );
+  }
+
+  void _navigateToCreateProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CreateProfile(),
       ),
     );
   }
@@ -92,6 +82,7 @@ class CreateProfile extends StatefulWidget {
 }
 
 class _CreateProfileState extends State<CreateProfile> {
+  // Controllers
   final _nameController = TextEditingController();
   final _dobController = TextEditingController();
   final _idController = TextEditingController();
@@ -99,6 +90,7 @@ class _CreateProfileState extends State<CreateProfile> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
 
+  // Dropdown values
   String? _genderValue;
   String? _jobValue;
   String? _countryValue;
@@ -106,6 +98,30 @@ class _CreateProfileState extends State<CreateProfile> {
   String? _provinceValue;
   String? _districtValue;
   String? _wardValue;
+
+  // Form sections data
+  final List<String> _genderOptions = ['Nam', 'Nữ', 'Khác'];
+  final List<String> _jobOptions = [
+    'Công nhân',
+    'Nhân viên văn phòng',
+    'Học sinh/sinh viên',
+    'Giáo viên',
+    'Bác sĩ',
+    'Kỹ sư',
+    'Khác'
+  ];
+  final List<String> _countryOptions = ['Việt Nam', 'Khác'];
+  final List<String> _ethnicOptions = ['Kinh', 'Tày', 'Thái', 'Mường', 'Khác'];
+  final List<String> _provinceOptions = ['Hà Nội', 'TP.HCM', 'Đà Nẵng', 'Cần Thơ', 'Hải Phòng'];
+
+  bool _isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set defaults
+    _countryValue = 'Việt Nam';
+  }
 
   @override
   void dispose() {
@@ -118,233 +134,256 @@ class _CreateProfileState extends State<CreateProfile> {
     super.dispose();
   }
 
+  void _validateForm() {
+    setState(() {
+      _isFormValid = _nameController.text.isNotEmpty &&
+          _dobController.text.isNotEmpty &&
+          _idController.text.isNotEmpty &&
+          _genderValue != null &&
+          _jobValue != null &&
+          _countryValue != null &&
+          _ethnicValue != null &&
+          _provinceValue != null &&
+          _districtValue != null &&
+          _wardValue != null &&
+          _phoneController.text.isNotEmpty;
+    });
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    
+    if (picked != null) {
+      setState(() {
+        _dobController.text = "${picked.day}/${picked.month}/${picked.year}";
+        _validateForm();
+      });
+    }
+  }
+
+  void _submitForm() {
+    // Check manual validation
+    if (_isFormValid) {
+      // Process data and save profile
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Đang xử lý hồ sơ...')),
+      );
+      
+      // Navigate back or to confirmation screen
+      // TODO: Implement API call to save profile
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng điền đầy đủ thông tin bắt buộc')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppbarWidget(title: 'Tạo mới hồ sơ'),
+      appBar: const AppbarWidget(title: 'Tạo mới hồ sơ'),
       body: SingleChildScrollView(
         child: Column(
           children: [
             buildNoti(
-              content:
-                  'Vui lòng cung cấp thông tin chính xác để được phục vụ tốt nhất.',
+              content: 'Vui lòng cung cấp thông tin chính xác để được phục vụ tốt nhất.',
             ),
-            Container(
-              margin: EdgeInsets.all(10),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle('Thông tin chung'),
-
-                  InputField(
-                    controller: _nameController,
-                    label: 'Họ và tên (có dấu)',
-                    hintText: 'Nhập họ và tên',
-                    isRequired: true,
-                  ),
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: InputField(
-                          controller: _dobController,
-                          label: 'Ngày sinh',
-                          hintText: 'Ngày / Tháng / Năm',
-                          isRequired: true,
+            
+            _buildFormSection(
+              'Thông tin chung',
+              [
+                InputField(
+                  controller: _nameController,
+                  label: 'Họ và tên (có dấu)',
+                  hintText: 'Nhập họ và tên',
+                  isRequired: true,
+                ),
+                
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: AbsorbPointer(
+                          child: InputField(
+                            controller: _dobController,
+                            label: 'Ngày sinh',
+                            hintText: 'Ngày / Tháng / Năm',
+                            isRequired: true,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: DropdownField(
-                          label: 'Giới tính',
-                          value: _genderValue,
-                          items: ['Nam', 'Nữ', 'Khác'],
-                          isRequired: true,
-                          onChanged: (newValue) {
-                            setState(() {
-                              _genderValue = newValue;
-                            });
-                          },
-                          padding: const EdgeInsets.only(bottom: 8),
-                          hintText: 'Giới tính',
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  InputField(
-                    controller: _idController,
-                    label: 'Mã định danh/CCCD/Passport',
-                    hintText: 'Vui lòng nhập Mã định danh/CCCD/Passport',
-                    isRequired: true,
-                  ),
-
-                  InputField(
-                    controller: _insuranceController,
-                    label: 'Mã bảo hiểm y tế',
-                    hintText: 'Mã bảo hiểm y tế',
-                  ),
-
-                  DropdownField(
-                    label: 'Nghề nghiệp',
-                    value: _jobValue,
-                    items: [
-                      'Công nhân',
-                      'Nhân viên văn phòng',
-                      'Học sinh/sinh viên',
-                    ],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _jobValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Chọn nghề nghiệp',
-                  ),
-
-                  _buildPhoneInputField(
-                    _phoneController,
-                    'Số điện thoại',
-                    '09xxxxxxxx',
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-
-                  // Phần 2: Thông tin địa chỉ
-                  _buildSectionTitle('Thông tin địa chỉ'),
-                  DropdownField(
-                    label: 'Quốc gia',
-                    value: _countryValue,
-                    items: ['Việt Nam', 'Khác'],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _countryValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Việt Nam',
-                  ),
-
-                  DropdownField(
-                    label: 'Dân tộc',
-                    value: _ethnicValue,
-                    items: ['Kinh', 'Tày', 'Thái'],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _ethnicValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Chọn Dân tộc',
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              margin: EdgeInsets.all(10),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle('Địa chỉ theo CCCD'),
-
-                  DropdownField(
-                    label: 'Tỉnh/TP',
-                    value: _provinceValue,
-                    items: ['Hà Nội', 'TP.HCM', 'Đà Nẵng'],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _provinceValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Chọn tỉnh thành',
-                  ),
-
-                  DropdownField(
-                    label: 'Quận/Huyện',
-                    value: _districtValue,
-                    items: ['Chọn Quận/Huyện'],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _districtValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Chọn Quận/Huyện',
-                  ),
-
-                  DropdownField(
-                    label: 'Phường/Xã',
-                    value: _wardValue,
-                    items: ['Chọn Phường/Xã'],
-                    isRequired: true,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _wardValue = newValue;
-                      });
-                    },
-                    padding: const EdgeInsets.only(bottom: 8),
-                    hintText: 'Chọn Phường/ =Xã',
-                  ),
-
-                  InputField(
-                    controller: _phoneController,
-                    label: 'Số nhà/ Tên đường/ Ấp thôn xóm',
-                    hintText: 'Chỉ nhập số nhà, tên đường, ấp thôn xóm',
-                    isRequired: true,
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  // Nút tạo hồ sơ
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Xử lý tạo hồ sơ
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.blue[800],
-                      ),
-                      child: const Text(
-                        'Tạo mới hồ sơ',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DropdownField(
+                        label: 'Giới tính',
+                        value: _genderValue,
+                        items: _genderOptions,
+                        isRequired: true,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _genderValue = newValue;
+                            _validateForm();
+                          });
+                        },
+                        padding: const EdgeInsets.only(bottom: 8),
+                        hintText: 'Giới tính',
+                      ),
+                    ),
+                  ],
+                ),
+                
+                InputField(
+                  controller: _idController,
+                  label: 'Mã định danh/CCCD/Passport',
+                  hintText: 'Vui lòng nhập Mã định danh/CCCD/Passport',
+                  isRequired: true,
+                ),
+                
+                InputField(
+                  controller: _insuranceController,
+                  label: 'Mã bảo hiểm y tế',
+                  hintText: 'Mã bảo hiểm y tế',
+                ),
+                
+                DropdownField(
+                  label: 'Nghề nghiệp',
+                  value: _jobValue,
+                  items: _jobOptions,
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _jobValue = newValue;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Chọn nghề nghiệp',
+                ),
+                
+                _buildPhoneInputField(
+                  _phoneController,
+                  'Số điện thoại',
+                  '09xxxxxxxx',
+                ),
+              ],
+            ),
+            
+            _buildFormSection(
+              'Thông tin địa chỉ',
+              [
+                DropdownField(
+                  label: 'Quốc gia',
+                  value: _countryValue,
+                  items: _countryOptions,
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _countryValue = newValue;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Việt Nam',
+                ),
+                
+                DropdownField(
+                  label: 'Dân tộc',
+                  value: _ethnicValue,
+                  items: _ethnicOptions,
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _ethnicValue = newValue;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Chọn Dân tộc',
+                ),
+              ],
+            ),
+            
+            _buildFormSection(
+              'Địa chỉ theo CCCD',
+              [
+                DropdownField(
+                  label: 'Tỉnh/TP',
+                  value: _provinceValue,
+                  items: _provinceOptions,
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _provinceValue = newValue;
+                      // Reset dependent fields
+                      _districtValue = null;
+                      _wardValue = null;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Chọn tỉnh thành',
+                ),
+                
+                DropdownField(
+                  label: 'Quận/Huyện',
+                  value: _districtValue,
+                  items: _getDistrictsForProvince(_provinceValue),
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _districtValue = newValue;
+                      // Reset dependent field
+                      _wardValue = null;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Chọn Quận/Huyện',
+                ),
+                
+                DropdownField(
+                  label: 'Phường/Xã',
+                  value: _wardValue,
+                  items: _getWardsForDistrict(_districtValue),
+                  isRequired: true,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _wardValue = newValue;
+                      _validateForm();
+                    });
+                  },
+                  hintText: 'Chọn Phường/Xã',
+                ),
+                
+                InputField(
+                  controller: _addressController,
+                  label: 'Số nhà/ Tên đường/ Ấp thôn xóm',
+                  hintText: 'Chỉ nhập số nhà, tên đường, ấp thôn xóm',
+                  isRequired: true,
+                ),
+                
+                const SizedBox(height: 30),
+                
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isFormValid ? _submitForm : null,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: Colors.blueAccent,
+                      disabledBackgroundColor: Colors.grey.shade400,
+                    ),
+                    child: const Text(
+                      'Tạo mới hồ sơ',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
@@ -352,12 +391,41 @@ class _CreateProfileState extends State<CreateProfile> {
     );
   }
 
+  Widget _buildFormSection(String title, List<Widget> children) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(title),
+          ...children,
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold, 
+          fontSize: 18,
+          color: Color(0xFF007DAB),
+        ),
       ),
     );
   }
@@ -373,8 +441,8 @@ class _CreateProfileState extends State<CreateProfile> {
         Text.rich(
           TextSpan(
             children: [
-              TextSpan(text: label, style: TextStyle(fontSize: 16)),
-              TextSpan(
+              TextSpan(text: label, style: const TextStyle(fontSize: 16)),
+              const TextSpan(
                 text: ' *',
                 style: TextStyle(fontSize: 16, color: Colors.red),
               ),
@@ -408,7 +476,7 @@ class _CreateProfileState extends State<CreateProfile> {
                       height: 16,
                     ),
                     const SizedBox(width: 4),
-                    Text('+84', style: const TextStyle(fontSize: 16)),
+                    const Text('+84', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
@@ -432,13 +500,35 @@ class _CreateProfileState extends State<CreateProfile> {
                     ),
                   ),
                   keyboardType: TextInputType.phone,
+                  onChanged: (value) => _validateForm(),
                 ),
               ),
-              const SizedBox(height: 12),
             ],
           ),
         ),
       ],
     );
+  }
+  
+  // Helper methods for location data
+  List<String> _getDistrictsForProvince(String? province) {
+    if (province == null) return ['Chọn Quận/Huyện'];
+    
+    // Return dummy data based on province
+    switch (province) {
+      case 'Hà Nội':
+        return ['Ba Đình', 'Hoàn Kiếm', 'Đống Đa', 'Cầu Giấy'];
+      case 'TP.HCM':
+        return ['Quận 1', 'Quận 2', 'Quận 3', 'Tân Bình', 'Tân Phú'];
+      default:
+        return ['Chọn Quận/Huyện'];
+    }
+  }
+  
+  List<String> _getWardsForDistrict(String? district) {
+    if (district == null) return ['Chọn Phường/Xã'];
+    
+    // Return dummy data based on district
+    return ['Phường 1', 'Phường 2', 'Phường 3', 'Xã An Phú'];
   }
 }

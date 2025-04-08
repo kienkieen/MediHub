@@ -23,50 +23,53 @@ class LoginScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.lightBlue),
           onPressed: () {
-            // Handle back button press
+            Navigator.pop(context);// Handle back button press
           },
         ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              // Logo
-              Image.asset(
-                'assets/images/vietnam_flag.png',
-                height: 70,
-              ),
-              const SizedBox(height: 8),
-              // Slogan text
-              const Text(
-                'Giải pháp tiếp cận y tế thông minh',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 14,
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            width: double.infinity, // Chiều ngang full
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 30),
+                // Logo
+                Image.asset(
+                  'assets/images/vietnam_flag.png',
+                  height: 70,
                 ),
-              ),
-              const SizedBox(height: 40),
-              // Login form
-              const LoginForm(),
-              const SizedBox(height: 20),
-              // Or login with text
-              const Text(
-                'Hoặc đăng nhập bằng tài khoản',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
-              const SizedBox(height: 20),
-              // Social login options
-              const SocialLoginOptions(),
-              const Spacer(),
-            ],
+                const SizedBox(height: 8),
+                // Slogan
+                const Text(
+                  'Giải pháp tiếp cận y tế thông minh',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                const LoginForm(),
+                const SizedBox(height: 20),
+                const Text(
+                  'Hoặc đăng nhập bằng tài khoản',
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 20),
+                const SocialLoginOptions(),
+
+                // Không dùng Spacer nữa vì nó gây lỗi với ScrollView
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
+
     );
   }
 }

@@ -34,7 +34,11 @@ class PrimaryGradientButton extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF019BD3), Color(0xA701CBEE)],
+            colors: [
+              Colors.blueAccent,
+              Colors.blueAccent,         
+              Colors.lightBlueAccent,      
+            ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),

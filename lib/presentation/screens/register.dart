@@ -35,20 +35,20 @@ class RegisterScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 30),
                 // Logo
-                Image.asset(
-                  'assets/images/vietnam_flag.png',
-                  height: 70,
-                ),
-                const SizedBox(height: 8),
-                // Slogan text
-                const Text(
-                  'Giải pháp tiếp cận y tế thông minh',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 40),
+                // Image.asset(
+                //   'assets/images/vietnam_flag.png',
+                //   height: 70,
+                // ),
+                // const SizedBox(height: 8),
+                // // Slogan text
+                // const Text(
+                //   'Giải pháp tiếp cận y tế thông minh',
+                //   style: TextStyle(
+                //     color: Colors.blue,
+                //     fontSize: 14,
+                //   ),
+                // ),
+                // const SizedBox(height: 40),
                 // Sign up form
                 const SignUpForm(),
                 const SizedBox(height: 20),
