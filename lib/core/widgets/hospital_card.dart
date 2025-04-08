@@ -92,17 +92,20 @@ class HospitalCardDetail extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image section with fixed height
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-            child: SizedBox(
-              height: 70,
-              width: double.infinity,
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
+          Padding(
+            padding: const EdgeInsets.only(top: 2), // Tạo khoảng cách 2px từ trên
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              child: SizedBox(
+                height: 70,
+                width: double.infinity,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
@@ -130,9 +133,8 @@ class HospitalCardDetail extends StatelessWidget {
                 
                 const SizedBox(height: 4),
                 
-                // Fixed height for address
                 SizedBox(
-                  height: 30, // Height for 2 lines of text
+                  height: 30, 
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -159,7 +161,6 @@ class HospitalCardDetail extends StatelessWidget {
                 
                 const SizedBox(height: 8),
                 
-                // Rating row with fixed position
                 Row(
                   children: [
                     // Hiển thị số lượng sao dựa trên rating
@@ -200,7 +201,6 @@ class HospitalCardDetail extends StatelessWidget {
             ),
           ),
           
-          // Button section with fixed position
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
             child: SizedBox(

@@ -60,7 +60,7 @@ class MedicalFacilitiesSection extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 230, // Giảm chiều cao để phù hợp với các thẻ đã điều chỉnh
+          height: 230, 
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
