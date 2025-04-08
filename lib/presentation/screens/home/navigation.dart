@@ -7,7 +7,7 @@ import 'package:medihub_app/presentation/screens/home/notification.dart';
 import 'package:medihub_app/presentation/screens/home/profile.dart';
 
 class NavigationBottom extends StatefulWidget {
-  const NavigationBottom({Key? key}) : super(key: key);
+  const NavigationBottom({super.key});
 
   @override
   State<NavigationBottom> createState() => _NavigationBottomState();
@@ -55,11 +55,11 @@ class NavigationBottomBar extends StatefulWidget {
   final ValueChanged<int> onItemSelected; // Hàm callback khi mục được chọn
 
   const NavigationBottomBar({
-    Key? key,
+    super.key,
     required this.items,
     this.initialIndex = 0,
     required this.onItemSelected,
-  }) : super(key: key);
+  });
 
   @override
   State<NavigationBottomBar> createState() => _NavigationBottomBarState();

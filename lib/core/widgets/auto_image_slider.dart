@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class AutoImageSlider extends StatefulWidget {
-  const AutoImageSlider({Key? key}) : super(key: key); // Thêm `Key` vào constructor
+  const AutoImageSlider({super.key}); // Thêm `Key` vào constructor
 
   @override
   _AutoImageSliderState createState() => _AutoImageSliderState();

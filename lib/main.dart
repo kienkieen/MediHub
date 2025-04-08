@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0091FF)),
         useMaterial3: true,
       ),
-      home: const NavigationBottom(),
+      home: const NavigationBottom(), // Change to NavigationScreen
     );
   }
 }

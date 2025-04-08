@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
 
 class PartneredHospitalsSection extends StatefulWidget {
-  const PartneredHospitalsSection({Key? key}) : super(key: key);
+  const PartneredHospitalsSection({super.key});
 
   @override
   State<PartneredHospitalsSection> createState() => _PartneredHospitalsSectionState();

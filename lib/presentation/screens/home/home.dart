@@ -9,7 +9,7 @@ import 'package:medihub_app/core/widgets/services_grid.dart';
 import 'package:medihub_app/core/widgets/auto_image_slider.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
   
   @override
   Widget build(BuildContext context) {

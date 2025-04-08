@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class ServicesGrid extends StatelessWidget {
-  const ServicesGrid({Key? key}) : super(key: key);
+  const ServicesGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +76,9 @@ class ServiceRow extends StatelessWidget {
   final List<Map<String, dynamic>> services;
 
   const ServiceRow({
-    Key? key,
+    super.key,
     required this.services,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

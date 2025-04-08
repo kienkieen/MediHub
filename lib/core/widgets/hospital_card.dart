@@ -63,13 +63,13 @@ class HospitalCardDetail extends StatelessWidget {
   final String imagePath;
 
   const HospitalCardDetail({
-    Key? key,
+    super.key,
     required this.name,
     required this.address,
     required this.rating,
     required this.ratingCount,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

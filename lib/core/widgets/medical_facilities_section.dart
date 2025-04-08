@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
 
 class MedicalFacilitiesSection extends StatelessWidget {
-  const MedicalFacilitiesSection({Key? key}) : super(key: key);
+  const MedicalFacilitiesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
