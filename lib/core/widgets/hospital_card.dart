@@ -162,14 +162,25 @@ class HospitalCardDetail extends StatelessWidget {
                 // Rating row with fixed position
                 Row(
                   children: [
-                    const Icon(
-                      Icons.star,
-                      size: 12,
-                      color: Colors.amber,
+                    // Hiển thị số lượng sao dựa trên rating
+                    ...List.generate(
+                      rating.floor(), // Số lượng sao đầy đủ
+                      (index) => const Icon(
+                        Icons.star,
+                        size: 12,
+                        color: Colors.amber,
+                      ),
                     ),
-                    const SizedBox(width: 2),
+                    // Hiển thị sao nửa nếu rating không phải số nguyên
+                    if (rating - rating.floor() > 0)
+                      const Icon(
+                        Icons.star_half,
+                        size: 12,
+                        color: Colors.amber,
+                      ),
+                    const SizedBox(width: 4),
                     Text(
-                      rating.toString(),
+                      rating.toStringAsFixed(1), // Hiển thị rating với 1 chữ số thập phân
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,

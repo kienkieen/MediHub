@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/auto_image_slider.dart';
 import 'package:medihub_app/core/widgets/hospital_card.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 
-class MedihubHomeScreen extends StatelessWidget {
-  const MedihubHomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +55,6 @@ class MedihubHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
     );
   }
 
@@ -448,49 +446,49 @@ class MedihubHomeScreen extends StatelessWidget {
               HospitalCardDetail(
                 name: "Bệnh viện Đại học Y Dược TP.HCM",
                 address: "Nguyễn Chí Thanh, Q.5, TP.HCM",
-                rating: 4.7,
+                rating: 4.5,
                 ratingCount: 93,
                 imagePath: "assets/images/image_10.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Nhi Đồng 1",
                 address: "Quận 10, TP.HCM",
-                rating: 4.6,
+                rating: 4.5,
                 ratingCount: 85,
                 imagePath: "assets/images/image_11.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Nhi Đồng Thành Phố",
                 address: "Quận 5, TP.HCM",
-                rating: 4.8,
+                rating: 4.0,
                 ratingCount: 120,
                 imagePath: "assets/images/image_12.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Da Liễu TP.HCM",
                 address: "Quận 3, TP.HCM",
-                rating: 4.5,
+                rating: 5.0,
                 ratingCount: 70,
                 imagePath: "assets/images/image_13.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Chấn Thương Chỉnh Hình",
                 address: "Quận 5, TP.HCM",
-                rating: 4.4,
+                rating: 4.5,
                 ratingCount: 60,
                 imagePath: "assets/images/image_14.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Mắt TP.HCM",
                 address: "Quận 3, TP.HCM",
-                rating: 4.7,
+                rating: 5.0,
                 ratingCount: 95,
                 imagePath: "assets/images/image_15.png",
               ),
               HospitalCardDetail(
                 name: "Bệnh viện Quận Bình Thạnh",
                 address: "Quận Bình Thạnh, TP.HCM",
-                rating: 4.3,
+                rating: 4.5,
                 ratingCount: 50,
                 imagePath: "assets/images/image_16.png",
               ),
@@ -501,57 +499,4 @@ class MedihubHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavigation() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildNavItem("assets/icons/home.svg", "Trang chủ", isSelected: true),
-            _buildNavItem("assets/icons/folder.svg", "Hồ sơ"),
-            _buildNavItem("assets/icons/medical_note.svg", "Phiếu khám"),
-            _buildNavItem("assets/icons/notification.svg", "Thông báo"),
-            _buildNavItem("assets/icons/user.svg", "Tài khoản"),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(String iconPath, String label, {bool isSelected = false}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SvgPicture.asset(
-          iconPath,
-          height: 24,
-          width: 24,
-          colorFilter: ColorFilter.mode(
-            isSelected ? Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
-            BlendMode.srcIn,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  } 
 }
