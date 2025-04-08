@@ -22,3 +22,11 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+  fonts:
+    - family: Oswald
+      fonts:
+        - asset: assets/fonts/Oswald-Light.ttf
+    - family: Calistoga
+      fonts:
+        - asset: assets/fonts/Calistoga-Regular.ttf
+
