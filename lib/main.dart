@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF0091FF),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0091FF)),
         useMaterial3: true,
+        // fontFamily: 'calistoga',
       ),
       home: const NavigationBottom(), // Change to NavigationScreen
     );

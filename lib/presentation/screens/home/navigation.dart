@@ -37,9 +37,9 @@ class _NavigationBottomState extends State<NavigationBottom> {
       bottomNavigationBar: NavigationBottomBar(
         items: [
           NavigationItem(iconPath: "assets/icons/home.svg", label: "Trang chủ"),
-          NavigationItem(iconPath: "assets/icons/folder.svg", label: "Hồ sơ"),
-          NavigationItem(iconPath: "assets/icons/medical_note.svg", label: "Phiếu khám"),
-          NavigationItem(iconPath: "assets/icons/notification.svg", label: "Thông báo"),
+          NavigationItem(iconPath: "assets/icons/date.svg", label: "Sự kiện"),
+          NavigationItem(iconPath: "assets/icons/calender.svg", label: "Lịch tiêm"),
+          NavigationItem(iconPath: "assets/icons/chat.svg", label: "Liên hệ"),
           NavigationItem(iconPath: "assets/icons/user.svg", label: "Tài khoản"),
         ],
         initialIndex: _selectedIndex,

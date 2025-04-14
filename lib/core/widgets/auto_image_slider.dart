@@ -10,12 +10,12 @@ class AutoImageSlider extends StatefulWidget {
 
 class _AutoImageSliderState extends State<AutoImageSlider> {
   final List<String> _images = [
-    "assets/images/image_1.png",
-    "assets/images/image_5.png",
-    "assets/images/image_7.png",
-    "assets/images/image_1.png",
-    "assets/images/image_5.png",
-    "assets/images/image_7.png",
+    "assets/images/banner-tiem-cum-mien-phi-cho-nguoi-co-cong-cach-manh-mb.jpg",
+    "assets/images/dang-ky-tiem-vac-xin-zona-mobile.jpg",
+    "assets/images/banner-uu-dai-vnvc-thang-4-2025-mb.gif",
+    "assets/images/hoc-sinh-truong-anh-ngu-tai-vnvc-quy-nhon.jpg",
+    "assets/images/tay-chan-mieng-boi-nhiem.jpg",
+    "assets/images/tay-chan-mieng-co-ngua-khong.jpg",
   ];
 
   late PageController _pageController;

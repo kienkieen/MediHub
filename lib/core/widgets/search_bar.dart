@@ -22,7 +22,7 @@ class HomeSearchBar extends StatelessWidget {
         ),
         child: const TextField(
           decoration: InputDecoration(
-            hintText: "Tìm CSYT/bác sĩ/chuyên khoa/dịch vụ",
+            hintText: "Tìm Vắc xin",
             hintStyle: TextStyle(
               color: Colors.grey,
               fontSize: 14,

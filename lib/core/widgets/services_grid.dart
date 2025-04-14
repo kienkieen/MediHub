@@ -8,39 +8,39 @@ class ServicesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> topServices = [
       {
-        'image': 'assets/icons/icon_4.png',
-        'label': 'Đặt khám tại cơ sở',
+        'icon': Icons.event_note,
+        'label': 'Đặt lịch\nhẹn',  
       },
       {
-        'image': 'assets/icons/icon_1.png',
-        'label': 'Gọi video với bác sĩ',
+        'icon': Icons.newspaper,
+        'label': 'Tin tức\nVắc xin', 
       },
       {
-        'image': 'assets/icons/icon_6.png',
-        'label': 'Đặt khám ngoài giờ',
+        'icon': Icons.library_books,
+        'label': 'Nhật ký\ntiêm chủng', 
       },
       {
-        'image': 'assets/icons/icon_3.png',
-        'label': 'Đặt lịch tiêm chủng',
+        'icon': Icons.history,
+        'label': 'Lịch sử\ntiêm chủng', 
       },
     ];
 
     final List<Map<String, dynamic>> bottomServices = [
       {
-        'image': 'assets/icons/icon_7.png',
-        'label': 'Đặt khám Bác sĩ',
+        'icon': Icons.category,
+        'label': 'Danh mục\nVắc xin', 
       },
       {
-        'image': 'assets/icons/icon_8.png',
-        'label': 'Gói sức khỏe toàn diện',
+        'icon': Icons.vaccines,
+        'label': 'Vắc xin\ntheo tuổi', 
       },
       {
-        'image': 'assets/icons/icon_5.png',
-        'label': 'Đặt lịch xét nghiệm',
+        'icon': Icons.redeem,
+        'label': 'Ưu đãi\ncủa tôi', 
       },
       {
-        'image': 'assets/icons/icon_2.png',
-        'label': 'Kết quả khám bệnh',
+        'icon': Icons.vaccines_outlined,
+        'label': 'Đặt mua\nVắc xin', 
       },
     ];
     
@@ -93,16 +93,13 @@ class ServiceRow extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.05), // Nền nhẹ cho biểu tượng
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    service['image'],
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.contain,
-                  ),
+                child: Icon(
+                  service['icon'], // Hiển thị biểu tượng
+                  size: 32,
+                  color: const Color.fromARGB(255, 2, 79, 211), // Màu biểu tượng
                 ),
               ),
               const SizedBox(height: 8),
@@ -110,9 +107,13 @@ class ServiceRow extends StatelessWidget {
                 width: 80, // Giới hạn chiều rộng để chữ xuống dòng
                 child: Text(
                   service['label'],
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    height: 1.5, // Tăng khoảng cách giữa các dòng
+                  ),
                   textAlign: TextAlign.center,
-                  maxLines: 2,
+                  maxLines: 2, // Giới hạn 2 dòng
                   overflow: TextOverflow.ellipsis, // Ẩn nếu quá dài
                 ),
               ),

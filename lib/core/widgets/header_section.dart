@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/presentation/screens/home/notification.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -34,41 +35,33 @@ class HeaderSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Flexible(
                   child: Text(
-                    "MediHub\nXin chào,",
+                    "VNVC\nXin chào,",
                     style: TextStyle(
                       color: Color(0xFF004466),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.start,
-                    softWrap: true, // Cho phép xuống dòng
+                    softWrap: true,
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: const Color(0xFF0099CC)),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Tất cả/VI",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationListScreen(),
                 ),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Color(0xFF0099CC),
-                ),
-              ],
+              );
+            },
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: Color.fromARGB(255, 255, 255, 255),
+              size: 28,
             ),
           ),
         ],
@@ -76,3 +69,4 @@ class HeaderSection extends StatelessWidget {
     );
   }
 }
+
