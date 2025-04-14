@@ -99,7 +99,7 @@ class ServiceRow extends StatelessWidget {
                 child: Icon(
                   service['icon'], // Hiển thị biểu tượng
                   size: 32,
-                  color: const Color.fromARGB(255, 2, 79, 211), // Màu biểu tượng
+                  color: const Color.fromARGB(255, 0, 10, 146), // Màu biểu tượng
                 ),
               ),
               const SizedBox(height: 8),

@@ -16,82 +16,138 @@ class UserAccountScreen extends StatelessWidget {
                 userName: 'Khách',
               ),
 
-              // Section: Terms and Regulations
-              _Section(
-                title: "Điều khoản và quy định",
-                items: [
-                  _MenuItem(
-                    icon: Icons.verified_user,
-                    color: Colors.cyan,
-                    title: 'Quy định sử dụng',
-                    onTap: () {},
-                  ),
-                  _MenuItem(
-                    icon: Icons.lock,
-                    color: Colors.purple,
-                    title: 'Chính sách bảo mật',
-                    onTap: () {},
-                  ),
-                  _MenuItem(
-                    icon: Icons.description,
-                    color: Colors.orange,
-                    title: 'Điều khoản dịch vụ',
-                    onTap: () {},
-                  ),
-                ],
-              ),
-
-              // Customer Support Item
+              // Menu Items
               _MenuItem(
-                icon: Icons.phone,
-                color: Colors.blue,
-                title: 'Tổng dài CSKH 19002115',
-                hasBorder: true,
+                icon: Icons.edit,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Chỉnh sửa tài khoản',
                 onTap: () {},
+                showArrow: true,
               ),
-
-              // Section: App Feedback
-              _Section(
-                items: [
-                  _MenuItem(
-                    icon: Icons.star,
-                    color: Colors.yellow.shade800,
-                    title: 'Đánh giá ứng dụng',
-                    onTap: () {},
-                  ),
-                  _MenuItem(
-                    icon: Icons.share,
-                    color: Colors.purpleAccent,
-                    title: 'Chia sẻ ứng dụng',
-                    onTap: () {},
-                  ),
-                ],
+              _MenuItem(
+                icon: Icons.description_outlined,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Quản lý hồ sơ tiêm chủng',
+                onTap: () {},
+                showArrow: true,
               ),
-
-              // Bottom items
+              _MenuItem(
+                icon: Icons.card_giftcard_outlined,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Ưu đãi của tôi',
+                onTap: () {},
+                showArrow: true,
+              ),
               _MenuItem(
                 icon: Icons.help_outline,
-                color: Colors.red,
-                title: 'Một số câu hỏi thường gặp',
-                hasBorder: true,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Tra cứu điểm thưởng',
                 onTap: () {},
+                showArrow: true,
               ),
               _MenuItem(
-                icon: Icons.g_translate_outlined,
-                color: Colors.blue,
-                title: 'Ngôn ngữ',
-                hasBorder: true,
+                icon: Icons.lock_outline,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Đổi mật khẩu',
                 onTap: () {},
+                showArrow: true,
               ),
               _MenuItem(
                 icon: Icons.logout_outlined,
-                color: Colors.red,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
                 title: 'Đăng xuất',
-                hasBorder: true,
                 onTap: () {},
+                showArrow: true,
               ),
 
-              const _Footer(),
+              // Contact Information Header
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Thông tin liên hệ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Contact Information Items
+              _ContactItem(
+                logoAsset: 'assets/images/logo-vnvc.png',
+                title: 'Tiêm chủng VNVC',
+                phone: '028 7102 6595',
+              ),
+              _ContactItem(
+                logoAsset: 'assets/images/logo-vnvc.png',
+                title: 'Tâm Anh TP HCM',
+                phone: '0287 102 6789',
+              ),
+              _ContactItem(
+                logoAsset: 'assets/images/logo-vnvc.png',
+                title: 'Tâm Anh Hà Nội',
+                phone: '024 3872 3872',
+              ),
+              _ContactItem(
+                logoAsset: 'assets/images/logo-vnvc.png',
+                title: 'Nutrihome',
+                phone: '1900 633 599',
+              ),
+              _ContactItem(
+                logoAsset: 'assets/images/logo-vnvc.png',
+                title: 'Eco Pharma',
+                phone: '1800 556 889',
+              ),
+
+              // Policy Information Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Thông tin chính sách',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              _MenuItem(
+                icon: Icons.description_outlined,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Điều khoản dịch vụ',
+                onTap: () {
+                  // Thêm logic điều hướng đến trang "Điều khoản dịch vụ"
+                },
+                showArrow: true,
+              ),
+              _MenuItem(
+                icon: Icons.privacy_tip_outlined,
+                iconColor: const Color.fromARGB(255, 0, 10, 146),
+                title: 'Chính sách quyền riêng tư',
+                onTap: () {
+                  // Thêm logic điều hướng đến trang "Chính sách quyền riêng tư"
+                },
+                showArrow: true,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(
+                  child: Text(
+                    'Phiên bản 1.1.2',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -116,9 +172,9 @@ class _AccountHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-              Colors.blueAccent,      // Màu trắng ở dưới
-              Colors.lightBlueAccent,      // Màu trắng ở giữa
-            ],
+            Color.fromARGB(255, 0, 10, 146),
+            Color.fromARGB(255, 0, 10, 146),
+          ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -146,7 +202,7 @@ class _AccountHeader extends StatelessWidget {
           const SizedBox(height: 5),
           OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.white, width: 2),
+              side: const BorderSide(color: Colors.white, width: 1),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -156,69 +212,17 @@ class _AccountHeader extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LoginScreen(), // Điều hướng đến màn hình Đăng nhập/Đăng ký
+                  builder: (context) => LoginScreen(),
                 ),
               );
             },
-            icon: const Icon(Icons.login_outlined), // Thay đổi biểu tượng thành Đăng nhập
-            label: const Text('Đăng nhập/Đăng ký'), // Thay đổi nhãn
+            icon: const Icon(
+              Icons.login_outlined,
+              color: Color.fromARGB(255, 255, 255, 255), // Đổi màu biểu tượng
+            ),
+            label: const Text('Đăng nhập/Đăng ký'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// A section component that groups related menu items
-class _Section extends StatelessWidget {
-  final String? title;
-  final List<Widget> items;
-
-  const _Section({
-    this.title,
-    required this.items,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (title != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 5, top: 10),
-              child: _sectionTitle(title!),
-            ),
-          ...items.asMap().entries.map((entry) {
-            final index = entry.key;
-            final item = entry.value;
-            
-            // Add dividers between items
-            return Column(
-              children: [
-                item,
-                if (index < items.length - 1) 
-                  const Divider(height: 2),
-              ],
-            );
-          }).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _sectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 5),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16, 
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF007DAB),
-        ),
       ),
     );
   }
@@ -227,153 +231,110 @@ class _Section extends StatelessWidget {
 /// A menu item component for settings and actions
 class _MenuItem extends StatelessWidget {
   final IconData icon;
-  final Color color;
+  final Color iconColor;
   final String title;
   final VoidCallback onTap;
-  final bool hasBorder;
+  final bool showArrow;
 
   const _MenuItem({
     required this.icon,
-    required this.color,
+    required this.iconColor,
     required this.title,
     required this.onTap,
-    this.hasBorder = false,
+    this.showArrow = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: hasBorder 
-          ? const EdgeInsets.symmetric(horizontal: 10)
-          : EdgeInsets.zero,
       decoration: BoxDecoration(
         border: Border(
-          top: hasBorder 
-              ? BorderSide(color: Colors.grey.shade300, width: 1)
-              : BorderSide.none,
-          bottom: hasBorder 
-              ? BorderSide(color: Colors.grey.shade300, width: 1)
-              : BorderSide.none,
+          bottom: BorderSide(color: Colors.grey.shade200),
         ),
+        color: Colors.white,
       ),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.2),
-          child: Icon(icon, color: color),
+        leading: Icon(
+          icon,
+          color: iconColor,
+          size: 24,
         ),
-        title: Text(title),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: showArrow 
+            ? const Icon(Icons.chevron_right, color: Colors.grey)
+            : null,
         onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       ),
     );
   }
 }
 
-/// The footer component with company information
-class _Footer extends StatelessWidget {
-  const _Footer();
+/// Contact information item component
+class _ContactItem extends StatelessWidget {
+  final String logoAsset; // Đường dẫn ảnh
+  final String title;
+  final String phone;
+
+  const _ContactItem({
+    required this.logoAsset,
+    required this.title,
+    required this.phone,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        border: const Border(
-          top: BorderSide(color: Colors.blueAccent, width: 2), // Viền nổi bật
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade200),
         ),
+        color: Colors.white,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          // Logo + Info
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.blueAccent, width: 1),
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(8),
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.transparent,
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 20),
-
-              // Text info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      '📍 Địa chỉ: 140 Lê Trọng Tấn, quận Tân Phú, TP.HCM',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      '🌐 Website: https://tenwebsite.vn',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(height: 6),
-                    Text(
-                      '📞 Số điện thoại: 0382 431 345',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
+          // Hiển thị logo từ ảnh
           Container(
-            height: 1,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.transparent,
-                  const Color(0xFF019BD3).withOpacity(0.5),
-                  const Color(0xFF019BD3).withOpacity(0.5),
-                  Colors.transparent,
-                ],
-                stops: const [0.0, 0.2, 0.8, 1.0],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4), // Bo góc cho ảnh
+              child: Image.asset(
+                logoAsset, // Hiển thị ảnh từ đường dẫn
+                fit: BoxFit.contain,
               ),
             ),
-          ),          const SizedBox(height: 10),
-
-          // Logo bộ công thương v.v.
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 20,
-            runSpacing: 10,
-            children: [
-              Image.asset('assets/images/bocongthuong.webp', height: 40),
-              Image.asset('assets/images/dadangky.webp', height: 40),
-            ],
           ),
-
-          const SizedBox(height: 12),
-
-          // Copyright
-          const Center(
+          const SizedBox(width: 16),
+          // Thông tin liên hệ
+          Expanded(
             child: Text(
-              '© 2025 MediHub. All rights reserved.',
-              style: TextStyle(fontSize: 13, color: Colors.grey),
+              title,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          )
+          ),
+          // Số điện thoại với màu xanh
+          Text(
+            phone,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Color.fromARGB(255, 0, 10, 146),
+            ),
+          ),
         ],
       ),
     );

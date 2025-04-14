@@ -12,7 +12,7 @@ class _NewsSectionState extends State<NewsSection> {
   static final List<NewsItem> _allNewsItems = [
     NewsItem(
       title: 'TRIỆU CHỨNG CÚM A Ở NGƯỜI LỚN VÀ DẤU HIỆU NGUY HIỂM CẦN ĐẾN NGAY BÁC SĨ',
-      imageUrl: 'assets/images/news1.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '13:45',
       tags: ['Bệnh truyền nhiễm'],
@@ -20,7 +20,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'CÚM A CÓ LÂY KHÔNG? LÂY QUA ĐƯỜNG NÀO PHỔ BIẾN?',
-      imageUrl: 'assets/images/news2.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '15:56',
       tags: const [],
@@ -28,7 +28,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'XÉT NGHIỆM CÚM A BẰNG CÁCH NÀO? QUY TRÌNH TEST CÚM A, B RA SAO?',
-      imageUrl: 'assets/images/news3.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '16:03',
       tags: const [],
@@ -36,7 +36,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'NGƯỜI LỚN BỊ CÚM A BAO LÂU THÌ KHỎI? LÀM GÌ ĐỂ NHANH HỒI BỆNH?',
-      imageUrl: 'assets/images/news4.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '16:07',
       tags: const [],
@@ -44,7 +44,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'BỊ CẢM CÚM A NÊN KIÊNG GÌ NHANH KHỎI? 6 LOẠI THỰC PHẨM TRỊ CÚM HIỆU QUẢ',
-      imageUrl: 'assets/images/news5.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '',
       tags: const [],
@@ -53,7 +53,7 @@ class _NewsSectionState extends State<NewsSection> {
     // Thêm tin tức mẫu cho các danh mục khác
     NewsItem(
       title: 'HƯỚNG DẪN KHÁM SỨC KHỎE ĐỊNH KỲ CHO NGƯỜI TRÊN 40 TUỔI',
-      imageUrl: 'assets/images/news6.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '04/02/2023',
       time: '09:30',
       tags: const [],
@@ -61,7 +61,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'CÁC XÉT NGHIỆM CẦN THIẾT TRONG KỲ KHÁM SỨC KHỎE TỔNG QUÁT',
-      imageUrl: 'assets/images/news7.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '04/02/2023',
       time: '10:15',
       tags: const [],
@@ -69,7 +69,7 @@ class _NewsSectionState extends State<NewsSection> {
     ),
     NewsItem(
       title: 'TRIỆU CHỨNG VIÊM HỌNG CẦN ĐI KHÁM NGAY',
-      imageUrl: 'assets/images/news8.jpg',
+      imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '05/02/2023',
       time: '08:45',
       tags: const [],

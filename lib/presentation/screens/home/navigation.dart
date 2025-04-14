@@ -120,7 +120,7 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
             height: 4,
             width: 40,
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF0099CC) : Colors.transparent,
+              color: isSelected ? const Color.fromARGB(255, 0, 10, 146) : Colors.transparent,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -131,7 +131,7 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
             height: 24,
             width: 24,
             colorFilter: ColorFilter.mode(
-              isSelected ? const Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
+              isSelected ? const Color.fromARGB(255, 0, 10, 146) : const Color.fromARGB(255, 41, 41, 41),
               BlendMode.srcIn,
             ),
           ),
@@ -140,7 +140,7 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? const Color(0xFF0099CC) : const Color.fromARGB(255, 41, 41, 41),
+              color: isSelected ? const Color.fromARGB(255, 0, 10, 146) : const Color.fromARGB(255, 41, 41, 41),
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
