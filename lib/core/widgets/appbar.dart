@@ -20,7 +20,14 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       title: Stack(
         alignment: Alignment.center,
         children: [
-          Text(title, style: TextStyle(fontSize: 22, color: Colors.white)),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
       centerTitle: true,
@@ -46,7 +53,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF019BD3), Color(0xA701CBEE)],
+            colors: [Color(0xFF0099CC), Color(0xFF0099CC), Color(0xA701CBEE)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),

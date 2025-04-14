@@ -60,6 +60,7 @@ class DropdownField extends StatelessWidget {
   final ValueChanged<String?> onChanged;
   final EdgeInsetsGeometry? padding;
   final String? hintText;
+  final FocusNode? focusNode;
 
   const DropdownField({
     super.key,
@@ -70,6 +71,7 @@ class DropdownField extends StatelessWidget {
     this.isRequired = false,
     this.padding,
     this.hintText,
+    this.focusNode,
   });
 
   @override
@@ -92,31 +94,37 @@ class DropdownField extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           GestureDetector(
-            onTap: () => _showBottomSheet(context),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      value ?? hintText ?? '',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color:
-                            value == null ? Colors.grey.shade500 : Colors.black,
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.arrow_drop_down),
-                ],
-              ),
+  onTap: () {
+    if (focusNode != null) {
+      FocusScope.of(context).requestFocus(focusNode); // Kích hoạt focusNode của dropdown
+    } else {
+      FocusScope.of(context).unfocus(); // Bỏ focus khỏi các textfield khác
+    }
+    _showBottomSheet(context);
+  },
+  child: Container(
+    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey.shade600),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            value ?? hintText ?? '',
+            style: TextStyle(
+              fontSize: 15,
+              color: value == null ? Colors.grey.shade500 : Colors.black,
             ),
           ),
+        ),
+        Icon(Icons.arrow_drop_down),
+      ],
+    ),
+  ),
+),
           const SizedBox(height: 12),
         ],
       ),
@@ -204,6 +212,7 @@ class DropdownField extends StatelessWidget {
                           ),
                           child: _buildItem(() {
                             Navigator.pop(context);
+                            onChanged(item);
                           }, item),
                         );
                       },

@@ -5,7 +5,7 @@ class AutoImageSlider extends StatefulWidget {
   const AutoImageSlider({super.key}); // Thêm `Key` vào constructor
 
   @override
-  _AutoImageSliderState createState() => _AutoImageSliderState();
+  State<AutoImageSlider> createState() => _AutoImageSliderState();
 }
 
 class _AutoImageSliderState extends State<AutoImageSlider> {
@@ -103,7 +103,7 @@ class _AutoImageSliderState extends State<AutoImageSlider> {
               width: _currentPage == index ? 16 : 8,
               height: 5,
               decoration: BoxDecoration(
-                color: _currentPage == index ? const Color(0xFF0099CC) : Colors.grey.withOpacity(0.3),
+                color: _currentPage == index ? const Color(0xFF0099CC) : Colors.grey.withValues(alpha:0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
             );

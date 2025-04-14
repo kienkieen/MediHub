@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/button2.dart';
+import 'package:medihub_app/core/widgets/button.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
@@ -12,17 +13,15 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: const AppbarWidget(title: 'Hồ sơ bệnh nhân'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0), // Thêm padding cho đẹp
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            buildNoti(
+            BuildNoti(
               content:
-                  'Bạn chưa có hồ sơ bệnh nhân.\nVui lòng tạo mới hồ sơ để được đặt khám.',
+                  'Bạn chưa có hồ sơ bệnh nhân. Vui lòng tạo mới hồ sơ để được đặt khám.',
               icon: Icons.error_outline,
-              
             ),
-            const SizedBox(height: 20), // Khoảng cách giữa các thành phần
+            const SizedBox(height: 20),
             const _EmptyProfileContent(),
           ],
         ),
@@ -41,24 +40,34 @@ class _EmptyProfileContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 15),
           Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
           const SizedBox(height: 30),
-          const Text('Tạo hồ sơ bệnh nhân', 
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
+          const Text(
+            'Tạo hồ sơ bệnh nhân',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 7),
           const Text(
             'Bạn được phép tạo tối đa 10 hồ sơ (Cá nhân và người thân trong gia đình)',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 25),
           PrimaryGradientButton(
             text: 'CHƯA TỪNG ĐĂNG KÝ MỚI',
             icon: Icons.person_add,
             onPressed: () => _navigateToCreateProfile(context),
           ),
           const SizedBox(height: 16),
+          PrimaryButton(
+            text: 'ĐÃ TỪNG KHÁM TẠI MEDIHUB',
+            onPressed: () => _navigateToCreateProfile(context),
+            icon: Icons.search_outlined,
+            backgroundColor: Colors.transparent,
+            textColor: Color(0xFF019BD3),
+            borderColor: Color(0xFF019BD3),
+            borderRadius: 10,
+          ),
         ],
       ),
     );
@@ -67,9 +76,7 @@ class _EmptyProfileContent extends StatelessWidget {
   void _navigateToCreateProfile(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const CreateProfile(),
-      ),
+      MaterialPageRoute(builder: (context) => const CreateProfile()),
     );
   }
 }
@@ -90,6 +97,10 @@ class _CreateProfileState extends State<CreateProfile> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
 
+  //FocusNode
+  final FocusNode _genderFocusNode = FocusNode();
+  final FocusNode _jobFocusNode = FocusNode();
+
   // Dropdown values
   String? _genderValue;
   String? _jobValue;
@@ -108,35 +119,83 @@ class _CreateProfileState extends State<CreateProfile> {
     'Giáo viên',
     'Bác sĩ',
     'Kỹ sư',
-    'Khác'
+    'Khác',
   ];
-  final List<String> _countryOptions = ['Việt Nam', 'Khác'];
+  final List<String> _countryOptions = [
+    'Việt Nam',
+    'Thái Lan',
+    'Singapore',
+    'Nhật Bản',
+    'Hàn Quốc',
+    'Trung Quốc',
+    'Hoa Kỳ',
+    'Pháp',
+    'Đức',
+    'Anh',
+    'Úc',
+  ];
   final List<String> _ethnicOptions = ['Kinh', 'Tày', 'Thái', 'Mường', 'Khác'];
-  final List<String> _provinceOptions = ['Hà Nội', 'TP.HCM', 'Đà Nẵng', 'Cần Thơ', 'Hải Phòng'];
+  final List<String> _provinceOptions = [
+    'Hà Nội',
+    'Hải Phòng',
+    'Quảng Ninh',
+    'Bắc Ninh',
+    'Hải Dương',
+    'Hưng Yên',
+    'Thái Bình',
+    'Nam Định',
+    'Ninh Bình',
+
+    'Đà Nẵng',
+    'Thừa Thiên Huế',
+    'Quảng Nam',
+    'Quảng Ngãi',
+    'Bình Định',
+    'Khánh Hòa',
+    'Phú Yên',
+
+    'TP.HCM',
+    'Cần Thơ',
+    'Bình Dương',
+    'Đồng Nai',
+    'Bà Rịa - Vũng Tàu',
+    'Long An',
+    'Tiền Giang',
+    'An Giang',
+  ];
 
   bool _isFormValid = false;
 
   @override
   void initState() {
     super.initState();
+    _nameController.addListener(_validateForm);
+    _dobController.addListener(_validateForm);
+    _idController.addListener(_validateForm);
+    _phoneController.addListener(_validateForm);
+    _insuranceController.addListener(_validateForm);
+    _addressController.addListener(_validateForm);
     // Set defaults
     _countryValue = 'Việt Nam';
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _dobController.dispose();
-    _idController.dispose();
-    _insuranceController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
+    _nameController.removeListener(_validateForm);
+    _dobController.removeListener(_validateForm);
+    _idController.removeListener(_validateForm);
+    _phoneController.removeListener(_validateForm);
+    _insuranceController.removeListener(_validateForm);
+    _addressController.removeListener(_validateForm);
+    _genderFocusNode.dispose();
+    _jobFocusNode.dispose();
     super.dispose();
   }
 
   void _validateForm() {
     setState(() {
-      _isFormValid = _nameController.text.isNotEmpty &&
+      _isFormValid =
+          _nameController.text.isNotEmpty &&
           _dobController.text.isNotEmpty &&
           _idController.text.isNotEmpty &&
           _genderValue != null &&
@@ -148,6 +207,13 @@ class _CreateProfileState extends State<CreateProfile> {
           _wardValue != null &&
           _phoneController.text.isNotEmpty;
     });
+
+    if (_isFormValid != _isFormValid) {
+      // Chỉ setState khi có thay đổi
+      setState(() {
+        _isFormValid = _isFormValid;
+      });
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -157,7 +223,7 @@ class _CreateProfileState extends State<CreateProfile> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    
+
     if (picked != null) {
       setState(() {
         _dobController.text = "${picked.day}/${picked.month}/${picked.year}";
@@ -167,18 +233,16 @@ class _CreateProfileState extends State<CreateProfile> {
   }
 
   void _submitForm() {
-    // Check manual validation
+    _validateForm();
     if (_isFormValid) {
-      // Process data and save profile
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đang xử lý hồ sơ...')),
-      );
-      
-      // Navigate back or to confirmation screen
-      // TODO: Implement API call to save profile
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Đang xử lý hồ sơ...')));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng điền đầy đủ thông tin bắt buộc')),
+        const SnackBar(
+          content: Text('Vui lòng điền đầy đủ thông tin bắt buộc'),
+        ),
       );
     }
   }
@@ -191,200 +255,198 @@ class _CreateProfileState extends State<CreateProfile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            buildNoti(
-              content: 'Vui lòng cung cấp thông tin chính xác để được phục vụ tốt nhất.',
+            BuildNoti(
+              content:
+                  'Vui lòng cung cấp thông tin chính xác để được phục vụ tốt nhất.',
             ),
-            
-            _buildFormSection(
-              'Thông tin chung',
-              [
-                InputField(
-                  controller: _nameController,
-                  label: 'Họ và tên (có dấu)',
-                  hintText: 'Nhập họ và tên',
-                  isRequired: true,
-                ),
-                
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _selectDate(context),
-                        child: AbsorbPointer(
-                          child: InputField(
-                            controller: _dobController,
-                            label: 'Ngày sinh',
-                            hintText: 'Ngày / Tháng / Năm',
-                            isRequired: true,
-                          ),
+
+            _buildFormSection('Thông tin chung', [
+              InputField(
+                controller: _nameController,
+                label: 'Họ và tên (có dấu)',
+                hintText: 'Nhập họ và tên',
+                isRequired: true,
+              ),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: AbsorbPointer(
+                        child: InputField(
+                          controller: _dobController,
+                          label: 'Ngày sinh',
+                          hintText: 'Ngày / Tháng / Năm',
+                          isRequired: true,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: DropdownField(
-                        label: 'Giới tính',
-                        value: _genderValue,
-                        items: _genderOptions,
-                        isRequired: true,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _genderValue = newValue;
-                            _validateForm();
-                          });
-                        },
-                        padding: const EdgeInsets.only(bottom: 8),
-                        hintText: 'Giới tính',
-                      ),
-                    ),
-                  ],
-                ),
-                
-                InputField(
-                  controller: _idController,
-                  label: 'Mã định danh/CCCD/Passport',
-                  hintText: 'Vui lòng nhập Mã định danh/CCCD/Passport',
-                  isRequired: true,
-                ),
-                
-                InputField(
-                  controller: _insuranceController,
-                  label: 'Mã bảo hiểm y tế',
-                  hintText: 'Mã bảo hiểm y tế',
-                ),
-                
-                DropdownField(
-                  label: 'Nghề nghiệp',
-                  value: _jobValue,
-                  items: _jobOptions,
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _jobValue = newValue;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Chọn nghề nghiệp',
-                ),
-                
-                _buildPhoneInputField(
-                  _phoneController,
-                  'Số điện thoại',
-                  '09xxxxxxxx',
-                ),
-              ],
-            ),
-            
-            _buildFormSection(
-              'Thông tin địa chỉ',
-              [
-                DropdownField(
-                  label: 'Quốc gia',
-                  value: _countryValue,
-                  items: _countryOptions,
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _countryValue = newValue;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Việt Nam',
-                ),
-                
-                DropdownField(
-                  label: 'Dân tộc',
-                  value: _ethnicValue,
-                  items: _ethnicOptions,
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _ethnicValue = newValue;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Chọn Dân tộc',
-                ),
-              ],
-            ),
-            
-            _buildFormSection(
-              'Địa chỉ theo CCCD',
-              [
-                DropdownField(
-                  label: 'Tỉnh/TP',
-                  value: _provinceValue,
-                  items: _provinceOptions,
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _provinceValue = newValue;
-                      // Reset dependent fields
-                      _districtValue = null;
-                      _wardValue = null;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Chọn tỉnh thành',
-                ),
-                
-                DropdownField(
-                  label: 'Quận/Huyện',
-                  value: _districtValue,
-                  items: _getDistrictsForProvince(_provinceValue),
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _districtValue = newValue;
-                      // Reset dependent field
-                      _wardValue = null;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Chọn Quận/Huyện',
-                ),
-                
-                DropdownField(
-                  label: 'Phường/Xã',
-                  value: _wardValue,
-                  items: _getWardsForDistrict(_districtValue),
-                  isRequired: true,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _wardValue = newValue;
-                      _validateForm();
-                    });
-                  },
-                  hintText: 'Chọn Phường/Xã',
-                ),
-                
-                InputField(
-                  controller: _addressController,
-                  label: 'Số nhà/ Tên đường/ Ấp thôn xóm',
-                  hintText: 'Chỉ nhập số nhà, tên đường, ấp thôn xóm',
-                  isRequired: true,
-                ),
-                
-                const SizedBox(height: 30),
-                
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isFormValid ? _submitForm : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.blueAccent,
-                      disabledBackgroundColor: Colors.grey.shade400,
-                    ),
-                    child: const Text(
-                      'Tạo mới hồ sơ',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: DropdownField(
+                      label: 'Giới tính',
+                      value: _genderValue,
+                      items: _genderOptions,
+                      isRequired: true,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _genderValue = newValue;
+                          _validateForm();
+                        });
+                      },
+                      padding: const EdgeInsets.only(bottom: 8),
+                      hintText: 'Giới tính',
+                      focusNode: _genderFocusNode,
                     ),
                   ),
+                ],
+              ),
+
+              InputField(
+                controller: _idController,
+                label: 'Mã định danh/CCCD/Passport',
+                hintText: 'Vui lòng nhập Mã định danh/CCCD/Passport',
+                isRequired: true,
+              ),
+
+              InputField(
+                controller: _insuranceController,
+                label: 'Mã bảo hiểm y tế',
+                hintText: 'Mã bảo hiểm y tế',
+              ),
+
+              DropdownField(
+                label: 'Nghề nghiệp',
+                value: _jobValue,
+                items: _jobOptions,
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _jobValue = newValue;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Chọn nghề nghiệp',
+                focusNode: _genderFocusNode,
+              ),
+
+              _buildPhoneInputField(
+                _phoneController,
+                'Số điện thoại',
+                '09xxxxxxxx',
+              ),
+            ]),
+
+            _buildFormSection('Thông tin địa chỉ', [
+              DropdownField(
+                label: 'Quốc gia',
+                value: _countryValue,
+                items: _countryOptions,
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _countryValue = newValue;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Việt Nam',
+                focusNode: _genderFocusNode,
+              ),
+
+              DropdownField(
+                label: 'Dân tộc',
+                value: _ethnicValue,
+                items: _ethnicOptions,
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _ethnicValue = newValue;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Chọn Dân tộc',
+                focusNode: _genderFocusNode,
+              ),
+            ]),
+
+            _buildFormSection('Địa chỉ theo CCCD', [
+              DropdownField(
+                label: 'Tỉnh/TP',
+                value: _provinceValue,
+                items: _provinceOptions,
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _provinceValue = newValue;
+                    // Reset dependent fields
+                    _districtValue = null;
+                    _wardValue = null;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Chọn tỉnh thành',
+                focusNode: _genderFocusNode,
+              ),
+
+              DropdownField(
+                label: 'Quận/Huyện',
+                value: _districtValue,
+                items: _getDistrictsForProvince(_provinceValue),
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _districtValue = newValue;
+                    // Reset dependent field
+                    _wardValue = null;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Chọn Quận/Huyện',
+                focusNode: _genderFocusNode,
+              ),
+
+              DropdownField(
+                label: 'Phường/Xã',
+                value: _wardValue,
+                items: _getWardsForDistrict(_districtValue),
+                isRequired: true,
+                onChanged: (newValue) {
+                  setState(() {
+                    _wardValue = newValue;
+                    _validateForm();
+                  });
+                },
+                hintText: 'Chọn Phường/Xã',
+                focusNode: _genderFocusNode,
+              ),
+
+              InputField(
+                controller: _addressController,
+                label: 'Số nhà/ Tên đường/ Ấp thôn xóm',
+                hintText: 'Chỉ nhập số nhà, tên đường, ấp thôn xóm',
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isFormValid ? _submitForm : null,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blueAccent,
+                    disabledBackgroundColor: Colors.grey.shade400,
+                  ),
+                  child: const Text(
+                    'Tạo mới hồ sơ',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ]),
           ],
         ),
       ),
@@ -408,10 +470,7 @@ class _CreateProfileState extends State<CreateProfile> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSectionTitle(title),
-          ...children,
-        ],
+        children: [_buildSectionTitle(title), ...children],
       ),
     );
   }
@@ -422,7 +481,7 @@ class _CreateProfileState extends State<CreateProfile> {
       child: Text(
         title,
         style: const TextStyle(
-          fontWeight: FontWeight.bold, 
+          fontWeight: FontWeight.bold,
           fontSize: 18,
           color: Color(0xFF007DAB),
         ),
@@ -509,11 +568,11 @@ class _CreateProfileState extends State<CreateProfile> {
       ],
     );
   }
-  
+
   // Helper methods for location data
   List<String> _getDistrictsForProvince(String? province) {
     if (province == null) return ['Chọn Quận/Huyện'];
-    
+
     // Return dummy data based on province
     switch (province) {
       case 'Hà Nội':
@@ -524,11 +583,10 @@ class _CreateProfileState extends State<CreateProfile> {
         return ['Chọn Quận/Huyện'];
     }
   }
-  
+
   List<String> _getWardsForDistrict(String? district) {
     if (district == null) return ['Chọn Phường/Xã'];
-    
-    // Return dummy data based on district
+
     return ['Phường 1', 'Phường 2', 'Phường 3', 'Xã An Phú'];
   }
 }

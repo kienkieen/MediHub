@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:medihub_app/presentation/screens/home/home.dart';
 import 'package:medihub_app/presentation/screens/home/medicalnote.dart';
 import 'package:medihub_app/presentation/screens/home/notification.dart';
@@ -36,11 +35,26 @@ class _NavigationBottomState extends State<NavigationBottom> {
       body: _pages[_selectedIndex], // Hiển thị trang tương ứng
       bottomNavigationBar: NavigationBottomBar(
         items: [
-          NavigationItem(iconPath: "assets/icons/home.svg", label: "Trang chủ"),
-          NavigationItem(iconPath: "assets/icons/date.svg", label: "Sự kiện"),
-          NavigationItem(iconPath: "assets/icons/calendar.svg", label: "Lịch tiêm"),
-          NavigationItem(iconPath: "assets/icons/chat.svg", label: "Liên hệ"),
-          NavigationItem(iconPath: "assets/icons/user.svg", label: "Tài khoản"),
+          NavigationItem(
+            iconPath: "assets/icons/navigation/home.png",
+            label: "Trang chủ",
+          ),
+          NavigationItem(
+            iconPath: "assets/icons/navigation/date.png",
+            label: "Sự kiện",
+          ),
+          NavigationItem(
+            iconPath: "assets/icons/navigation/calendar.png",
+            label: "Lịch tiêm",
+          ),
+          NavigationItem(
+            iconPath: "assets/icons/navigation/notification.png",
+            label: "Thông báo",
+          ),
+          NavigationItem(
+            iconPath: "assets/icons/navigation/user.png",
+            label: "Tài khoản",
+          ),
         ],
         initialIndex: _selectedIndex,
         onItemSelected: _onItemTapped,
@@ -88,7 +102,7 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),
@@ -98,11 +112,12 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: widget.items.asMap().entries.map((entry) {
-            final int index = entry.key;
-            final NavigationItem item = entry.value;
-            return _buildNavItem(item.iconPath, item.label, index);
-          }).toList(),
+          children:
+              widget.items.asMap().entries.map((entry) {
+                final int index = entry.key;
+                final NavigationItem item = entry.value;
+                return _buildNavItem(item.iconPath, item.label, index);
+              }).toList(),
         ),
       ),
     );
@@ -120,27 +135,33 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
             height: 4,
             width: 40,
             decoration: BoxDecoration(
-              color: isSelected ? const Color.fromARGB(255, 0, 10, 146) : Colors.transparent,
+              color:
+                  isSelected
+                      ? const Color.fromARGB(255, 0, 10, 146)
+                      : Colors.transparent,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
           const SizedBox(height: 6), // Khoảng cách giữa gạch và icon
           // Icon
-          SvgPicture.asset(
+          Image.asset(
             iconPath,
             height: 24,
             width: 24,
-            colorFilter: ColorFilter.mode(
-              isSelected ? const Color.fromARGB(255, 0, 10, 146) : const Color.fromARGB(255, 41, 41, 41),
-              BlendMode.srcIn,
-            ),
+            color:
+                isSelected
+                    ? const Color.fromARGB(255, 0, 10, 146)
+                    : const Color.fromARGB(255, 41, 41, 41),
           ),
           const SizedBox(height: 4),
           // Label
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? const Color.fromARGB(255, 0, 10, 146) : const Color.fromARGB(255, 41, 41, 41),
+              color:
+                  isSelected
+                      ? const Color.fromARGB(255, 0, 10, 146)
+                      : const Color.fromARGB(255, 41, 41, 41),
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -155,8 +176,5 @@ class NavigationItem {
   final String iconPath;
   final String label;
 
-  const NavigationItem({
-    required this.iconPath,
-    required this.label,
-  });
+  const NavigationItem({required this.iconPath, required this.label});
 }
