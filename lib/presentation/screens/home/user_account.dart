@@ -119,7 +119,7 @@ class UserAccountScreen extends StatelessWidget {
                 ],
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: EdgeInsets.only(top: 16.0, bottom: 30),
                 child: Center(
                   child: Text(
                     'Phiên bản 1.1.2',
@@ -272,7 +272,6 @@ class _MenuItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
-        color: Colors.white,
       ),
       child: ListTile(
         leading: CircleAvatar(
