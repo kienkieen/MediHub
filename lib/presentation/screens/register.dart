@@ -6,7 +6,7 @@ import 'package:medihub_app/core/widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/phone_input_field.dart';
 import 'package:medihub_app/core/widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/text.dart';
-
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -104,10 +104,7 @@ class _SignUpFormState extends State<SignUpForm> {
         const Center(
           child: Text(
             'Tạo tài khoản mới',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
         ),
         const SizedBox(height: 24),
@@ -222,8 +219,12 @@ class _SignUpFormState extends State<SignUpForm> {
         decoration: InputDecoration(
           hintText: hintText,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Colors.grey) : null,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 14,
+          ),
+          prefixIcon:
+              prefixIcon != null ? Icon(prefixIcon, color: Colors.grey) : null,
         ),
       ),
     );
