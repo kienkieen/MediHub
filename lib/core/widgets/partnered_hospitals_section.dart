@@ -6,7 +6,8 @@ class PartneredHospitalsSection extends StatefulWidget {
   const PartneredHospitalsSection({super.key});
 
   @override
-  State<PartneredHospitalsSection> createState() => _PartneredHospitalsSectionState();
+  State<PartneredHospitalsSection> createState() =>
+      _PartneredHospitalsSectionState();
 }
 
 class _PartneredHospitalsSectionState extends State<PartneredHospitalsSection> {

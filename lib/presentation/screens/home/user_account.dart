@@ -12,139 +12,118 @@ class UserAccountScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const _AccountHeader(
-                userName: 'Khách',
-              ),
+              const _AccountHeader(userName: 'Khách'),
 
-              // Menu Items
-              _MenuItem(
-                icon: Icons.edit,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Chỉnh sửa tài khoản',
-                onTap: () {},
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.description_outlined,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Quản lý hồ sơ tiêm chủng',
-                onTap: () {},
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.card_giftcard_outlined,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Ưu đãi của tôi',
-                onTap: () {},
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.help_outline,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Tra cứu điểm thưởng',
-                onTap: () {},
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.lock_outline,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Đổi mật khẩu',
-                onTap: () {},
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.logout_outlined,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Đăng xuất',
-                onTap: () {},
-                showArrow: true,
+              _Section(
+                title: "Thông tin tài khoản",
+                items: [
+                  _MenuItem(
+                    icon: Icons.edit,
+                    iconColor: Colors.cyan,
+                    title: 'Chỉnh sửa tài khoản',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                  _MenuItem(
+                    icon: Icons.description_outlined,
+                    iconColor: Colors.purple,
+                    title: 'Quản lý hồ sơ tiêm chủng',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                  _MenuItem(
+                    icon: Icons.card_giftcard_outlined,
+                    iconColor: Colors.green,
+                    title: 'Ưu đãi của tôi',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                  _MenuItem(
+                    icon: Icons.help_outline,
+                    iconColor: Colors.orange,
+                    title: 'Tra cứu điểm thưởng',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                  _MenuItem(
+                    icon: Icons.lock_outline,
+                    iconColor: Colors.blue,
+                    title: 'Đổi mật khẩu',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                  _MenuItem(
+                    icon: Icons.logout_outlined,
+                    iconColor: Colors.red,
+                    title: 'Đăng xuất',
+                    onTap: () {},
+                    showArrow: true,
+                  ),
+                ],
               ),
 
               // Contact Information Header
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Thông tin liên hệ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
+              _Section(
+                title: "Thông tin liên hệ",
+                items: [
+                  _ContactItem(
+                    logoAsset: 'assets/images/logo-vnvc.png',
+                    title: 'Tiêm chủng VNVC',
+                    phone: '028 7102 6595',
                   ),
-                ),
-              ),
-
-              // Contact Information Items
-              _ContactItem(
-                logoAsset: 'assets/images/logo-vnvc.png',
-                title: 'Tiêm chủng VNVC',
-                phone: '028 7102 6595',
-              ),
-              _ContactItem(
-                logoAsset: 'assets/images/logo-vnvc.png',
-                title: 'Tâm Anh TP HCM',
-                phone: '0287 102 6789',
-              ),
-              _ContactItem(
-                logoAsset: 'assets/images/logo-vnvc.png',
-                title: 'Tâm Anh Hà Nội',
-                phone: '024 3872 3872',
-              ),
-              _ContactItem(
-                logoAsset: 'assets/images/logo-vnvc.png',
-                title: 'Nutrihome',
-                phone: '1900 633 599',
-              ),
-              _ContactItem(
-                logoAsset: 'assets/images/logo-vnvc.png',
-                title: 'Eco Pharma',
-                phone: '1800 556 889',
+                  _ContactItem(
+                    logoAsset: 'assets/images/logo-vnvc.png',
+                    title: 'Tâm Anh TP HCM',
+                    phone: '0287 102 6789',
+                  ),
+                  _ContactItem(
+                    logoAsset: 'assets/images/logo-vnvc.png',
+                    title: 'Tâm Anh Hà Nội',
+                    phone: '024 3872 3872',
+                  ),
+                  _ContactItem(
+                    logoAsset: 'assets/images/logo-vnvc.png',
+                    title: 'Nutrihome',
+                    phone: '1900 633 599',
+                  ),
+                  _ContactItem(
+                    logoAsset: 'assets/images/logo-vnvc.png',
+                    title: 'Eco Pharma',
+                    phone: '1800 556 889',
+                  ),
+                ],
               ),
 
               // Policy Information Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Thông tin chính sách',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+              _Section(
+                title: "Thông tin chính sách",
+                items: [
+                  _MenuItem(
+                    icon: Icons.description_outlined,
+                    iconColor: Colors.green,
+                    title: 'Điều khoản dịch vụ',
+                    onTap: () {
+                      // Thêm logic điều hướng đến trang "Điều khoản dịch vụ"
+                    },
+                    showArrow: true,
                   ),
-                ),
-              ),
-              _MenuItem(
-                icon: Icons.description_outlined,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Điều khoản dịch vụ',
-                onTap: () {
-                  // Thêm logic điều hướng đến trang "Điều khoản dịch vụ"
-                },
-                showArrow: true,
-              ),
-              _MenuItem(
-                icon: Icons.privacy_tip_outlined,
-                iconColor: const Color.fromARGB(255, 0, 10, 146),
-                title: 'Chính sách quyền riêng tư',
-                onTap: () {
-                  // Thêm logic điều hướng đến trang "Chính sách quyền riêng tư"
-                },
-                showArrow: true,
+                  _MenuItem(
+                    icon: Icons.privacy_tip_outlined,
+                    iconColor: Colors.blue,
+                    title: 'Chính sách quyền riêng tư',
+                    onTap: () {
+                      // Thêm logic điều hướng đến trang "Chính sách quyền riêng tư"
+                    },
+                    showArrow: true,
+                  ),
+                ],
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: EdgeInsets.only(top: 16.0, bottom: 30),
                 child: Center(
                   child: Text(
                     'Phiên bản 1.1.2',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ),
               ),
@@ -159,10 +138,8 @@ class UserAccountScreen extends StatelessWidget {
 /// The header component for the user account screen
 class _AccountHeader extends StatelessWidget {
   final String userName;
-  
-  const _AccountHeader({
-    required this.userName,
-  });
+
+  const _AccountHeader({required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -172,8 +149,8 @@ class _AccountHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color.fromARGB(255, 0, 10, 146),
-            Color.fromARGB(255, 0, 10, 146),
+            Colors.blueAccent, // Màu trắng ở dưới
+            Colors.lightBlueAccent,
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -194,7 +171,7 @@ class _AccountHeader extends StatelessWidget {
           Text(
             userName,
             style: const TextStyle(
-              color: Colors.white, 
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -211,9 +188,7 @@ class _AccountHeader extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => LoginScreen()),
               );
             },
             icon: const Icon(
@@ -223,6 +198,54 @@ class _AccountHeader extends StatelessWidget {
             label: const Text('Đăng nhập/Đăng ký'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  final String? title;
+  final List<Widget> items;
+
+  const _Section({this.title, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.shade200, width: 7),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 5, top: 10),
+              child: _sectionTitle(title!),
+            ),
+          ...items.asMap().entries.map((entry) {
+            final item = entry.value;
+
+            // Add dividers between items
+            return Column(children: [item]);
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
       ),
     );
   }
@@ -248,29 +271,20 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
-        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
       ),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: iconColor,
-          size: 24,
+        leading: CircleAvatar(
+          backgroundColor: iconColor.withValues(alpha: 0.2),
+          child: Icon(icon, color: iconColor),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
         ),
-        trailing: showArrow 
-            ? const Icon(Icons.chevron_right, color: Colors.grey)
-            : null,
+        trailing: showArrow ? const Icon(Icons.chevron_right) : null,
         onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
       ),
     );
   }
@@ -291,11 +305,9 @@ class _ContactItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
         color: Colors.white,
       ),
       child: Row(
@@ -304,9 +316,7 @@ class _ContactItem extends StatelessWidget {
           Container(
             width: 32,
             height: 32,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4), // Bo góc cho ảnh
               child: Image.asset(
@@ -320,10 +330,7 @@ class _ContactItem extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),
           // Số điện thoại với màu xanh

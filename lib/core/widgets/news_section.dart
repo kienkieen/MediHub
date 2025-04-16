@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NewsSection extends StatefulWidget {
-  const NewsSection({Key? key}) : super(key: key);
+  const NewsSection({super.key});
 
   @override
   State<NewsSection> createState() => _NewsSectionState();
@@ -11,7 +11,8 @@ class _NewsSectionState extends State<NewsSection> {
   // Dữ liệu tin tức được chuyển thành static để tránh tạo lại mỗi khi widget được rebuild
   static final List<NewsItem> _allNewsItems = [
     NewsItem(
-      title: 'TRIỆU CHỨNG CÚM A Ở NGƯỜI LỚN VÀ DẤU HIỆU NGUY HIỂM CẦN ĐẾN NGAY BÁC SĨ',
+      title:
+          'TRIỆU CHỨNG CÚM A Ở NGƯỜI LỚN VÀ DẤU HIỆU NGUY HIỂM CẦN ĐẾN NGAY BÁC SĨ',
       imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '13:45',
@@ -43,7 +44,8 @@ class _NewsSectionState extends State<NewsSection> {
       category: 'Lịch tiêm chủng',
     ),
     NewsItem(
-      title: 'BỊ CẢM CÚM A NÊN KIÊNG GÌ NHANH KHỎI? 6 LOẠI THỰC PHẨM TRỊ CÚM HIỆU QUẢ',
+      title:
+          'BỊ CẢM CÚM A NÊN KIÊNG GÌ NHANH KHỎI? 6 LOẠI THỰC PHẨM TRỊ CÚM HIỆU QUẢ',
       imageUrl: 'assets/images/tay-chan-mieng-boi-nhiem.jpg',
       date: '03/02/2023',
       time: '',
@@ -90,18 +92,22 @@ class _NewsSectionState extends State<NewsSection> {
   ];
 
   int _selectedCategoryIndex = 0;
-  
+
   // Lấy danh sách tin tức theo danh mục đã chọn
   List<NewsItem> get _filteredNewsItems {
     final selectedCategory = _categories[_selectedCategoryIndex].title;
-    
+
     // Nếu index = 0, hiển thị tất cả tin tức (có thể thay đổi logic này)
     if (_selectedCategoryIndex == 0) {
-      return _allNewsItems.where((item) => item.category == selectedCategory).toList();
+      return _allNewsItems
+          .where((item) => item.category == selectedCategory)
+          .toList();
     }
-    
+
     // Lọc tin tức theo danh mục
-    return _allNewsItems.where((item) => item.category == selectedCategory).toList();
+    return _allNewsItems
+        .where((item) => item.category == selectedCategory)
+        .toList();
   }
 
   @override
@@ -118,11 +124,12 @@ class _NewsSectionState extends State<NewsSection> {
 
   Widget _buildSectionHeader() {
     return const Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(left: 16, top: 16),
       child: Text(
-        'Tin tức và Kiến thức',
+        "TIN TỨC VÀ KIẾN THỨC",
         style: TextStyle(
-          fontSize: 22,
+          color: Color(0xFF004466),
+          fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -161,7 +168,7 @@ class _NewsSectionState extends State<NewsSection> {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -174,7 +181,7 @@ class _NewsSectionState extends State<NewsSection> {
               category.title,
               style: TextStyle(
                 color: isSelected ? Colors.white : Colors.black,
-                fontSize: 12,
+                fontSize: 14,
               ),
             ),
             if (category.count > 0) ...[
@@ -202,29 +209,27 @@ class _NewsSectionState extends State<NewsSection> {
 
   Widget _buildNewsListView() {
     final List<NewsItem> newsToShow = _filteredNewsItems;
-    
+
     if (newsToShow.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(20),
         child: Center(
           child: Text(
             'Không có tin tức nào trong danh mục này',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
         ),
       );
     }
-    
+
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
       itemCount: newsToShow.length,
       separatorBuilder: (_, __) => const Divider(height: 16.0),
-      itemBuilder: (context, index) => NewsItemWidget(newsItem: newsToShow[index]),
+      itemBuilder:
+          (context, index) => NewsItemWidget(newsItem: newsToShow[index]),
     );
   }
 }
@@ -234,10 +239,7 @@ class CategoryItem {
   final String title;
   final int count;
 
-  const CategoryItem({
-    required this.title,
-    required this.count,
-  });
+  const CategoryItem({required this.title, required this.count});
 }
 
 // Model cho tin tức
@@ -252,7 +254,7 @@ class NewsItem {
   const NewsItem({
     required this.title,
     required this.imageUrl,
-    required this.date, 
+    required this.date,
     required this.time,
     required this.tags,
     required this.category, // Thêm tham số bắt buộc
@@ -296,12 +298,13 @@ class NewsItemWidget extends StatelessWidget {
         width: 100,
         height: 70,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          width: 100,
-          height: 70,
-          color: Colors.grey[300],
-          child: const Icon(Icons.image, color: Colors.grey),
-        ),
+        errorBuilder:
+            (_, __, ___) => Container(
+              width: 100,
+              height: 70,
+              color: Colors.grey[300],
+              child: const Icon(Icons.image, color: Colors.grey),
+            ),
       ),
     );
   }
@@ -309,10 +312,7 @@ class NewsItemWidget extends StatelessWidget {
   Widget _buildNewsTitle() {
     return Text(
       newsItem.title,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-      ),
+      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class buildNoti extends StatelessWidget {
+class BuildNoti extends StatelessWidget {
   final String content;
   final Color bgcolor;
   final Color textcolor;
   final IconData? icon;
 
-  const buildNoti({
+  const BuildNoti({
     super.key,
     required this.content,
     this.icon,

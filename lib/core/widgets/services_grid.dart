@@ -8,42 +8,51 @@ class ServicesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> topServices = [
       {
-        'icon': Icons.event_note,
-        'label': 'Đặt lịch\nhẹn',  
+        'iconPath': 'assets/icons/grid_service/calendar.png',
+        'label': 'Đặt lịch\nhẹn',
+        'onPressed': () {},
       },
       {
-        'icon': Icons.newspaper,
-        'label': 'Tin tức\nVắc xin', 
+        'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
+        'label': 'Các\ngói tiêm',
+        'onPressed': () {},
       },
       {
-        'icon': Icons.library_books,
-        'label': 'Nhật ký\ntiêm chủng', 
+        'iconPath': 'assets/icons/grid_service/comments.png',
+        'label': 'Góp ý\nphản hồi',
+        'onPressed': () {},
       },
       {
-        'icon': Icons.history,
-        'label': 'Lịch sử\ntiêm chủng', 
+        'iconPath': 'assets/icons/grid_service/history.png',
+        'label': 'Lịch sử\ntiêm chủng',
+        'onPressed': () {},
       },
     ];
 
     final List<Map<String, dynamic>> bottomServices = [
       {
-        'icon': Icons.category,
-        'label': 'Danh mục\nVắc xin', 
+        'iconPath': 'assets/icons/grid_service/category.png',
+        'label': 'Danh mục\nVắc xin',
+        'onPressed': () {},
       },
       {
-        'icon': Icons.vaccines,
-        'label': 'Vắc xin\ntheo tuổi', 
+        'iconPath': 'assets/icons/grid_service/age.png',
+        'label': 'Vắc xin\ntheo tuổi',
+        'onPressed': () {},
       },
       {
-        'icon': Icons.redeem,
-        'label': 'Ưu đãi\ncủa tôi', 
+        'iconPath': 'assets/icons/grid_service/procedure.png',
+        'label': 'Quy\ntrình tiêm',
+        'onPressed': () {},
       },
+
       {
-        'icon': Icons.vaccines_outlined,
-        'label': 'Đặt mua\nVắc xin', 
+        'iconPath': 'assets/icons/grid_service/news.png',
+        'label': 'Tin tức\nVắc xin',
+        'onPressed': () {},
       },
     ];
-    
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
@@ -53,7 +62,7 @@ class ServicesGrid extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -64,7 +73,7 @@ class ServicesGrid extends StatelessWidget {
             ServiceRow(services: topServices),
             const SizedBox(height: 16),
             ServiceRow(services: bottomServices),
-            const SizedBox(height: 8),         
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -75,52 +84,68 @@ class ServicesGrid extends StatelessWidget {
 class ServiceRow extends StatelessWidget {
   final List<Map<String, dynamic>> services;
 
-  const ServiceRow({
-    super.key,
-    required this.services,
-  });
+  const ServiceRow({super.key, required this.services});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: services.map((service) {
-        return Flexible(
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 3,
+        mainAxisSpacing: 3,
+        mainAxisExtent: 107,
+      ),
+      shrinkWrap: true,
+
+      itemCount: services.length,
+      itemBuilder: (context, index) {
+        final service = services[index];
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide.none,
+            ),
+            padding: EdgeInsets.symmetric(vertical: 5),
+          ),
+          onPressed: service['onPressed'],
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.05), // Nền nhẹ cho biểu tượng
+                  color: Colors.blueAccent.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  service['icon'], // Hiển thị biểu tượng
-                  size: 32,
-                  color: const Color.fromARGB(255, 0, 10, 146), // Màu biểu tượng
+                child: Image.asset(
+                  service['iconPath'],
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               SizedBox(
-                width: 80, // Giới hạn chiều rộng để chữ xuống dòng
+                width: 80,
                 child: Text(
                   service['label'],
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    height: 1.5, // Tăng khoảng cách giữa các dòng
+                    height: 1.5,
                   ),
                   textAlign: TextAlign.center,
-                  maxLines: 2, // Giới hạn 2 dòng
-                  overflow: TextOverflow.ellipsis, // Ẩn nếu quá dài
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
         );
-      }).toList(),
+      },
     );
   }
 }

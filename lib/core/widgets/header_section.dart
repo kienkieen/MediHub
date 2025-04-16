@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/home/notification.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -15,8 +16,8 @@ class HeaderSection extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 43,
+                  height: 43,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -35,7 +36,7 @@ class HeaderSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 const Flexible(
                   child: Text(
-                    "VNVC\nXin chào,",
+                    "VNVC xin chào bạn!",
                     style: TextStyle(
                       color: Color(0xFF004466),
                       fontSize: 20,
@@ -49,7 +50,7 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -58,10 +59,15 @@ class HeaderSection extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(
-              Icons.notifications_outlined,
-              color: Color.fromARGB(255, 255, 255, 255),
-              size: 28,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(8),
+            ),
+            child: SvgPicture.asset(
+              'assets/icons/notification.svg',
+              width: 24,
+              height: 24,
             ),
           ),
         ],
@@ -69,4 +75,3 @@ class HeaderSection extends StatelessWidget {
     );
   }
 }
-
