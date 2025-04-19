@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:medihub_app/core/utils/validators.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 
-
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
 
@@ -42,6 +41,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Ensures keyboard doesn't cause overflow
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -59,60 +59,80 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          color: Colors.white,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                const Text(
-                  'Vui lòng tạo mật khẩu mới',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: MediaQuery.of(context).viewInsets.bottom > 0 ? 16 : 24,
+                    ),
+                    color: Colors.white,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: constraints.maxHeight * 0.03),
+                          const Text(
+                            'Vui lòng tạo mật khẩu mới',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(height: constraints.maxHeight * 0.03),
+                          _buildPasswordField(
+                            controller: _passwordController,
+                            hintText: 'Mật khẩu mới',
+                            obscureText: _obscurePassword,
+                            validator: Validators.validatePassword,
+                            onToggleVisibility: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          _buildPasswordField(
+                            controller: _confirmPasswordController,
+                            hintText: 'Xác nhận mật khẩu',
+                            obscureText: _obscureConfirmPassword,
+                            validator: (value) => Validators.validatePasswordConfirmation(
+                              value,
+                              _passwordController.text,
+                            ),
+                            onToggleVisibility: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          _buildPasswordRequirements(),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: PrimaryButton(
+                              text: 'XÁC NHẬN',
+                              onPressed: _handleResetPassword,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 30),
-                _buildPasswordField(
-                  controller: _passwordController,
-                  hintText: 'Mật khẩu mới',
-                  obscureText: _obscurePassword,
-                  validator: Validators.validatePassword,
-                  onToggleVisibility: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                _buildPasswordField(
-                  controller: _confirmPasswordController,
-                  hintText: 'Xác nhận mật khẩu',
-                  obscureText: _obscureConfirmPassword,
-                  validator: (value) => Validators.validatePasswordConfirmation(
-                    value,
-                    _passwordController.text,
-                  ),
-                  onToggleVisibility: () {
-                    setState(() {
-                      _obscureConfirmPassword = !_obscureConfirmPassword;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                _buildPasswordRequirements(),
-                const SizedBox(height: 40),
-                PrimaryButton(
-                  text: 'XÁC NHẬN',
-                  onPressed: _handleResetPassword,
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -132,6 +152,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         hintText: hintText,
+        isDense: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -145,6 +166,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           borderSide: const BorderSide(color: Colors.blue),
         ),
         errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: const BorderSide(color: Colors.red),
         ),
@@ -197,11 +222,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             color: Colors.grey,
           ),
           const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.grey,
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
