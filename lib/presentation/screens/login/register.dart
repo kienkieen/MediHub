@@ -146,7 +146,7 @@ class _SignUpFormState extends State<SignUpForm> {
           // Phone/Email input
           EmailInputField(
             controller: _phoneController,
-            hintText: 'Email hoặc số điện thoại',
+            hintText: 'Email',
           ),
           const SizedBox(height: 16),
           // Password input field
