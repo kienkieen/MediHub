@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:medihub_app/core/utils/validators.dart';
 // Import the extracted widgets
-import 'package:medihub_app/core/widgets/button.dart';
-import 'package:medihub_app/core/widgets/phone_input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
+import 'package:medihub_app/presentation/screens/reset_password.dart';
 
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   bool _isVerificationSent = false;
   final _otpControllers = List.generate(6, (_) => TextEditingController());
@@ -28,6 +31,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       node.dispose();
     }
     super.dispose();
+  }
+
+  void _sendVerification() {
+    if (_formKey.currentState!.validate()) {
+      // In a real app, this would send a verification code
+      setState(() {
+        _isVerificationSent = true;
+      });
+    }
+  }
+
+  void _verifyOtp() {
+    // Combine all OTP digits
+    String otp = _otpControllers.map((controller) => controller.text).join();
+    
+    // Validate OTP
+    String? otpError = Validators.validateOtp(otp);
+    if (otpError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(otpError)),
+      );
+      return;
+    }
+    
+    // If valid, proceed to reset password screen
+    _navigateToResetPassword();
   }
 
   @override
@@ -75,29 +104,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildPhoneVerification() {
-    return Column(
-      children: [
-        const Text(
-          'Vui lòng nhập số điện thoại để lấy lại mật khẩu',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          const Text(
+            'Vui lòng nhập số điện thoại để lấy lại mật khẩu',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
           ),
-        ),
-        const SizedBox(height: 30),
-        PhoneInputField(controller: _phoneController),
-        const SizedBox(height: 40),
-        PrimaryButton(
-          text: 'GỬI MÃ XÁC NHẬN',
-          onPressed: () {
-            // In a real app, this would send a verification code
-            setState(() {
-              _isVerificationSent = true;
-            });
-          },
-        ),
-      ],
+          const SizedBox(height: 30),
+          EmailInputField(
+            controller: _phoneController,
+            hintText: 'Email',
+          ),
+          const SizedBox(height: 40),
+          PrimaryButton(
+            text: 'GỬI MÃ XÁC NHẬN',
+            onPressed: _sendVerification,
+          ),
+        ],
+      ),
     );
   }
 
@@ -138,10 +168,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 40),
         PrimaryButton(
           text: 'XÁC NHẬN',
-          onPressed: () {
-            // In a real app, this would verify the OTP
-            _navigateToResetPassword();
-          },
+          onPressed: _verifyOtp,
         ),
       ],
     );
@@ -171,10 +198,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 borderSide: const BorderSide(color: Colors.blue),
                 borderRadius: BorderRadius.circular(4),
               ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(color: Colors.red),
+              ),
             ),
             onChanged: (value) {
-              if (value.isNotEmpty && index < 5) {
-                _focusNodes[index + 1].requestFocus();
+              if (value.isNotEmpty) {
+                if (index < 5) {
+                  _focusNodes[index + 1].requestFocus();
+                }
+              } else if (value.isEmpty && index > 0) {
+                _focusNodes[index - 1].requestFocus();
               }
             },
           ),
@@ -193,141 +228,3 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 }
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
-
-  @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
-}
-
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.lightBlue),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'Đặt lại mật khẩu',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
-        ),
-        centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              const Text(
-                'Vui lòng tạo mật khẩu mới',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 30),
-              _buildPasswordField(
-                controller: _passwordController,
-                hintText: 'Mật khẩu mới',
-                obscureText: _obscurePassword,
-                onToggleVisibility: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              _buildPasswordField(
-                controller: _confirmPasswordController,
-                hintText: 'Xác nhận mật khẩu',
-                obscureText: _obscureConfirmPassword,
-                onToggleVisibility: () {
-                  setState(() {
-                    _obscureConfirmPassword = !_obscureConfirmPassword;
-                  });
-                },
-              ),
-              const SizedBox(height: 40),
-              PrimaryButton(
-                text: 'XÁC NHẬN',
-                onPressed: () {
-                  // In a real app, this would update the password
-                  if (_passwordController.text == _confirmPasswordController.text) {
-                    // Show success and navigate back to login
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Mật khẩu đã được đặt lại thành công'),
-                      ),
-                    );
-                    // Navigate back to login screen
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  } else {
-                    // Show error
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Mật khẩu không khớp'),
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField({
-    required TextEditingController controller,
-    required String hintText,
-    required bool obscureText,
-    required VoidCallback onToggleVisibility,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          suffixIcon: IconButton(
-            icon: Icon(
-              obscureText ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey,
-            ),
-            onPressed: onToggleVisibility,
-          ),
-        ),
-      ),
-    );
-  }
-}

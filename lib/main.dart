@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
+import 'package:medihub_app/presentation/screens/login.dart';
 // import 'package:medihub_app/presentation/screens/login.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         // fontFamily: 'calistoga',
       ),
-      home: const NavigationBottom(), // Change to NavigationScreen
+      home: const LoginScreen(), // Change to NavigationScreen
     );
   }
 }

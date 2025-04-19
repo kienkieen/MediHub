@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // Import the extracted widgets
-import 'package:medihub_app/core/widgets/button.dart';
-import 'package:medihub_app/core/widgets/social_login_options.dart';
-import 'package:medihub_app/core/widgets/text.dart';  
-import 'package:medihub_app/core/widgets/password_input_field.dart';
-import 'package:medihub_app/core/widgets/phone_input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
+import 'package:medihub_app/core/widgets/login_widgets/text.dart';  
+import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/presentation/screens/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/register.dart';
@@ -82,6 +82,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
@@ -93,89 +94,99 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Form is valid, proceed with login
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NavigationBottom(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Welcome text
-        const Center(
-          child: Text(
-            'Vui lòng đăng nhập để tiếp tục',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        // Phone input with country code
-        PhoneInputField(controller: _phoneController),
-        const SizedBox(height: 16),
-        // Password input field
-        PasswordInputField(
-          controller: _passwordController,
-          obscureText: _obscureText,
-          onToggleVisibility: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-        ),
-        const SizedBox(height: 8),
-        // Forgot password button
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              // Điều hướng tới màn hình ForgotPasswordScreen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ForgotPasswordScreen(),
-                ),
-              );
-            },
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: const Size(50, 30),
-            ),
-            child: const Text(
-              'Quên mật khẩu?',
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Welcome text
+          const Center(
+            child: Text(
+              'Vui lòng đăng nhập để tiếp tục',
               style: TextStyle(
-                color: Colors.grey,
-                fontSize: 14,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
-        ),
-
-        const SizedBox(height: 20),
-        // Login button
-        PrimaryButton(
-          text: 'ĐĂNG NHẬP',
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NavigationBottom(),
+          const SizedBox(height: 24),
+          // Phone/Email input
+          EmailInputField(
+            controller: _phoneController,
+            hintText: 'Email',
+          ),
+          const SizedBox(height: 16),
+          // Password input field
+          PasswordInputField(
+            controller: _passwordController,
+            obscureText: _obscureText,
+            onToggleVisibility: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
+          const SizedBox(height: 8),
+          // Forgot password button
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ForgotPasswordScreen(),
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(50, 30),
+              ),
+              child: const Text(
+                'Quên mật khẩu?',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
                 ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+          // Login button
+          PrimaryButton(
+            text: 'ĐĂNG NHẬP',
+            onPressed: _submitForm,
+          ),
+          const SizedBox(height: 16),
+          // Register link
+          AuthLinkText(
+            text: 'Bạn chưa có tài khoản? ',
+            linkText: 'Đăng ký',
+            onLinkTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterScreen()),
               );
-          },
-        ),
-        const SizedBox(height: 16),
-        // Register link
-        AuthLinkText(
-          text: 'Bạn chưa có tài khoản? ',
-          linkText: 'Đăng ký',
-          onLinkTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterScreen()),
-            );
-          },
-        ),
-      ],
+            },
+          ),
+        ],
+      ),
     );
   }
 }
