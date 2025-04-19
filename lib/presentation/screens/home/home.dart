@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF3397E8), // Màu xanh nhạt ở trên
+              Color(0xFF3397E8), // Màu xanh nhạt ở trên  
               const Color(0xFFE8F9FF), // Màu trắng ở dưới
               Colors.white, // Màu trắng ở giữa
               Color(0xFFCCE5F9),
