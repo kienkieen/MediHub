@@ -4,7 +4,7 @@ import 'package:medihub_app/core/utils/validators.dart';
 // Import the extracted widgets
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
-import 'package:medihub_app/presentation/screens/reset_password.dart';
+import 'package:medihub_app/presentation/screens/login/reset_password.dart';
 
 
 class ForgotPasswordScreen extends StatefulWidget {

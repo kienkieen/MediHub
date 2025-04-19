@@ -6,9 +6,9 @@ import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';  
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
-import 'package:medihub_app/presentation/screens/fogot_password.dart';
+import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
-import 'package:medihub_app/presentation/screens/register.dart';
+import 'package:medihub_app/presentation/screens/login/register.dart';
 
 
 class LoginScreen extends StatelessWidget {
