@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final IconData? icon;
   final Color textColor;
   final double height;
+  
   final double borderRadius;
 
   const PrimaryButton({
@@ -72,11 +73,11 @@ class FilterButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const FilterButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.isSelected,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

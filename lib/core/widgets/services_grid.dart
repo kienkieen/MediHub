@@ -1,5 +1,8 @@
 // File: screens/home/widgets/services_grid.dart
 import 'package:flutter/material.dart';
+import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
+import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
+import 'package:medihub_app/presentation/screens/services/vaccine_package.dart';
 
 class ServicesGrid extends StatelessWidget {
   const ServicesGrid({super.key});
@@ -15,7 +18,14 @@ class ServicesGrid extends StatelessWidget {
       {
         'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
         'label': 'Các\ngói tiêm',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VaccinePackageScreen(),
+            ),
+          );
+        },
       },
       {
         'iconPath': 'assets/icons/grid_service/comments.png',
@@ -33,12 +43,24 @@ class ServicesGrid extends StatelessWidget {
       {
         'iconPath': 'assets/icons/grid_service/category.png',
         'label': 'Danh mục\nVắc xin',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const VaccineListScreen()),
+          );
+        },
       },
       {
         'iconPath': 'assets/icons/grid_service/age.png',
-        'label': 'Vắc xin\ntheo tuổi',
-        'onPressed': () {},
+        'label': 'Vắc xin\ncho bạn',
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VaccineForYouScreen(),
+            ),
+          );
+        },
       },
       {
         'iconPath': 'assets/icons/grid_service/procedure.png',
@@ -100,49 +122,44 @@ class ServiceRow extends StatelessWidget {
       itemCount: services.length,
       itemBuilder: (context, index) {
         final service = services[index];
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide.none,
-            ),
-            padding: EdgeInsets.symmetric(vertical: 5),
-          ),
-          onPressed: service['onPressed'],
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Image.asset(
-                  service['iconPath'],
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.contain,
-                ),
-              ),
-              const SizedBox(height: 4),
-              SizedBox(
-                width: 80,
-                child: Text(
-                  service['label'],
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: service['onPressed'],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  child: Image.asset(
+                    service['iconPath'],
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                SizedBox(
+                  width: 80,
+                  child: Text(
+                    service['label'],
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

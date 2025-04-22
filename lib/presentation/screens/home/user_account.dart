@@ -149,8 +149,8 @@ class _AccountHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.blueAccent, // Màu trắng ở dưới
-            Colors.lightBlueAccent,
+            Color.fromARGB(255, 0, 10, 146),
+            Colors.blueAccent, 
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,

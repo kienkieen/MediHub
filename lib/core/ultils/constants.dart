@@ -8,6 +8,11 @@ class AppColors {
   static const Color textPrimary = Color(0xFF2E4053);
   static const Color textSecondary = Color(0xFF566573);
   static const Color rating = Colors.orange;
+  static const LinearGradient backgroundGradient = LinearGradient(
+    colors: [Color(0xFF2E85CC), Color(0xFF2F8CD8), Color(0xA706B8D7)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
 }
 
 class AppDimensions {

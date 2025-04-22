@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/core/ultils/constants.dart';
 
 class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,19 +18,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+      title: Text(title, style: TextStyle(fontSize: 22, color: Colors.white)),
       centerTitle: true,
 
       leading: IconButton(
@@ -51,13 +40,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
 
       elevation: 0,
       flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0099CC), Color(0xFF0099CC), Color(0xA701CBEE)],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-        ),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
       ),
     );
   }

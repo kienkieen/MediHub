@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  firebase_core: ^2.27.0 
+  firebase_core: ^2.27.0
   firebase_auth: ^4.17.0
   cloud_firestore: ^4.16.0
   google_sign_in: ^6.0.0
@@ -20,14 +20,17 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_svg: ^2.0.17
+  intl: ^0.18.1
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/vaccine/
     - assets/icons/
     - assets/icons/navigation/
     - assets/icons/grid_service/
+    - assets/icons/vaccine_package/
   fonts:
     - family: Oswald
       fonts:
@@ -35,3 +38,6 @@ flutter:
     - family: Calistoga
       fonts:
         - asset: assets/fonts/Calistoga-Regular.ttf
+    - family: Sansita
+      fonts:
+        - asset: assets/fonts/Sansita-Medium.otf

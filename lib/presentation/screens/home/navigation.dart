@@ -162,8 +162,8 @@ class _NavigationBottomBarState extends State<NavigationBottomBar> {
                   isSelected
                       ? const Color.fromARGB(255, 0, 10, 146)
                       : const Color.fromARGB(255, 41, 41, 41),
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
