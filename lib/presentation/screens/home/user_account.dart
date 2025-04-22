@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
+
+bool isLogin = false;
+String userName = 'Khách';
 
 class UserAccountScreen extends StatelessWidget {
   const UserAccountScreen({super.key});
@@ -12,7 +17,10 @@ class UserAccountScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const _AccountHeader(userName: 'Khách'),
+              if (isLogin)
+                const _AccountHeader(userName: 'Khách')
+              else
+                _AccountHeader(userName: userName),
 
               _Section(
                 title: "Thông tin tài khoản",
@@ -102,18 +110,14 @@ class UserAccountScreen extends StatelessWidget {
                     icon: Icons.description_outlined,
                     iconColor: Colors.green,
                     title: 'Điều khoản dịch vụ',
-                    onTap: () {
-                      // Thêm logic điều hướng đến trang "Điều khoản dịch vụ"
-                    },
+                    onTap: () => showClause(context),
                     showArrow: true,
                   ),
                   _MenuItem(
                     icon: Icons.privacy_tip_outlined,
                     iconColor: Colors.blue,
                     title: 'Chính sách quyền riêng tư',
-                    onTap: () {
-                      // Thêm logic điều hướng đến trang "Chính sách quyền riêng tư"
-                    },
+                    onTap: () => showPrivacy(context),
                     showArrow: true,
                   ),
                 ],
@@ -186,16 +190,18 @@ class _AccountHeader extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
+              if (!isLogin) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              } else {}
             },
             icon: const Icon(
               Icons.login_outlined,
               color: Color.fromARGB(255, 255, 255, 255), // Đổi màu biểu tượng
             ),
-            label: const Text('Đăng nhập/Đăng ký'),
+            label: Text(isLogin ? 'Thông tin người dùng' : 'Đăng nhập/Đăng ký'),
           ),
         ],
       ),

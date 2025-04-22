@@ -9,6 +9,7 @@ class PasswordInputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final FocusNode? focusNode;
   final TextInputAction textInputAction;
+  final bool required;
 
   const PasswordInputField({
     super.key,
@@ -19,6 +20,7 @@ class PasswordInputField extends StatelessWidget {
     this.validator,
     this.focusNode,
     this.textInputAction = TextInputAction.done,
+    this.required = false,
   });
 
   @override
@@ -27,11 +29,19 @@ class PasswordInputField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       focusNode: focusNode,
-      validator: validator ?? Validators.validatePassword,
+      validator: (value) {
+        if (required && (value == null || value.isEmpty)) {
+          return 'Mật khẩu không được để trống';
+        }
+        return (validator ?? Validators.validatePassword).call(value);
+      },
       textInputAction: textInputAction,
       decoration: InputDecoration(
         hintText: hintText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(color: Colors.grey.shade300),

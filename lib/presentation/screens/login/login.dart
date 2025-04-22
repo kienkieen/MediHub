@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 // Import the extracted widgets
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
-import 'package:medihub_app/core/widgets/login_widgets/text.dart';  
+import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/register.dart';
-
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -23,7 +23,7 @@ class LoginScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.lightBlue),
           onPressed: () {
-            Navigator.pop(context);// Handle back button press
+            Navigator.pop(context); // Handle back button press
           },
         ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -39,18 +39,12 @@ class LoginScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 30),
                 // Logo
-                Image.asset(
-                  'assets/images/vietnam_flag.png',
-                  height: 70,
-                ),
+                Image.asset('assets/images/vietnam_flag.png', height: 70),
                 const SizedBox(height: 8),
                 // Slogan
                 const Text(
                   'Giải pháp tiếp cận y tế thông minh',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.blue, fontSize: 14),
                 ),
                 const SizedBox(height: 40),
                 const LoginForm(),
@@ -69,7 +63,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-
     );
   }
 }
@@ -94,15 +87,21 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm(String email, String password) async {
     if (_formKey.currentState!.validate()) {
-      // Form is valid, proceed with login
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NavigationBottom(),
-        ),
-      );
+      if (await SignIn(email, password)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NavigationBottom()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Thông tin đăng nhập không đúng')),
+        );
+      }
     }
   }
 
@@ -117,10 +116,7 @@ class _LoginFormState extends State<LoginForm> {
           const Center(
             child: Text(
               'Vui lòng đăng nhập để tiếp tục',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(height: 24),
@@ -128,12 +124,14 @@ class _LoginFormState extends State<LoginForm> {
           EmailInputField(
             controller: _phoneController,
             hintText: 'Email',
+            required: true,
           ),
           const SizedBox(height: 16),
           // Password input field
           PasswordInputField(
             controller: _passwordController,
             obscureText: _obscureText,
+            required: true,
             onToggleVisibility: () {
               setState(() {
                 _obscureText = !_obscureText;
@@ -159,10 +157,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
               child: const Text(
                 'Quên mật khẩu?',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
           ),
@@ -171,7 +166,9 @@ class _LoginFormState extends State<LoginForm> {
           // Login button
           PrimaryButton(
             text: 'ĐĂNG NHẬP',
-            onPressed: _submitForm,
+            onPressed: () {
+              _submitForm(_phoneController.text, _passwordController.text);
+            },
           ),
           const SizedBox(height: 16),
           // Register link

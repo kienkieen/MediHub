@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/utils/validators.dart';
 
-class EmailInputField extends StatelessWidget {
+class VerifyCodeInput extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final Function(String)? onChanged;
@@ -10,10 +10,10 @@ class EmailInputField extends StatelessWidget {
   final TextInputAction textInputAction;
   final bool required;
 
-  const EmailInputField({
+  const VerifyCodeInput({
     super.key,
     required this.controller,
-    this.hintText = 'Email',
+    this.hintText = 'Verify code',
     this.onChanged,
     this.validator,
     this.focusNode,
@@ -28,9 +28,9 @@ class EmailInputField extends StatelessWidget {
       focusNode: focusNode,
       validator: (value) {
         if (required && (value == null || value.isEmpty)) {
-          return 'Email không được để trống';
+          return 'Mã xác thực không được để trống';
         }
-        return (validator ?? Validators.validateEmailOrPhone).call(value);
+        return (validator ?? Validators.validateOtp).call(value);
       },
       textInputAction: textInputAction,
       onChanged: onChanged,
