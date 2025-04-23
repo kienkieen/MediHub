@@ -69,7 +69,7 @@ Future<bool> checkIDExist(String collection, String idItem) async {
             .collection(collection)
             .doc(idItem)
             .get();
-    return doc.exists ? true : false;
+    return doc.exists;
   } catch (e) {
     return false;
   }
@@ -81,9 +81,12 @@ Future<bool> insertData(
   Map<String, dynamic> data,
 ) async {
   try {
-    if (collection.isEmpty || data.isEmpty || idItem.isEmpty)
+    if (collection.isEmpty || data.isEmpty || idItem.isEmpty) {
       throw Exception(false);
-    if (await checkIDExist(collection, idItem)) throw Exception(false);
+    }
+    if (await checkIDExist(collection, idItem)) {
+      throw Exception(false);
+    }
     final url = FirebaseFirestore.instance.collection(collection);
     await url.doc(idItem).set(data);
     return true;
