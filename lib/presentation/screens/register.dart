@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // Import the extracted widgets
-import 'package:medihub_app/core/widgets/button.dart';
-import 'package:medihub_app/core/widgets/password_input_field.dart';
-import 'package:medihub_app/core/widgets/phone_input_field.dart';
-import 'package:medihub_app/core/widgets/social_login_options.dart';
-import 'package:medihub_app/core/widgets/text.dart';
+import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
+import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -116,7 +115,6 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         const SizedBox(height: 16),
         // Phone input with country code
-        PhoneInputField(controller: _phoneController),
         const SizedBox(height: 16),
         // Password input field
         PasswordInputField(

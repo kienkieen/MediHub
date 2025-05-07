@@ -348,7 +348,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
                     );
                   },
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                     child: Text(
                       'Chi tiết gói tiêm',
                       style: TextStyle(color: Colors.white),
@@ -500,7 +500,7 @@ class _VaccinePackageDetailScreenState
                       width: 180,
                       padding: const EdgeInsets.symmetric(
                         vertical: 4,
-                        horizontal: 8,
+                        horizontal: 3,
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(

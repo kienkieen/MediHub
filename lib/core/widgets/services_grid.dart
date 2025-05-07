@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_package.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
+import 'package:medihub_app/presentation/screens/services/feedback.dart';
 
 class ServicesGrid extends StatelessWidget {
   const ServicesGrid({super.key});
@@ -13,7 +15,16 @@ class ServicesGrid extends StatelessWidget {
       {
         'iconPath': 'assets/icons/grid_service/calendar.png',
         'label': 'Đặt lịch\nhẹn',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      const AppointmentScreen(), // Điều hướng đến màn hình cụ thể
+            ),
+          );
+        },
       },
       {
         'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
@@ -30,7 +41,16 @@ class ServicesGrid extends StatelessWidget {
       {
         'iconPath': 'assets/icons/grid_service/comments.png',
         'label': 'Góp ý\nphản hồi',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      const FeedbackForm(), // Điều hướng đến màn hình cụ thể
+            ),
+          );
+        },
       },
       {
         'iconPath': 'assets/icons/grid_service/history.png',
@@ -150,7 +170,7 @@ class ServiceRow extends StatelessWidget {
                     service['label'],
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,

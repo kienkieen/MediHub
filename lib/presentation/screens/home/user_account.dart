@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medihub_app/presentation/screens/login.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
 
 class UserAccountScreen extends StatelessWidget {
   const UserAccountScreen({super.key});
@@ -148,10 +148,7 @@ class _AccountHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20, bottom: 30),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 0, 10, 146),
-            Colors.blueAccent, 
-          ],
+          colors: [Color.fromARGB(255, 0, 10, 146), Colors.blueAccent],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -278,10 +275,7 @@ class _MenuItem extends StatelessWidget {
           backgroundColor: iconColor.withValues(alpha: 0.2),
           child: Icon(icon, color: iconColor),
         ),
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-        ),
+        title: Text(title, style: const TextStyle(fontSize: 15)),
         trailing: showArrow ? const Icon(Icons.chevron_right) : null,
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),

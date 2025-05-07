@@ -41,7 +41,7 @@ class Search_Bar extends StatelessWidget {
 
             prefixIcon: const Icon(Icons.search, color: Colors.grey),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 18),
+            contentPadding: const EdgeInsets.symmetric(vertical: 16),
             suffixIcon: IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {

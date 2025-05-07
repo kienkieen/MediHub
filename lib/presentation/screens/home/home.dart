@@ -59,7 +59,6 @@ class _VaccineListScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-
               // Services cards and other content
               Expanded(
                 child: SingleChildScrollView(

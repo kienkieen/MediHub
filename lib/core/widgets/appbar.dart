@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medihub_app/core/ultils/constants.dart';
+import 'package:medihub_app/core/utils/constants.dart';
 
 class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;

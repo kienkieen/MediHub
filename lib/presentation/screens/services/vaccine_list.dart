@@ -3,7 +3,7 @@ import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
 import 'package:medihub_app/core/widgets/filter_vaccine_list.dart';
 import 'package:medihub_app/core/widgets/filterchip.dart';
-import 'package:medihub_app/core/ultils/constants.dart';
+import 'package:medihub_app/core/utils/constants.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_detail.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
@@ -550,12 +550,10 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
 
   Widget _emptyContent() {
     return Center(
-      // Dùng Center để căn giữa cả chiều ngang và dọc
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize:
-              MainAxisSize.min, // Column chỉ chiếm không gian tối thiểu
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset("assets/images/find_vaccie.png"),
             const SizedBox(height: 16),
@@ -564,7 +562,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 20),
           ],
         ),
       ),

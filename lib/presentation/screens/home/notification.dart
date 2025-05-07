@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
-import 'package:medihub_app/core/widgets/button.dart'; // Sẽ tạo mới
+import 'package:medihub_app/core/widgets/login_widgets/button.dart'; // Sẽ tạo mới
 
 class NotificationListScreen extends StatefulWidget {
   const NotificationListScreen({super.key});

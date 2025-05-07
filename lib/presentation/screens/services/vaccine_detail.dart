@@ -118,7 +118,7 @@ class VaccineDetailPage extends StatelessWidget {
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 30),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
       color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
