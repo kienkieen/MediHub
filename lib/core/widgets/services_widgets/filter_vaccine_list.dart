@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/models/vaccine.dart';
-import 'package:medihub_app/core/widgets/filterchip.dart';
+import 'package:medihub_app/core/widgets/services_widgets/filterchip.dart';
 
 class FilterSheet extends StatefulWidget {
   final FilterOptions initialOptions;

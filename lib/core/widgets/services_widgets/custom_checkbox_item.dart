@@ -4,7 +4,7 @@ class CustomCheckboxItem extends StatelessWidget {
   final String label;
   final bool isChecked;
   final Function(bool) onChanged;
-  
+
   const CustomCheckboxItem({
     super.key,
     required this.label,
@@ -19,7 +19,7 @@ class CustomCheckboxItem extends StatelessWidget {
         onChanged(!isChecked);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
         child: Row(
           children: [
             Container(
@@ -31,23 +31,20 @@ class CustomCheckboxItem extends StatelessWidget {
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(4),
-                color: isChecked ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+                color:
+                    isChecked
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.transparent,
               ),
-              child: isChecked
-                  ? const Icon(
-                      Icons.check,
-                      size: 18,
-                      color: Colors.blue,
-                    )
-                  : null,
+              child:
+                  isChecked
+                      ? const Icon(Icons.check, size: 18, color: Colors.blue)
+                      : null,
             ),
             const SizedBox(width: 12),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black87,
-              ),
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
           ],
         ),

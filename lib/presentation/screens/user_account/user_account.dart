@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
 import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart';
+import 'package:medihub_app/presentation/screens/user_account/change_password.dart';
 
 class UserAccountScreen extends StatelessWidget {
   const UserAccountScreen({super.key});
@@ -23,7 +25,14 @@ class UserAccountScreen extends StatelessWidget {
                     icon: Icons.edit,
                     iconColor: Colors.cyan,
                     title: 'Chỉnh sửa tài khoản',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
                     showArrow: true,
                   ),
                   _MenuItem(
@@ -51,7 +60,14 @@ class UserAccountScreen extends StatelessWidget {
                     icon: Icons.lock_outline,
                     iconColor: Colors.blue,
                     title: 'Đổi mật khẩu',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen(),
+                        ),
+                      );
+                    },
                     showArrow: true,
                   ),
                   _MenuItem(
@@ -119,7 +135,7 @@ class UserAccountScreen extends StatelessWidget {
                     iconColor: Colors.blue,
                     title: 'Chính sách quyền riêng tư',
                     onTap: () {
-                     Navigator.push(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const PrivacyPolicyScreen(),
@@ -159,11 +175,7 @@ class _AccountHeader extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.only(top: 20, bottom: 30),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color.fromARGB(255, 0, 10, 146), Colors.blueAccent],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
+        color: Colors.blue,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),

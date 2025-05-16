@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 // Import the extracted widgets
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
-import 'package:medihub_app/core/widgets/login_widgets/text.dart';  
+import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/register.dart';
-
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -23,7 +22,7 @@ class LoginScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.lightBlue),
           onPressed: () {
-            Navigator.pop(context);// Handle back button press
+            Navigator.pop(context); // Handle back button press
           },
         ),
         systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -31,26 +30,20 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             width: double.infinity, // Chiều ngang full
+            height: MediaQuery.of(context).size.height, // Chiều cao full
             color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 30),
                 // Logo
-                Image.asset(
-                  'assets/images/vietnam_flag.png',
-                  height: 70,
-                ),
+                Image.asset('assets/images/vietnam_flag.png', height: 70),
                 const SizedBox(height: 8),
                 // Slogan
                 const Text(
                   'Giải pháp tiếp cận y tế thông minh',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.blue, fontSize: 18),
                 ),
                 const SizedBox(height: 40),
                 const LoginForm(),
@@ -69,7 +62,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-
     );
   }
 }
@@ -99,9 +91,7 @@ class _LoginFormState extends State<LoginForm> {
       // Form is valid, proceed with login
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => NavigationBottom(),
-        ),
+        MaterialPageRoute(builder: (context) => NavigationBottom()),
       );
     }
   }
@@ -117,18 +107,12 @@ class _LoginFormState extends State<LoginForm> {
           const Center(
             child: Text(
               'Vui lòng đăng nhập để tiếp tục',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(height: 24),
           // Phone/Email input
-          EmailInputField(
-            controller: _phoneController,
-            hintText: 'Email',
-          ),
+          EmailInputField(controller: _phoneController, hintText: 'Email'),
           const SizedBox(height: 16),
           // Password input field
           PasswordInputField(
@@ -159,20 +143,14 @@ class _LoginFormState extends State<LoginForm> {
               ),
               child: const Text(
                 'Quên mật khẩu?',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
           ),
 
           const SizedBox(height: 20),
           // Login button
-          PrimaryButton(
-            text: 'ĐĂNG NHẬP',
-            onPressed: _submitForm,
-          ),
+          PrimaryButton(text: 'ĐĂNG NHẬP', onPressed: _submitForm),
           const SizedBox(height: 16),
           // Register link
           AuthLinkText(

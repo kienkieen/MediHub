@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/home/event_screen.dart';
 import 'package:medihub_app/presentation/screens/home/home.dart';
-import 'package:medihub_app/presentation/screens/home/medicalnote.dart';
 import 'package:medihub_app/presentation/screens/home/notification.dart';
-import 'package:medihub_app/presentation/screens/home/user_account.dart';
+import 'package:medihub_app/presentation/screens/user_account/user_account.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 
 class NavigationBottom extends StatefulWidget {
   const NavigationBottom({super.key});
@@ -18,7 +18,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
   final List<Widget> _pages = [
     HomeScreen(), // Trang chủ
     EventsScreen(), // Sự kiện
-    MedicalExaminationFormScreen(), // Phiếu khám
+    AppointmentScreen(), // Lịch tiêm
     NotificationScreen(), // Thông báo
     UserAccountScreen(), // Tài khoản
   ];

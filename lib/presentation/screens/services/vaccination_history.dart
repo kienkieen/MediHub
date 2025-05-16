@@ -1,0 +1,394 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:collection/collection.dart'; // Để sử dụng groupBy
+import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/core/widgets/search_bar.dart';
+import 'package:medihub_app/core/utils/constants.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
+import 'package:medihub_app/models/vaccine_record.dart';
+import 'package:medihub_app/models/vaccine.dart'; // Giả sử có model Vaccine
+
+class VaccinationHistoryScreen extends StatefulWidget {
+  const VaccinationHistoryScreen({super.key});
+
+  @override
+  State<VaccinationHistoryScreen> createState() =>
+      _VaccinationHistoryScreenState();
+}
+
+class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _fromDateController = TextEditingController();
+  final TextEditingController _toDateController = TextEditingController();
+  List<VaccinationRecord> _records = [];
+  List<VaccinationRecord> _filteredRecords = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecords();
+    _searchController.addListener(_applyFilters);
+  }
+
+  void _loadRecords() {
+    setState(() {
+      // Dữ liệu mẫu (thay bằng API hoặc database trong thực tế)
+      _records = records;
+      _filteredRecords = _records;
+    });
+  }
+
+  void _applyFilters() {
+    setState(() {
+      _filteredRecords =
+          _records.where((record) {
+            // Lọc theo tên vắc xin
+            if (_searchController.text.isNotEmpty &&
+                !record.vaccine.name.toLowerCase().contains(
+                  _searchController.text.toLowerCase(),
+                )) {
+              return false;
+            }
+            // Lọc theo khoảng ngày
+            final fromDate =
+                _fromDateController.text.isNotEmpty
+                    ? DateFormat('dd/MM/yyyy').parse(_fromDateController.text)
+                    : DateTime(2000);
+            final toDate =
+                _toDateController.text.isNotEmpty
+                    ? DateFormat('dd/MM/yyyy').parse(_toDateController.text)
+                    : DateTime.now();
+            if (record.date.isBefore(fromDate) || record.date.isAfter(toDate)) {
+              return false;
+            }
+            return true;
+          }).toList();
+    });
+  }
+
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller, {
+    bool isFromDate = true,
+  }) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate:
+          controller.text.isNotEmpty
+              ? DateFormat('dd/MM/yyyy').parse(controller.text)
+              : DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(primary: Colors.blue),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = DateFormat('dd/MM/yyyy').format(picked);
+        _applyFilters();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final groupedRecords = groupBy(
+      _filteredRecords,
+      (VaccinationRecord record) =>
+          DateFormat('dd/MM/yyyy').format(record.date),
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.grey.shade200,
+      appBar: AppbarWidget(
+        title: 'Lịch Sử Tiêm Chủng',
+        icon: Icons.home_rounded,
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const NavigationBottom()),
+          );
+        },
+      ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(bottom: 5),
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            child: Search_Bar(
+              controller: _searchController,
+              hintText: 'Tìm theo tên vắc xin...',
+              onChanged: (value) => _applyFilters(),
+              onClear: _applyFilters,
+              onSubmitted: _applyFilters,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _selectDate(context, _fromDateController),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade500),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.transparent,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _fromDateController.text.isEmpty
+                                ? 'Từ ngày'
+                                : _fromDateController.text,
+                            style: TextStyle(
+                              color:
+                                  _fromDateController.text.isEmpty
+                                      ? Colors.grey
+                                      : Colors.black,
+                            ),
+                          ),
+                          const Icon(Icons.calendar_today),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 30),
+                Expanded(
+                  child: GestureDetector(
+                    onTap:
+                        () => _selectDate(
+                          context,
+                          _toDateController,
+                          isFromDate: false,
+                        ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade500),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.transparent,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _toDateController.text.isEmpty
+                                ? 'Đến ngày'
+                                : _toDateController.text,
+                            style: TextStyle(
+                              color:
+                                  _toDateController.text.isEmpty
+                                      ? Colors.grey
+                                      : Colors.black,
+                            ),
+                          ),
+                          const Icon(Icons.calendar_today),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child:
+                _filteredRecords.isEmpty
+                    ? _emptyContent()
+                    : ListView.builder(
+                      itemCount: groupedRecords.keys.length,
+                      itemBuilder: (context, index) {
+                        final date = groupedRecords.keys.elementAt(index);
+                        final recordsForDate = groupedRecords[date]!;
+                        return Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(color: Colors.white),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey.shade400,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.only(bottom: 8),
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  date,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: recordsForDate.length,
+                                itemBuilder:
+                                    (context, recordIndex) => _buildRecordCard(
+                                      recordsForDate[recordIndex],
+                                    ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecordCard(VaccinationRecord record) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade400, width: 1),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Xem chi tiết: ${record.vaccine.name}'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Image.asset(
+                  record.vaccine.imageUrl.isNotEmpty
+                      ? record.vaccine.imageUrl
+                      : 'assets/images/vaccine/default.jpg',
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      record.vaccine.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Ngày tiêm: ${DateFormat('dd/MM/yyyy').format(record.date)}',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    Text(
+                      'Liều: ${record.dose}',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    Text(
+                      'Nơi tiêm: ${record.location}',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyContent() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              "assets/images/find_vaccie.png",
+              width: 150,
+              height: 150,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Không có lịch sử tiêm chủng',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NavigationBottom(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                minimumSize: const Size(200, 48),
+              ),
+              child: const Text(
+                'Quay về trang chính',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _fromDateController.dispose();
+    _toDateController.dispose();
+    super.dispose();
+  }
+}

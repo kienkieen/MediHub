@@ -6,6 +6,7 @@ import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_package.dart';
 import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/services/feedback.dart';
+import 'package:medihub_app/presentation/screens/services/vaccination_history.dart';
 
 class ServicesGrid extends StatelessWidget {
   const ServicesGrid({super.key});
@@ -15,14 +16,12 @@ class ServicesGrid extends StatelessWidget {
     final List<Map<String, dynamic>> topServices = [
       {
         'iconPath': 'assets/icons/grid_service/calendar.png',
-        'label': 'Đặt lịch\nhẹn',
+        'label': 'Đặt lịch\ntiêm',
         'onPressed': () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) =>
-                      const AppointmentScreen(), // Điều hướng đến màn hình cụ thể
+              builder: (context) => const VaccinationBookingScreen(),
             ),
           );
         },
@@ -45,18 +44,23 @@ class ServicesGrid extends StatelessWidget {
         'onPressed': () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                      const FeedbackForm(), // Điều hướng đến màn hình cụ thể
-            ),
+            MaterialPageRoute(builder: (context) => const FeedbackForm()),
           );
         },
       },
       {
         'iconPath': 'assets/icons/grid_service/history.png',
         'label': 'Lịch sử\ntiêm chủng',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      const VaccinationHistoryScreen(), // Điều hướng đến màn hình cụ thể
+            ),
+          );
+        },
       },
     ];
 

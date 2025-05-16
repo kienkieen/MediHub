@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/providers/cart_provider.dart';
+import 'package:medihub_app/core/widgets/button2.dart';
 
 class VaccineDetailPage extends StatelessWidget {
   final Vaccine vaccine;
@@ -26,7 +29,7 @@ class VaccineDetailPage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomBar(),
+      bottomNavigationBar: _buildBottomBar(context, vaccine),
     );
   }
 
@@ -116,25 +119,37 @@ class VaccineDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(BuildContext context, Vaccine vaccine) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
       color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildButton(
-            color: const Color(0xFF2F8CD8),
+          BuildButton3(
             text: 'Thêm vào giỏ',
-            textColor: Colors.white,
-            onTap: () {},
+            textSize: 14,
+            width: 160,
+            height: 42,
+            onPressed: () {
+              Provider.of<CartProvider>(
+                context,
+                listen: false,
+              ).addItem(vaccine);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${vaccine.name} đã được thêm vào giỏ hàng'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
           ),
-          _buildButton(
-            color: Colors.white,
+          BuildButton4(
             text: 'Đặt lịch tiêm',
-            textColor: const Color(0xFF2F8CD8),
-            borderColor: const Color(0xFF2F8CD8),
-            onTap: () {},
+            textSize: 14,
+            width: 160,
+            height: 42,
+            onPressed: () {},
           ),
         ],
       ),

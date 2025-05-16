@@ -39,7 +39,10 @@ class InputField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey.shade500),
+            ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 12,
@@ -50,6 +53,83 @@ class InputField extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget buildPhoneInputField(
+  TextEditingController controller,
+  String label,
+  String hintText, {
+  String? Function(String?)? validator,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: label, style: const TextStyle(fontSize: 16)),
+            const TextSpan(
+              text: ' *',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 4),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade700, width: 1),
+        ),
+        child: Row(
+          children: [
+            // Country code selector
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: Colors.grey.shade700)),
+              ),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/vietnam_flag.png",
+                    width: 24,
+                    height: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  const Text('+84', style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+            // Phone input
+            Expanded(
+              child: TextFormField(
+                // Chuyển sang TextFormField để hỗ trợ validator
+                controller: controller,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade500,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: validator,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class DropdownField extends StatelessWidget {
@@ -92,39 +172,40 @@ class DropdownField extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           GestureDetector(
-  onTap: () {
-    if (focusNode != null) {
-      FocusScope.of(context).requestFocus(focusNode); // Kích hoạt focusNode của dropdown
-    } else {
-      FocusScope.of(context).unfocus(); // Bỏ focus khỏi các textfield khác
-    }
-    _showBottomSheet(context);
-  },
-  child: Container(
-    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey.shade600),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            value ?? hintText ?? '',
-            style: TextStyle(
-              fontSize: 15,
-              color: value == null ? Colors.grey.shade500 : Colors.black,
+            onTap: () {
+              if (focusNode != null) {
+                FocusScope.of(context).requestFocus(focusNode);
+              } else {
+                FocusScope.of(context).unfocus();
+              }
+              _showBottomSheet(context);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.2, color: Colors.grey.shade600),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      value ?? hintText ?? '',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color:
+                            value == null ? Colors.grey.shade500 : Colors.black,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.arrow_drop_down),
+                ],
+              ),
             ),
           ),
-        ),
-        Icon(Icons.arrow_drop_down),
-      ],
-    ),
-  ),
-),
           const SizedBox(height: 12),
         ],
       ),
@@ -206,10 +287,7 @@ class DropdownField extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = filteredItems[index];
                         return Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 10,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
                           child: _buildItem(() {
                             Navigator.pop(context);
                             onChanged(item);
@@ -231,27 +309,29 @@ class DropdownField extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 45,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.grey.shade700,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-            side: BorderSide(color: Colors.grey.shade600, width: 1),
-          ),
-          elevation: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.black12, width: 1)),
         ),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.grey.shade700,
+            elevation: 0,
+          ),
 
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            title,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade700,
-              fontFamily: 'Calistoga',
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade700,
+                fontFamily: 'Calistoga',
+              ),
             ),
           ),
         ),

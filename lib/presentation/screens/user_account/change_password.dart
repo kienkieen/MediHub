@@ -4,14 +4,14 @@ import 'package:medihub_app/core/utils/validators.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  const ChangePasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -53,7 +53,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           },
         ),
         title: const Text(
-          'Đặt lại mật khẩu',
+          'Đổi Mật Khẩu',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
@@ -82,14 +82,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(height: constraints.maxHeight * 0.03),
-                          const Text(
-                            'VUI LÒNG TẠO MẬT KHẨU MỚI',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontFamily: 'Oswald',
-                            ),
+                          PasswordInputField(
+                            controller: _passwordController,
+                            label: 'Mật khẩu cũ',
+                            hintText: 'Nhập mật khẩu cũ',
+                            obscureText: _obscurePassword,
+                            onToggleVisibility: () {
+                              setState(() {});
+                            },
                           ),
                           SizedBox(height: constraints.maxHeight * 0.03),
                           PasswordInputField(
@@ -157,7 +157,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Yêu cầu mật khẩu:',
+            'Yêu cầu mật khẩu mới:',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           const SizedBox(height: 8),
