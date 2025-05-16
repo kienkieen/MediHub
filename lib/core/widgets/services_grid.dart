@@ -1,5 +1,6 @@
 // File: screens/home/widgets/services_grid.dart
 import 'package:flutter/material.dart';
+import 'package:medihub_app/presentation/screens/services/vaccination_process.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_package.dart';
@@ -85,13 +86,27 @@ class ServicesGrid extends StatelessWidget {
       {
         'iconPath': 'assets/icons/grid_service/procedure.png',
         'label': 'Quy\ntrình tiêm',
-        'onPressed': () {},
+        'onPressed': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const VaccinationProcessScreen(),
+            ),
+          );
+        },
       },
 
       {
         'iconPath': 'assets/icons/grid_service/news.png',
         'label': 'Tin tức\nVắc xin',
-        'onPressed': () {},
+        'onPressed': () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => const NewsHomeScreen(),
+          //   ),
+          // );
+        },
       },
     ];
 

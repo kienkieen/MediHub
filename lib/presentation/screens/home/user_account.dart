@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
+import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
 
 class UserAccountScreen extends StatelessWidget {
   const UserAccountScreen({super.key});
@@ -103,7 +105,12 @@ class UserAccountScreen extends StatelessWidget {
                     iconColor: Colors.green,
                     title: 'Điều khoản dịch vụ',
                     onTap: () {
-                      // Thêm logic điều hướng đến trang "Điều khoản dịch vụ"
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const VaccineTermsScreen(),
+                        ),
+                      );
                     },
                     showArrow: true,
                   ),
@@ -112,7 +119,12 @@ class UserAccountScreen extends StatelessWidget {
                     iconColor: Colors.blue,
                     title: 'Chính sách quyền riêng tư',
                     onTap: () {
-                      // Thêm logic điều hướng đến trang "Chính sách quyền riêng tư"
+                     Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PrivacyPolicyScreen(),
+                        ),
+                      );
                     },
                     showArrow: true,
                   ),

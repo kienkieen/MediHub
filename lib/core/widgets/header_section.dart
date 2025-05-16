@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medihub_app/presentation/screens/home/notification.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:medihub_app/presentation/screens/home/notification.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -50,26 +50,26 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NotificationListScreen(),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(8),
-            ),
-            child: SvgPicture.asset(
-              'assets/icons/notification.svg',
-              width: 24,
-              height: 24,
-            ),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const NotificationScreen(),
+          //       ),
+          //     );
+          //   },
+          //   style: ElevatedButton.styleFrom(
+          //     backgroundColor: Colors.white,
+          //     shape: const CircleBorder(),
+          //     padding: const EdgeInsets.all(8),
+          //   ),
+          //   child: SvgPicture.asset(
+          //     'assets/icons/notification.svg',
+          //     width: 24,
+          //     height: 24,
+          //   ),
+          // ),
         ],
       ),
     );

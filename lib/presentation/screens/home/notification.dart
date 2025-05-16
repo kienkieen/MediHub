@@ -1,155 +1,122 @@
 import 'package:flutter/material.dart';
-import 'package:medihub_app/core/widgets/appbar.dart';
-import 'package:medihub_app/core/widgets/login_widgets/button.dart'; // Sẽ tạo mới
+import 'package:medihub_app/core/widgets/notification_item.dart';
+import 'package:medihub_app/models/notification_model.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
+import 'package:medihub_app/presentation/screens/home/notification_detail.dart';
 
-class NotificationListScreen extends StatefulWidget {
-  const NotificationListScreen({super.key});
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
 
   @override
-  State<NotificationListScreen> createState() => _NotificationListScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationListScreenState extends State<NotificationListScreen> {
-  int _selectedFilter = 1;
+class _NotificationScreenState extends State<NotificationScreen> {
+  final NotificationProvider _notificationProvider = NotificationProvider();
+  bool _isRefreshing = false;
 
-  // Danh sách filter để dễ dàng thay đổi
-  final List<Map<String, dynamic>> _filters = [
-    {'id': 1, 'title': 'Phiếu khám (0)'},
-    {'id': 2, 'title': 'Tin Tức (0)'},
-    {'id': 3, 'title': 'Thông báo (0)'},
-  ];
+  Future<void> _refreshNotifications() async {
+    setState(() {
+      _isRefreshing = true;
+    });
+
+    // Giả lập việc tải thông báo mới
+    await Future.delayed(const Duration(seconds: 1));
+
+    setState(() {
+      _isRefreshing = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarWidget(
-        title: 'Danh sách thông báo',
-        icon: Icons.more_vert,
-        onPressed: () => _showOptionsDialog(context),
-      ),
-      body: Column(
-        children: [
-          _buildFilterBar(),
-          Expanded(
-            child: _buildContent(),
+      appBar: AppBar(
+        title: const Text(
+          'Thông báo',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NavigationBottom()),
+          );
+        },
+        ),
+        actions: [
+          IconButton(
+            icon: Badge(
+              label: Text('${_notificationProvider.unreadCount}'),
+              isLabelVisible: _notificationProvider.unreadCount > 0,
+              child: const Icon(Icons.more_vert, color: Colors.white),
+            ),
+            onPressed: () {
+              // Hiển thị dialog xác nhận đánh dấu tất cả là đã đọc
+              if (_notificationProvider.unreadCount > 0) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Đánh dấu tất cả đã đọc'),
+                    content: const Text('Bạn có muốn đánh dấu tất cả thông báo là đã đọc không?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Hủy'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          _notificationProvider.markAllAsRead();
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Đã đánh dấu tất cả thông báo là đã đọc'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        child: const Text('Đồng ý'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildFilterBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      height: 70, // Fixed height for filter bar
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        itemCount: _filters.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 15),
-        itemBuilder: (context, index) {
-          final filter = _filters[index];
-          return FilterButton(
-            title: filter['title'],
-            isSelected: _selectedFilter == filter['id'],
-            onPressed: () => setState(() => _selectedFilter = filter['id']),
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: _refreshNotifications,
+        child: _isRefreshing
+            ? const Center(child: CircularProgressIndicator())
+            : _notificationProvider.notifications.isEmpty
+                ? const Center(
+                    child: Text('Không có thông báo nào'),
+                  )
+                : ListView.builder(
+                    itemCount: _notificationProvider.notifications.length,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemBuilder: (context, index) {
+                      final notification = _notificationProvider.notifications[index];
+                      return NotificationItem(
+                        notification: notification,
+                        onTap: () {
+                          _notificationProvider.markAsRead(notification.id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationDetailScreen(notification: notification),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
       ),
-    );
-  }
-
-  Widget _buildContent() {
-    // Tất cả các trạng thái hiện có cùng nội dung trống
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        SizedBox(height: 20),
-        Image(
-          image: AssetImage("assets/icons/icon_9.png"),
-          width: 260,
-          height: 260,
-        ),
-        SizedBox(height: 20),
-        Text(
-          'Bạn chưa có thông báo nào',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showOptionsDialog(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        height: screenHeight / 2,
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Tuỳ chọn",
-                style: TextStyle(
-                  color: Color(0xFF007DAB),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildOptionButton(
-              icon: Icons.visibility_outlined,
-              text: "Đánh dấu tất cả đã đọc",
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(height: 10),
-            _buildOptionButton(
-              icon: Icons.delete,
-              text: "Xoá tất cả thông báo",
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOptionButton({
-    required IconData icon,
-    required String text,
-    required VoidCallback onPressed,
-  }) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.grey.shade200,
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 25, color: Colors.black),
-            const SizedBox(width: 10),
-            Text(text, style: const TextStyle(color: Colors.black)),
-          ],
-        ),
-      ),
+      
     );
   }
 }
+
