@@ -5,90 +5,14 @@ import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppbarWidget(title: 'Hồ sơ bệnh nhân'),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BuildNoti(
-              content:
-                  'Bạn chưa có hồ sơ bệnh nhân. Vui lòng tạo mới hồ sơ để được đặt khám.',
-              icon: Icons.error_outline,
-            ),
-            const SizedBox(height: 20),
-            const _EmptyProfileContent(),
-          ],
-        ),
-      ),
-    );
-  }
+  State<ProfileScreen> createState() => _ProfileState();
 }
 
-class _EmptyProfileContent extends StatelessWidget {
-  const _EmptyProfileContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset("assets/icons/icon_9.png", width: 260, height: 260),
-          const SizedBox(height: 30),
-          const Text(
-            'Tạo hồ sơ bệnh nhân',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 7),
-          const Text(
-            'Bạn được phép tạo tối đa 10 hồ sơ (Cá nhân và người thân trong gia đình)',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 25),
-          PrimaryGradientButton(
-            text: 'CHƯA TỪNG ĐĂNG KÝ MỚI',
-            icon: Icons.person_add,
-            onPressed: () => _navigateToCreateProfile(context),
-          ),
-          const SizedBox(height: 16),
-          PrimaryButton(
-            text: 'ĐÃ TỪNG KHÁM TẠI MEDIHUB',
-            onPressed: () => _navigateToCreateProfile(context),
-            icon: Icons.search_outlined,
-            backgroundColor: Colors.transparent,
-            textColor: Color(0xFF019BD3),
-            borderColor: Color(0xFF019BD3),
-            borderRadius: 10,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _navigateToCreateProfile(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const CreateProfile()),
-    );
-  }
-}
-
-class CreateProfile extends StatefulWidget {
-  const CreateProfile({super.key});
-
-  @override
-  State<CreateProfile> createState() => _CreateProfileState();
-}
-
-class _CreateProfileState extends State<CreateProfile> {
+class _ProfileState extends State<ProfileScreen> {
   // Controllers
   final _nameController = TextEditingController();
   final _dobController = TextEditingController();
@@ -98,8 +22,7 @@ class _CreateProfileState extends State<CreateProfile> {
   final _addressController = TextEditingController();
 
   //FocusNode
-  final FocusNode _genderFocusNode = FocusNode();
-  final FocusNode _jobFocusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   // Dropdown values
   String? _genderValue;
@@ -187,8 +110,7 @@ class _CreateProfileState extends State<CreateProfile> {
     _phoneController.removeListener(_validateForm);
     _insuranceController.removeListener(_validateForm);
     _addressController.removeListener(_validateForm);
-    _genderFocusNode.dispose();
-    _jobFocusNode.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -250,8 +172,7 @@ class _CreateProfileState extends State<CreateProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: const AppbarWidget(title: 'Tạo mới hồ sơ'),
+      appBar: const AppbarWidget(title: 'Thông tin tài khoản'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -299,7 +220,7 @@ class _CreateProfileState extends State<CreateProfile> {
                       },
                       padding: const EdgeInsets.only(bottom: 8),
                       hintText: 'Giới tính',
-                      focusNode: _genderFocusNode,
+                      focusNode: _focusNode,
                     ),
                   ),
                 ],
@@ -330,7 +251,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Chọn nghề nghiệp',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
 
               _buildPhoneInputField(
@@ -353,7 +274,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Việt Nam',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
 
               DropdownField(
@@ -368,7 +289,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Chọn Dân tộc',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
             ]),
 
@@ -388,7 +309,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Chọn tỉnh thành',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
 
               DropdownField(
@@ -405,7 +326,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Chọn Quận/Huyện',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
 
               DropdownField(
@@ -420,7 +341,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   });
                 },
                 hintText: 'Chọn Phường/Xã',
-                focusNode: _genderFocusNode,
+                focusNode: _focusNode,
               ),
 
               InputField(
@@ -441,7 +362,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     disabledBackgroundColor: Colors.grey.shade400,
                   ),
                   child: const Text(
-                    'Tạo mới hồ sơ',
+                    'Cập nhật hồ sơ',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
@@ -462,7 +383,7 @@ class _CreateProfileState extends State<CreateProfile> {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.4),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

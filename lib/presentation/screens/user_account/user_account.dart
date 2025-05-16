@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart';
+import 'package:medihub_app/presentation/screens/user_account/change_password.dart';
 
 class UserAccountScreen extends StatelessWidget {
   const UserAccountScreen({super.key});
@@ -21,7 +23,14 @@ class UserAccountScreen extends StatelessWidget {
                     icon: Icons.edit,
                     iconColor: Colors.cyan,
                     title: 'Chỉnh sửa tài khoản',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
                     showArrow: true,
                   ),
                   _MenuItem(
@@ -49,7 +58,14 @@ class UserAccountScreen extends StatelessWidget {
                     icon: Icons.lock_outline,
                     iconColor: Colors.blue,
                     title: 'Đổi mật khẩu',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChangePasswordScreen(),
+                        ),
+                      );
+                    },
                     showArrow: true,
                   ),
                   _MenuItem(

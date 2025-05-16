@@ -8,14 +8,14 @@ class PrimaryButton extends StatelessWidget {
   final IconData? icon;
   final Color textColor;
   final double height;
-  
+
   final double borderRadius;
 
   const PrimaryButton({
     super.key,
     required this.text,
     required this.onPressed,
-    this.backgroundColor = Colors.blue,
+    this.backgroundColor = const Color(0xFF2F8CD8),
     this.borderColor,
     this.icon,
     this.textColor = Colors.white,
@@ -43,7 +43,7 @@ class PrimaryButton extends StatelessWidget {
           elevation: 0,
         ),
         child: Row(
-          mainAxisAlignment:MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(width: 15),
@@ -84,13 +84,14 @@ class FilterButton extends StatelessWidget {
     return Container(
       padding: EdgeInsets.zero,
       decoration: BoxDecoration(
-        gradient: isSelected
-            ? const LinearGradient(
-                colors: [Color(0xFF019BD3), Color(0xA701CBEE)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              )
-            : null,
+        gradient:
+            isSelected
+                ? const LinearGradient(
+                  colors: [Color(0xFF019BD3), Color(0xA701CBEE)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                )
+                : null,
         color: !isSelected ? Colors.grey.shade200 : null,
         borderRadius: BorderRadius.circular(16),
       ),

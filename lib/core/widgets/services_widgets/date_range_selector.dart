@@ -5,7 +5,7 @@ class DateRangeSelector extends StatelessWidget {
   final DateTime? toDate;
   final Function(DateTime) onFromDateChanged;
   final Function(DateTime) onToDateChanged;
-  
+
   const DateRangeSelector({
     super.key,
     this.fromDate,
@@ -24,9 +24,12 @@ class DateRangeSelector extends StatelessWidget {
             child: GestureDetector(
               onTap: () => _selectMonth(context, true),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: Colors.grey[500]!),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -34,13 +37,19 @@ class DateRangeSelector extends StatelessWidget {
                     Text(
                       fromDate != null ? _formatDate(fromDate!) : 'Từ tháng',
                       style: TextStyle(
-                        color: fromDate != null ? Colors.black : Colors.black87,
+                        color:
+                            fromDate != null
+                                ? Colors.black
+                                : Colors.grey.shade500,
                         fontSize: 14,
-                        fontWeight: fromDate != null ? FontWeight.w500 : FontWeight.normal,
+                        fontWeight:
+                            fromDate != null
+                                ? FontWeight.w500
+                                : FontWeight.normal,
                       ),
                     ),
                     const Spacer(),
-                    Icon(Icons.calendar_month, color: Colors.indigo[700]),
+                    Icon(Icons.calendar_month, color: const Color(0xFF2F8CD8)),
                   ],
                 ),
               ),
@@ -49,19 +58,19 @@ class DateRangeSelector extends StatelessWidget {
           const SizedBox(width: 12),
           const Text(
             '-',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: GestureDetector(
               onTap: () => _selectMonth(context, false),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: Colors.grey[500]!),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -69,13 +78,19 @@ class DateRangeSelector extends StatelessWidget {
                     Text(
                       toDate != null ? _formatDate(toDate!) : 'Đến tháng',
                       style: TextStyle(
-                        color: toDate != null ? Colors.black : Colors.black87,
+                        color:
+                            toDate != null
+                                ? Colors.black
+                                : Colors.grey.shade500,
                         fontSize: 14,
-                        fontWeight: toDate != null ? FontWeight.w500 : FontWeight.normal,
+                        fontWeight:
+                            toDate != null
+                                ? FontWeight.w500
+                                : FontWeight.normal,
                       ),
                     ),
                     const Spacer(),
-                    Icon(Icons.calendar_month, color: Colors.indigo[700]),
+                    Icon(Icons.calendar_month, color: const Color(0xFF2F8CD8)),
                   ],
                 ),
               ),
@@ -94,10 +109,14 @@ class DateRangeSelector extends StatelessWidget {
 
   // Show month picker dialog
   Future<void> _selectMonth(BuildContext context, bool isFromDate) async {
-    final DateTime initialDate = isFromDate 
-        ? fromDate ?? DateTime.now() 
-        : toDate ?? (fromDate != null ? fromDate!.add(const Duration(days: 31)) : DateTime.now());
-    
+    final DateTime initialDate =
+        isFromDate
+            ? fromDate ?? DateTime.now()
+            : toDate ??
+                (fromDate != null
+                    ? fromDate!.add(const Duration(days: 31))
+                    : DateTime.now());
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -121,7 +140,7 @@ class DateRangeSelector extends StatelessWidget {
     if (picked != null) {
       // Create a new DateTime with just the year and month, day set to 1
       final DateTime monthStart = DateTime(picked.year, picked.month, 1);
-      
+
       if (isFromDate) {
         onFromDateChanged(monthStart);
       } else {

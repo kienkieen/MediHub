@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EmptyAppointmentView extends StatelessWidget {
-  const EmptyAppointmentView({super.key,});
+  const EmptyAppointmentView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,17 +9,12 @@ class EmptyAppointmentView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 120,
             height: 120,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.calendar_today_outlined,
-              size: 60,
-              color: Colors.grey[400],
+            child: Image.asset(
+              'assets/icons/empty_appointment.png',
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(height: 20),

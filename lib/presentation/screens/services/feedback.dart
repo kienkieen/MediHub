@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/core/widgets/input_field.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({Key? key}) : super(key: key);
@@ -8,11 +9,22 @@ class FeedbackForm extends StatefulWidget {
 }
 
 class _FeedbackFormState extends State<FeedbackForm> {
+  final FocusNode _focusNode = FocusNode();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+  bool _isFormValid = false;
+
+  String? _facilityValue;
+  final List<String> _facilityOptions = [
+    'Bệnh viện Đa khoa Quốc tế Vinmec',
+    'Bệnh viện Nhiệt đới Trung ương',
+    'Trung tâm Y tế dự phòng Hà Nội',
+    'Bệnh viện Bạch Mai',
+  ];
+
   String? selectedCenter;
   int? satisfactionRating;
   Map<String, int> serviceRatings = {
@@ -25,7 +37,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
     'Bảo vệ, an ninh': 0,
     'Vệ sinh tại các khu vực': 0,
   };
-  
+
   Map<String, String> serviceComments = {
     'Dịch vụ Lễ tân/ Chăm sóc Khách hàng': '',
     'Dịch vụ Tư vấn vắc xin': '',
@@ -48,8 +60,11 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('Liên hệ & Góp ý', style: TextStyle(color: Colors.white),),
-        
+        title: const Text(
+          'Góp ý & Phản hồi',
+          style: TextStyle(color: Colors.white),
+        ),
+
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
@@ -70,20 +85,27 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 children: [
                   const Text(
                     'PHIẾU GÓP Ý',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-                  _buildCenterSelection(),
+                  DropdownField(
+                    label: 'Chọn cơ sở',
+                    value: _facilityValue,
+                    items: _facilityOptions,
+                    isRequired: true,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _facilityValue = newValue;
+                        _validateForm();
+                      });
+                    },
+                    hintText: 'Chọn Dân tộc',
+                    focusNode: _focusNode,
+                  ),
                   const SizedBox(height: 20),
                   const Text(
                     'THÔNG TIN KHÁCH HÀNG',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   _buildCustomerInfoFields(),
@@ -127,9 +149,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8), // Bo góc cho ảnh
         child: Image.asset(
@@ -153,10 +173,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 text: 'Chọn trung tâm dự kiến tiêm ',
                 style: TextStyle(color: Colors.black),
               ),
-              TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
-              ),
+              TextSpan(text: '*', style: TextStyle(color: Colors.red)),
             ],
           ),
         ),
@@ -192,57 +209,35 @@ class _FeedbackFormState extends State<FeedbackForm> {
   Widget _buildCustomerInfoFields() {
     return Column(
       children: [
-        TextFormField(
+        InputField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Họ và tên *',
-            border: OutlineInputBorder(),
-          ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Vui lòng nhập họ tên';
-            }
-            return null;
-          },
+          label: 'Họ và tên (có dấu)',
+          hintText: 'Nhập họ và tên',
+          isRequired: true,
         ),
         const SizedBox(height: 16),
-        TextFormField(
-          controller: _phoneController,
-          decoration: const InputDecoration(
-            labelText: 'Số điện thoại *',
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.phone,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Vui lòng nhập số điện thoại';
-            }
-            // Kiểm tra số điện thoại có đúng định dạng
-            final phoneRegExp = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$');
-            if (!phoneRegExp.hasMatch(value)) {
-              return 'Số điện thoại không hợp lệ';
-            }
-            return null;
-          },
+        buildPhoneInputField(
+          _phoneController,
+          'Số điện thoại',
+          'Nhập số điện thoại',
+          // validator: (value) {
+          //   if (value == null || value.isEmpty) {
+          //     return 'Vui lòng nhập số điện thoại';
+          //   }
+          //   final phoneRegExp = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$');
+          //   if (!phoneRegExp.hasMatch(value)) {
+          //     return 'Số điện thoại không hợp lệ';
+          //   }
+          //   return null;
+          // },
         ),
+
         const SizedBox(height: 16),
-        TextFormField(
-          controller: _emailController,
-          decoration: const InputDecoration(
-            labelText: 'Email',
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              // Kiểm tra email có đúng định dạng
-              final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-              if (!emailRegExp.hasMatch(value)) {
-                return 'Email không hợp lệ';
-              }
-            }
-            return null; // Không có lỗi nếu trường trống
-          },
+
+        InputField(
+          controller: _nameController,
+          label: 'Email',
+          hintText: 'Nhập email',
         ),
       ],
     );
@@ -252,57 +247,65 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: const TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '1. Mức độ hài lòng của Quý khách với Trung tâm tiêm chủng VNVC? ',
-                style: TextStyle(color: Colors.black),
+                text:
+                    '1. Mức độ hài lòng của quý khách với trung tâm tiêm chủng VNVC?',
+                style: TextStyle(fontSize: 16),
               ),
               TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ],
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(5, (index) {
-            return InkWell(
-              onTap: () {
-                setState(() {
-                  satisfactionRating = index + 1;
-                });
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: satisfactionRating == index + 1
-                        ? Colors.blue
-                        : Colors.grey[300]!,
+
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(5, (index) {
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    satisfactionRating = index + 1;
+                  });
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color:
+                          satisfactionRating == index + 1
+                              ? Colors.blue
+                              : Colors.grey[500]!,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: TextStyle(
-                      fontWeight: satisfactionRating == index + 1
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: satisfactionRating == index + 1
-                          ? Colors.blue
-                          : Colors.black,
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontWeight:
+                            satisfactionRating == index + 1
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                        color:
+                            satisfactionRating == index + 1
+                                ? Colors.blue
+                                : Colors.black,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
         const SizedBox(height: 4),
         Row(
@@ -320,22 +323,25 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: const TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '2. Quý khách vui lòng đánh giá mức độ hài lòng về các dịch vụ của Trung tâm tiêm chủng VNVC ',
-                style: TextStyle(color: Colors.black),
+                text:
+                    '2. Quý khách vui lòng đánh giá các dịch vụ của Trung tâm tiêm chủng VNVC',
+                style: TextStyle(fontSize: 16),
               ),
               TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        ...serviceRatings.entries.map((entry) => _buildServiceRatingItem(entry.key)),
+        ...serviceRatings.entries.map(
+          (entry) => _buildServiceRatingItem(entry.key),
+        ),
       ],
     );
   }
@@ -346,57 +352,73 @@ class _FeedbackFormState extends State<FeedbackForm> {
       children: [
         Text(serviceName),
         const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(5, (index) {
-            return InkWell(
-              onTap: () {
-                setState(() {
-                  serviceRatings[serviceName] = index + 1;
-                });
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: serviceRatings[serviceName] == index + 1
-                        ? Colors.blue
-                        : Colors.grey[300]!,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(5, (index) {
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    serviceRatings[serviceName] = index + 1;
+                  });
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color:
+                          serviceRatings[serviceName] == index + 1
+                              ? Colors.blue
+                              : Colors.grey[500]!,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: TextStyle(
-                      fontWeight: serviceRatings[serviceName] == index + 1
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: serviceRatings[serviceName] == index + 1
-                          ? Colors.blue
-                          : Colors.black,
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontWeight:
+                            serviceRatings[serviceName] == index + 1
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                        color:
+                            serviceRatings[serviceName] == index + 1
+                                ? Colors.blue
+                                : Colors.black,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: const [
-            Text('Không hài lòng', style: TextStyle(fontSize: 12)),
-            Text('Rất hài lòng', style: TextStyle(fontSize: 12)),
+            Text(
+              'Không hài lòng',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            Text(
+              'Rất hài lòng',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
           ],
         ),
         const SizedBox(height: 8),
         TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Viết ý kiến...',
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), // Giảm padding bên trong
+          decoration: InputDecoration(
+            hintText: 'Viết ý kiến',
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
           ),
           maxLines: 1,
           onChanged: (value) {
@@ -404,6 +426,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
           },
         ),
         const SizedBox(height: 16),
+        const Divider(),
+        const SizedBox(height: 5),
       ],
     );
   }
@@ -412,34 +436,60 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: const TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '3. Quý khách biết tới Trung tâm tiêm chủng VNVC qua? ',
-                style: TextStyle(color: Colors.black),
+                text: '3. Quý khách biết tiêm chủng VNVC qua?',
+                style: TextStyle(fontSize: 16),
               ),
               TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        ...['Báo - Đài', 'Bạn bè hoặc Người thân giới thiệu', 'Internet, mạng xã hội (Facebook, Tiktok,...)', 'Bác sĩ', 'Khác']
-            .map((source) => RadioListTile<String>(
-                  title: Text(source),
-                  value: source,
-                  groupValue: referralSource,
-                  onChanged: (String? value) {
-                    setState(() {
-                      referralSource = value;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ))
-            .toList(),
+        ...[
+          'Báo - Đài',
+          'Bạn bè hoặc Người thân giới thiệu',
+          'Internet, mạng xã hội (Facebook, Tiktok,...)',
+          'Bác sĩ',
+          'Khác',
+        ].asMap().entries.map((entry) {
+          final index = entry.key;
+          final source = entry.value;
+          return Column(
+            children: [
+              RadioListTile<String>(
+                title: Text(
+                  source,
+                  style: const TextStyle(
+                    fontSize: 14, // Chỉnh cỡ chữ
+                    color: Color.fromARGB(195, 0, 0, 0),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                value: source,
+                groupValue: referralSource,
+                onChanged: (String? value) {
+                  setState(() {
+                    referralSource = value;
+                  });
+                },
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ), // Khoảng cách bên trong
+                visualDensity: const VisualDensity(
+                  horizontal: -2,
+                  vertical: -4,
+                ), // Giảm kích thước Radio
+                materialTapTargetSize:
+                    MaterialTapTargetSize.shrinkWrap, // Giảm vùng chạm
+              ),
+            ],
+          );
+        }).toList(),
       ],
     );
   }
@@ -448,33 +498,51 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: const TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '4. Quý khách sẽ tiếp tục sử dụng dịch vụ của Trung tâm tiêm chủng VNVC trong thời gian tới? ',
-                style: TextStyle(color: Colors.black),
+                text:
+                    '4. Quý khách có tiếp tục sử dụng dịch vụ của Trung tâm tiêm chủng VNVC trong thời gian tới không?',
+                style: TextStyle(fontSize: 16),
               ),
               TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ],
           ),
         ),
         const SizedBox(height: 8),
         ...['Có', 'Có thể', 'Không']
-            .map((option) => RadioListTile<String>(
-                  title: Text(option),
-                  value: option,
-                  groupValue: willContinueUsing,
-                  onChanged: (String? value) {
-                    setState(() {
-                      willContinueUsing = value;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ))
+            .map(
+              (option) => RadioListTile<String>(
+                title: Text(
+                  option,
+                  style: const TextStyle(
+                    fontSize: 14, // Chỉnh cỡ chữ
+                    color: Color.fromARGB(195, 0, 0, 0),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                value: option,
+                groupValue: referralSource,
+                onChanged: (String? value) {
+                  setState(() {
+                    referralSource = value;
+                  });
+                },
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ), // Khoảng cách bên trong
+                visualDensity: const VisualDensity(
+                  horizontal: -2,
+                  vertical: -4,
+                ), // Giảm kích thước Radio
+                materialTapTargetSize:
+                    MaterialTapTargetSize.shrinkWrap, // Giảm vùng chạm
+              ),
+            )
             .toList(),
       ],
     );
@@ -484,33 +552,51 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: const TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               TextSpan(
-                text: '5. Quý khách có sẵn lòng giới thiệu Trung tâm tiêm chủng VNVC cho người thân/ bạn bè? ',
-                style: TextStyle(color: Colors.black),
+                text:
+                    '5. Quý khách có sẵn lòng giới thiệu dịch vụ của Trung tâm tiêm chủng VNVC cho bạn bè, người thân không?',
+                style: TextStyle(fontSize: 16),
               ),
               TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
               ),
             ],
           ),
         ),
         const SizedBox(height: 8),
         ...['Có', 'Có thể', 'Không']
-            .map((option) => RadioListTile<String>(
-                  title: Text(option),
-                  value: option,
-                  groupValue: willRecommend,
-                  onChanged: (String? value) {
-                    setState(() {
-                      willRecommend = value;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ))
+            .map(
+              (option) => RadioListTile<String>(
+                title: Text(
+                  option,
+                  style: const TextStyle(
+                    fontSize: 14, // Chỉnh cỡ chữ
+                    color: Color.fromARGB(195, 0, 0, 0),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                value: option,
+                groupValue: referralSource,
+                onChanged: (String? value) {
+                  setState(() {
+                    referralSource = value;
+                  });
+                },
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ), // Khoảng cách bên trong
+                visualDensity: const VisualDensity(
+                  horizontal: -2,
+                  vertical: -4,
+                ), // Giảm kích thước Radio
+                materialTapTargetSize:
+                    MaterialTapTargetSize.shrinkWrap, // Giảm vùng chạm
+              ),
+            )
             .toList(),
       ],
     );
@@ -520,7 +606,20 @@ class _FeedbackFormState extends State<FeedbackForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('6. Quý khách vui lòng chia sẻ thêm ý kiến khác (Nếu có)'),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '6. Quý khách vui lòng chia sẻ thêm ý kiến khác (nếu có)',
+                style: TextStyle(fontSize: 16),
+              ),
+              TextSpan(
+                text: ' *',
+                style: TextStyle(fontSize: 16, color: Colors.red),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           decoration: const InputDecoration(
@@ -541,7 +640,10 @@ class _FeedbackFormState extends State<FeedbackForm> {
   Widget _buildTermsAgreement() {
     return Container(
       padding: const EdgeInsets.all(8),
-      color: Colors.blue[50],
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.blue[50],
+      ),
       child: Row(
         children: [
           Checkbox(
@@ -561,7 +663,10 @@ class _FeedbackFormState extends State<FeedbackForm> {
                     text: 'điều khoản',
                     style: TextStyle(color: Colors.blue[700]),
                   ),
-                  const TextSpan(text: ' và chấp nhận cho VNVC sử dụng thông tin nhằm nâng cao chất lượng dịch vụ.'),
+                  const TextSpan(
+                    text:
+                        ' và chấp nhận cho VNVC sử dụng thông tin nhằm nâng cao chất lượng dịch vụ.',
+                  ),
                 ],
               ),
               style: const TextStyle(fontSize: 12),
@@ -578,7 +683,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          if (_formKey.currentState!.validate() && termsAccepted) {
+          if (_formKey.currentState!.validate() &&
+              termsAccepted &&
+              _isFormValid) {
             // Submit the form
             _showSubmitSuccessDialog();
           } else if (!termsAccepted) {
@@ -590,7 +697,10 @@ class _FeedbackFormState extends State<FeedbackForm> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF1565C0),
         ),
-        child: const Text('Gửi thông tin', style: TextStyle(color: Colors.white),),
+        child: const Text(
+          'GỬI THÔNG TIN',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -598,48 +708,48 @@ class _FeedbackFormState extends State<FeedbackForm> {
   void _showSubmitSuccessDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: const [
-            Icon(Icons.check_circle, color: Colors.blue, size: 28),
-            SizedBox(width: 10),
-            Text(
-              'Thành công',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.blue,
-              ),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ],
-        ),
-        content: const Text(
-          '🎉 Cảm ơn quý khách đã gửi ý kiến đóng góp. Chúng tôi sẽ xem xét trong thời gian sớm nhất!',
-          style: TextStyle(fontSize: 16),
-        ),
-        actionsAlignment: MainAxisAlignment.end,
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+            title: Row(
+              children: const [
+                Icon(Icons.check_circle, color: Colors.blue, size: 28),
+                SizedBox(width: 10),
+                Text(
+                  'Thành công',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Đóng'),
+            content: const Text(
+              '🎉 Cảm ơn quý khách đã gửi ý kiến đóng góp. Chúng tôi sẽ xem xét trong thời gian sớm nhất!',
+              style: TextStyle(fontSize: 16),
+            ),
+            actionsAlignment: MainAxisAlignment.end,
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Đóng'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
-
 
   @override
   void dispose() {
@@ -647,5 +757,21 @@ class _FeedbackFormState extends State<FeedbackForm> {
     _phoneController.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+
+  void _validateForm() {
+    setState(() {
+      _isFormValid =
+          _nameController.text.isNotEmpty &&
+          _phoneController.text.isNotEmpty &&
+          _emailController.text.isNotEmpty;
+    });
+
+    if (_isFormValid != _isFormValid) {
+      // Chỉ setState khi có thay đổi
+      setState(() {
+        _isFormValid = _isFormValid;
+      });
+    }
   }
 }

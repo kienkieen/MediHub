@@ -6,7 +6,6 @@ import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/presentation/screens/login/reset_password.dart';
 
-
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -20,7 +19,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   bool _isVerificationSent = false;
   final _otpControllers = List.generate(6, (_) => TextEditingController());
   final _focusNodes = List.generate(6, (_) => FocusNode());
-  
+
   @override
   void dispose() {
     _phoneController.dispose();
@@ -45,16 +44,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _verifyOtp() {
     // Combine all OTP digits
     String otp = _otpControllers.map((controller) => controller.text).join();
-    
+
     // Validate OTP
     String? otpError = Validators.validateOtp(otp);
     if (otpError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(otpError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(otpError)));
       return;
     }
-    
+
     // If valid, proceed to reset password screen
     _navigateToResetPassword();
   }
@@ -88,13 +87,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               children: [
                 const SizedBox(height: 30),
                 // Logo
-                Image.asset(
-                  'assets/images/vietnam_flag.png',
-                  height: 70,
-                ),
+                Image.asset('assets/images/vietnam_flag.png', height: 70),
                 const SizedBox(height: 40),
                 // Either phone input or OTP input
-                _isVerificationSent ? _buildOtpVerification() : _buildPhoneVerification(),
+                _isVerificationSent
+                    ? _buildOtpVerification()
+                    : _buildPhoneVerification(),
               ],
             ),
           ),
@@ -111,21 +109,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const Text(
             'Vui lòng nhập số điện thoại để lấy lại mật khẩu',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
           const SizedBox(height: 30),
-          EmailInputField(
-            controller: _phoneController,
-            hintText: 'Email',
-          ),
+          EmailInputField(controller: _phoneController, hintText: 'Email'),
           const SizedBox(height: 40),
-          PrimaryButton(
-            text: 'GỬI MÃ XÁC NHẬN',
-            onPressed: _sendVerification,
-          ),
+          PrimaryButton(text: 'GỬI MÃ XÁC NHẬN', onPressed: _sendVerification),
         ],
       ),
     );
@@ -137,10 +126,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const Text(
           'Vui lòng nhập mã xác nhận đã được gửi đến số điện thoại của bạn',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-          ),
+          style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         const SizedBox(height: 30),
         _buildOtpInputs(),
@@ -152,6 +138,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             style: const TextStyle(
               color: Colors.grey,
               fontSize: 14,
+              fontFamily: 'Calistoga',
             ),
             children: [
               TextSpan(
@@ -159,6 +146,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 style: const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Calistoga',
                 ),
                 // Add gesture recognizer here
               ),
@@ -166,10 +154,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ),
         const SizedBox(height: 40),
-        PrimaryButton(
-          text: 'XÁC NHẬN',
-          onPressed: _verifyOtp,
-        ),
+        PrimaryButton(text: 'XÁC NHẬN', onPressed: _verifyOtp),
       ],
     );
   }
@@ -180,7 +165,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       children: List.generate(
         6,
         (index) => SizedBox(
-          width: 40,
+          width: 50,
           height: 50,
           child: TextField(
             controller: _otpControllers[index],
@@ -221,10 +206,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _navigateToResetPassword() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const ResetPasswordScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
     );
   }
 }
-

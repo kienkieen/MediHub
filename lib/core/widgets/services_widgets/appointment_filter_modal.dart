@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'filter_section_header.dart';
 import 'custom_checkbox_item.dart';
+import 'package:medihub_app/core/widgets/button2.dart';
 import 'date_range_selector.dart';
 
 class AppointmentFilterModal extends StatefulWidget {
@@ -17,11 +17,11 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
   bool cancelled = false;
   bool vipAppointment = false;
   bool regularAppointment = false;
-  
+
   // Date range states
   DateTime? fromDate;
   DateTime? toDate;
-  
+
   void _resetFilters() {
     setState(() {
       notConfirmed = false;
@@ -33,7 +33,7 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
       toDate = null;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,98 +42,109 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildModalHeader(),
-            
-            // Status section
-            const FilterSectionHeader(title: 'Trạng thái'),
-            
-            // Status checkboxes
-            CustomCheckboxItem(
-              label: 'Chưa xác nhận',
-              isChecked: notConfirmed,
-              onChanged: (value) {
-                setState(() {
-                  notConfirmed = value;
-                });
-              },
-            ),
-            CustomCheckboxItem(
-              label: 'Đã xác nhận',
-              isChecked: confirmed,
-              onChanged: (value) {
-                setState(() {
-                  confirmed = value;
-                });
-              },
-            ),
-            CustomCheckboxItem(
-              label: 'Đã hủy',
-              isChecked: cancelled,
-              onChanged: (value) {
-                setState(() {
-                  cancelled = value;
-                });
-              },
-            ),
-            
-            // Appointment type section
-            const FilterSectionHeader(title: 'Loại đặt hẹn'),
-            
-            // Appointment type checkboxes
-            CustomCheckboxItem(
-              label: 'Đặt khám vip',
-              isChecked: vipAppointment,
-              onChanged: (value) {
-                setState(() {
-                  vipAppointment = value;
-                });
-              },
-            ),
-            CustomCheckboxItem(
-              label: 'Đặt khám thường',
-              isChecked: regularAppointment,
-              onChanged: (value) {
-                setState(() {
-                  regularAppointment = value;
-                });
-              },
-            ),
-            
-            // Date range section
-            const FilterSectionHeader(title: 'Khoảng thời gian'),
-            
-            // Date range pickers
-            DateRangeSelector(
-              fromDate: fromDate,
-              toDate: toDate,
-              onFromDateChanged: (date) {
-                setState(() {
-                  fromDate = date;
-                  // If toDate is before fromDate, update toDate
-                  if (toDate != null && toDate!.isBefore(date)) {
-                    toDate = DateTime(date.year, date.month + 1, 1);
-                  }
-                });
-              },
-              onToDateChanged: (date) {
-                setState(() {
-                  toDate = date;
-                  // If fromDate is after toDate, update fromDate
-                  if (fromDate != null && fromDate!.isAfter(date)) {
-                    fromDate = DateTime(date.year, date.month - 1, 1);
-                  }
-                });
-              },
-            ),
-            
-            _buildActionButtons(),
-            
-            const SizedBox(height: 16), // Extra bottom padding for safe area
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildModalHeader(),
+
+              // Status section
+              Text('Trạng thái', style: TextStyle(fontSize: 16)),
+
+              const SizedBox(height: 5),
+              // Status checkboxes
+              CustomCheckboxItem(
+                label: 'Chưa xác nhận',
+                isChecked: notConfirmed,
+                onChanged: (value) {
+                  setState(() {
+                    notConfirmed = value;
+                  });
+                },
+              ),
+              CustomCheckboxItem(
+                label: 'Đã xác nhận',
+                isChecked: confirmed,
+                onChanged: (value) {
+                  setState(() {
+                    confirmed = value;
+                  });
+                },
+              ),
+              CustomCheckboxItem(
+                label: 'Đã hủy',
+                isChecked: cancelled,
+                onChanged: (value) {
+                  setState(() {
+                    cancelled = value;
+                  });
+                },
+              ),
+              SizedBox(height: 10),
+              const Divider(height: 1, color: Colors.grey),
+
+              const SizedBox(height: 16),
+              // Appointment type section
+              Text('Loại đặt hẹn', style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 5),
+              // Appointment type checkboxes
+              CustomCheckboxItem(
+                label: 'Đặt khám vip',
+                isChecked: vipAppointment,
+                onChanged: (value) {
+                  setState(() {
+                    vipAppointment = value;
+                  });
+                },
+              ),
+              CustomCheckboxItem(
+                label: 'Đặt khám thường',
+                isChecked: regularAppointment,
+                onChanged: (value) {
+                  setState(() {
+                    regularAppointment = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              const Divider(height: 1, color: Colors.grey),
+
+              const SizedBox(height: 16),
+              // Date range section
+              Text('Khoảng thời gian', style: TextStyle(fontSize: 16)),
+
+              // Date range pickers
+              DateRangeSelector(
+                fromDate: fromDate,
+                toDate: toDate,
+                onFromDateChanged: (date) {
+                  setState(() {
+                    fromDate = date;
+                    // If toDate is before fromDate, update toDate
+                    if (toDate != null && toDate!.isBefore(date)) {
+                      toDate = DateTime(date.year, date.month + 1, 1);
+                    }
+                  });
+                },
+                onToDateChanged: (date) {
+                  setState(() {
+                    toDate = date;
+                    // If fromDate is after toDate, update fromDate
+                    if (fromDate != null && fromDate!.isAfter(date)) {
+                      fromDate = DateTime(date.year, date.month - 1, 1);
+                    }
+                  });
+                },
+              ),
+
+              _buildActionButtons(),
+
+              const SizedBox(height: 16), // Extra bottom padding for safe area
+            ],
+          ),
         ),
       ),
     );
@@ -185,52 +196,21 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton(
+            child: BuildButton3(
+              text: 'Lọc',
               onPressed: _resetFilters,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: const BorderSide(color: Colors.blue),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'Xoá lọc',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              icon: Icons.filter_list,
+              height: 48,
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: ElevatedButton(
+            child: BuildButton4(
               onPressed: () {
-                // Apply filters and close the modal
                 Navigator.pop(context);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.filter_list, size: 18, color: Colors.white,),
-                  SizedBox(width: 8),
-                  Text(
-                    'Lọc',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+              text: 'Xoá lọc',
+              icon: Icons.clear,
             ),
           ),
         ],

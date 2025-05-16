@@ -7,7 +7,7 @@ import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';
-
+import 'package:medihub_app/core/widgets/input_field.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -109,14 +109,12 @@ class _SignUpFormState extends State<SignUpForm> {
         );
         return;
       }
-      
+
       // All validation passed, proceed with registration
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Đăng ký thành công'),
-        ),
-      );
-      
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công')));
+
       // Navigate back to login
       Navigator.pop(context);
     }
@@ -133,21 +131,19 @@ class _SignUpFormState extends State<SignUpForm> {
           const Center(
             child: Text(
               'Tạo tài khoản mới',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ),
           const SizedBox(height: 24),
           // Full name input
-          _buildNameInputField(),
-          const SizedBox(height: 16),
-          // Phone/Email input
-          EmailInputField(
-            controller: _phoneController,
-            hintText: 'Email',
+          InputField(
+            controller: _nameController,
+            label: 'Họ và tên',
+            hintText: 'Nhập họ và tên',
           ),
+          const SizedBox(height: 3),
+          // Phone/Email input
+          EmailInputField(controller: _phoneController, hintText: 'Email'),
           const SizedBox(height: 16),
           // Password input field
           PasswordInputField(
@@ -170,10 +166,11 @@ class _SignUpFormState extends State<SignUpForm> {
                 _obscureConfirmPassword = !_obscureConfirmPassword;
               });
             },
-            validator: (value) => Validators.validatePasswordConfirmation(
-              value, 
-              _passwordController.text
-            ),
+            validator:
+                (value) => Validators.validatePasswordConfirmation(
+                  value,
+                  _passwordController.text,
+                ),
           ),
           const SizedBox(height: 16),
           // Terms and conditions checkbox
@@ -192,13 +189,17 @@ class _SignUpFormState extends State<SignUpForm> {
                 child: RichText(
                   text: TextSpan(
                     text: 'Tôi đồng ý với ',
-                    style: const TextStyle(color: Colors.grey),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontFamily: 'Calistoga',
+                    ),
                     children: [
                       TextSpan(
-                        text: 'Điều khoản sử dụng',
+                        text: ' Điều khoản sử dụng',
                         style: const TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'Calistoga',
                         ),
                       ),
                     ],
@@ -209,10 +210,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: 24),
           // Sign up button
-          PrimaryButton(
-            text: 'ĐĂNG KÝ',
-            onPressed: _submitForm,
-          ),
+          PrimaryButton(text: 'ĐĂNG KÝ', onPressed: _submitForm),
           const SizedBox(height: 16),
           // Login link
           AuthLinkText(
@@ -223,39 +221,6 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildNameInputField() {
-    return TextFormField(
-      controller: _nameController,
-      validator: Validators.validateName,
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        hintText: 'Họ và tên',
-        prefixIcon: const Icon(Icons.person_outline, color: Colors.grey),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Colors.blue),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
       ),
     );
   }

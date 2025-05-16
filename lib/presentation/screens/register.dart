@@ -5,6 +5,7 @@ import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';
+import 'package:medihub_app/core/widgets/input_field.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -108,9 +109,10 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         const SizedBox(height: 24),
         // Full name input
-        _buildInputField(
+        InputField(
           controller: _nameController,
-          hintText: 'Họ và tên',
+          label: 'Họ và tên',
+          hintText: 'Nhập họ và tên',
           prefixIcon: Icons.person_outline,
         ),
         const SizedBox(height: 16),
@@ -199,32 +201,6 @@ class _SignUpFormState extends State<SignUpForm> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    IconData? prefixIcon,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 14,
-          ),
-          prefixIcon:
-              prefixIcon != null ? Icon(prefixIcon, color: Colors.grey) : null,
-        ),
-      ),
     );
   }
 }
