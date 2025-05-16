@@ -106,21 +106,12 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppbarWidget(
-        title: 'Lịch Sử Tiêm Chủng',
-        icon: Icons.home_rounded,
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const NavigationBottom()),
-          );
-        },
-      ),
+      appBar: AppbarWidget(title: 'Lịch Sử Tiêm Chủng'),
       body: Column(
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 5),
-            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            color: Colors.blue,
             child: Search_Bar(
               controller: _searchController,
               hintText: 'Tìm theo tên vắc xin...',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
@@ -83,7 +84,7 @@ class _CartScreenState extends State<CartScreen> {
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 5),
-            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            color: Colors.blue,
             child: Search_Bar(
               controller: _searchController,
               hintText: 'Tìm trong giỏ hàng ...',
@@ -301,7 +302,7 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NavigationBottom()),
+                  MaterialPageRoute(builder: (context) => VaccineListScreen()),
                 );
               },
               child: Text(

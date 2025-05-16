@@ -39,9 +39,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
               : null,
 
       elevation: 0,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
-      ),
+      flexibleSpace: Container(decoration: BoxDecoration(color: Colors.blue)),
     );
   }
 }

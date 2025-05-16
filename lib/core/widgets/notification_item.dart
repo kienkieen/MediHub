@@ -28,24 +28,12 @@ class NotificationItem extends StatelessWidget {
           size: 40,
         );
       case NotificationType.promotion:
-        return const Icon(
-          Icons.card_giftcard,
-          color: Colors.purple,
-          size: 40,
-        );
+        return const Icon(Icons.card_giftcard, color: Colors.purple, size: 40);
       case NotificationType.warning:
-        return const Icon(
-          Icons.warning_amber,
-          color: Colors.orange,
-          size: 40,
-        );
+        return const Icon(Icons.warning_amber, color: Colors.orange, size: 40);
       case NotificationType.general:
       default:
-        return const Icon(
-          Icons.local_hospital,
-          color: Colors.blue,
-          size: 40,
-        );
+        return const Icon(Icons.local_hospital, color: Colors.blue, size: 40);
     }
   }
 
@@ -68,9 +56,7 @@ class NotificationItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: notification.isRead ? Colors.white : Colors.lightBlue[50],
       child: InkWell(
         onTap: onTap,
@@ -78,10 +64,12 @@ class NotificationItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center, // Thay đổi từ start sang center
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Thay đổi từ start sang center
             children: [
               Container(
-                alignment: Alignment.center, // Thêm alignment cho container chứa icon
+                alignment:
+                    Alignment.center, // Thêm alignment cho container chứa icon
                 child: _getNotificationIcon(),
               ),
               const SizedBox(width: 12),
@@ -93,7 +81,10 @@ class NotificationItem extends StatelessWidget {
                       notification.title,
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
+                        fontWeight:
+                            notification.isRead
+                                ? FontWeight.normal
+                                : FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),

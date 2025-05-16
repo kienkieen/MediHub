@@ -103,7 +103,7 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 5),
-            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+            color: Colors.blue,
             child: Search_Bar(
               controller: _searchController,
               hintText: 'Tìm theo tên vắc xin ...',

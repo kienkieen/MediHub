@@ -5,13 +5,13 @@ import 'package:medihub_app/presentation/screens/home/home.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 
 class EventsScreen extends StatefulWidget {
-  const EventsScreen({Key? key}) : super(key: key);
+  const EventsScreen({super.key});
 
   @override
-  _EventsScreenState createState() => _EventsScreenState();
+  State<EventsScreen> createState() => _EventsScreenState();
 }
 
-class _EventsScreenState extends State<EventsScreen> 
+class _EventsScreenState extends State<EventsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
@@ -33,9 +33,7 @@ class _EventsScreenState extends State<EventsScreen>
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
@@ -87,9 +85,7 @@ class _EventsScreenState extends State<EventsScreen>
                     const SizedBox(height: 8),
                     Text(
                       event.description,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(color: Colors.grey[700]),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -107,9 +103,7 @@ class _EventsScreenState extends State<EventsScreen>
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
@@ -173,32 +167,27 @@ class _EventsScreenState extends State<EventsScreen>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.keyboard_backspace, color: Colors.white),
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NavigationBottom()),
-              );
-          }
+              context,
+              MaterialPageRoute(builder: (context) => NavigationBottom()),
+            );
+          },
         ),
-        title: const Text(
-          'Sự kiện & Hoạt động',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Text(
+          "Sự kiện & Hoạt động",
+          style: TextStyle(fontSize: 22, color: Colors.white),
         ),
+        centerTitle: true,
         backgroundColor: Colors.blue,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          tabs: const [
-            Tab(text: 'Sự kiện'),
-            Tab(text: 'Hoạt động'),
-          ],
+          labelStyle: const TextStyle(fontSize: 16, fontFamily: 'Calistoga'),
+          tabs: const [Tab(text: 'Sự kiện'), Tab(text: 'Hoạt động')],
         ),
       ),
       body: TabBarView(
@@ -219,7 +208,7 @@ class _EventsScreenState extends State<EventsScreen>
               },
             ),
           ),
-          
+
           // Activities Tab
           NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (OverscrollIndicatorNotification overscroll) {

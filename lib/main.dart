@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: 'Calistoga',
         ),
+        
         home: const NavigationBottom(), // Change to NavigationScreen
       ),
     );
