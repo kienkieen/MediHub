@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
 import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
@@ -16,69 +18,84 @@ class UserAccountScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const _AccountHeader(userName: 'Khách'),
-
-              _Section(
-                title: "Thông tin tài khoản",
-                items: [
-                  _MenuItem(
-                    icon: Icons.edit,
-                    iconColor: Colors.cyan,
-                    title: 'Chỉnh sửa tài khoản',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileScreen(),
-                        ),
-                      );
-                    },
-                    showArrow: true,
-                  ),
-                  _MenuItem(
-                    icon: Icons.description_outlined,
-                    iconColor: Colors.purple,
-                    title: 'Quản lý hồ sơ tiêm chủng',
-                    onTap: () {},
-                    showArrow: true,
-                  ),
-                  _MenuItem(
-                    icon: Icons.card_giftcard_outlined,
-                    iconColor: Colors.green,
-                    title: 'Ưu đãi của tôi',
-                    onTap: () {},
-                    showArrow: true,
-                  ),
-                  _MenuItem(
-                    icon: Icons.help_outline,
-                    iconColor: Colors.orange,
-                    title: 'Tra cứu điểm thưởng',
-                    onTap: () {},
-                    showArrow: true,
-                  ),
-                  _MenuItem(
-                    icon: Icons.lock_outline,
-                    iconColor: Colors.blue,
-                    title: 'Đổi mật khẩu',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ChangePasswordScreen(),
-                        ),
-                      );
-                    },
-                    showArrow: true,
-                  ),
-                  _MenuItem(
-                    icon: Icons.logout_outlined,
-                    iconColor: Colors.red,
-                    title: 'Đăng xuất',
-                    onTap: () {},
-                    showArrow: true,
-                  ),
-                ],
+              _AccountHeader(
+                userName:
+                    userLogin != null
+                        ? ' Xin chào ${useMainLogin?.fullName}'
+                        : 'Khách',
               ),
+              if (userLogin != null) ...[
+                _Section(
+                  title: "Thông tin tài khoản",
+                  items: [
+                    _MenuItem(
+                      icon: Icons.edit,
+                      iconColor: Colors.cyan,
+                      title: 'Chỉnh sửa tài khoản',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),
+                          ),
+                        );
+                      },
+                      showArrow: true,
+                    ),
+                    _MenuItem(
+                      icon: Icons.description_outlined,
+                      iconColor: Colors.purple,
+                      title: 'Quản lý hồ sơ tiêm chủng',
+                      onTap: () {},
+                      showArrow: true,
+                    ),
+                    _MenuItem(
+                      icon: Icons.card_giftcard_outlined,
+                      iconColor: Colors.green,
+                      title: 'Ưu đãi của tôi',
+                      onTap: () {},
+                      showArrow: true,
+                    ),
+                    _MenuItem(
+                      icon: Icons.help_outline,
+                      iconColor: Colors.orange,
+                      title: 'Tra cứu điểm thưởng',
+                      onTap: () {},
+                      showArrow: true,
+                    ),
+                    _MenuItem(
+                      icon: Icons.lock_outline,
+                      iconColor: Colors.blue,
+                      title: 'Đổi mật khẩu',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ChangePasswordScreen(),
+                          ),
+                        );
+                      },
+                      showArrow: true,
+                    ),
+                    _MenuItem(
+                      icon: Icons.logout_outlined,
+                      iconColor: Colors.red,
+                      title: 'Đăng xuất',
+                      onTap: () {
+                        SignOut();
+                        userLogin = null;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const UserAccountScreen(),
+                          ),
+                        );
+                      },
+                      showArrow: true,
+                    ),
+                  ],
+                ),
+              ],
 
               // Contact Information Header
               _Section(
@@ -198,26 +215,27 @@ class _AccountHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Colors.white, width: 1),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+          if (userLogin == null)
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.white, width: 1),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+              icon: const Icon(
+                Icons.login_outlined,
+                color: Color.fromARGB(255, 255, 255, 255), // Đổi màu biểu tượng
+              ),
+              label: const Text('Đăng nhập/Đăng ký'),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            },
-            icon: const Icon(
-              Icons.login_outlined,
-              color: Color.fromARGB(255, 255, 255, 255), // Đổi màu biểu tượng
-            ),
-            label: const Text('Đăng nhập/Đăng ký'),
-          ),
         ],
       ),
     );

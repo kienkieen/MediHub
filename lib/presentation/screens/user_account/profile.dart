@@ -4,6 +4,7 @@ import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/main.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -509,5 +510,11 @@ class _ProfileState extends State<ProfileScreen> {
     if (district == null) return ['Chọn Phường/Xã'];
 
     return ['Phường 1', 'Phường 2', 'Phường 3', 'Xã An Phú'];
+  }
+
+  void setUpdataUser() {
+    if (useMainLogin != null) {
+      _nameController.text = useMainLogin!.fullName;
+    }
   }
 }

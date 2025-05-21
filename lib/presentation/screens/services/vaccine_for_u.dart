@@ -6,7 +6,7 @@ import 'package:medihub_app/core/widgets/search_bar.dart';
 // import 'package:medihub_app/core/widgets/filterchip.dart';
 import 'package:medihub_app/core/utils/constants.dart';
 import 'package:medihub_app/models/vaccine.dart';
-import 'package:medihub_app/models/user.dart';
+import 'package:medihub_app/models/userMain.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_detail.dart';
 import 'package:medihub_app/providers/cart_provider.dart';
 import 'package:medihub_app/core/widgets/button2.dart';
@@ -24,7 +24,7 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
   List<Vaccine> _vaccines = [];
   List<Vaccine> _filteredVaccines = [];
   FilterOptions _filterOptions = FilterOptions();
-  User? _currentUser;
+  UserMain? _currentUser;
   String? _ageGroup;
 
   @override
@@ -43,7 +43,7 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
   }
 
   void _initializeUser() {
-    final user = User(
+    final user = UserMain(
       userId: '12345',
       fullName: 'An Bùi',
       gender: 'Male',

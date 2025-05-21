@@ -1,18 +1,18 @@
 import 'package:intl/intl.dart';
 
-class User {
-  final String userId;          // ID người dùng
-  final String fullName;        // Họ tên
-  final String gender;          // Giới tính (Male/Female/Other)
-  final DateTime dateOfBirth;   // Ngày sinh
-  final String phoneNumber;     // Số điện thoại
-  final String email;           // Email
-  final String address;         // Địa chỉ
-  final String idCardNumber;    // Số CCCD
-  final String ethnicity;       // Dân tộc
-  final String nationality;     // Quốc tịch
+class UserMain {
+  final String userId; // ID người dùng
+  final String fullName; // Họ tên
+  final String gender; // Giới tính (Male/Female/Other)
+  final DateTime dateOfBirth; // Ngày sinh
+  final String phoneNumber; // Số điện thoại
+  final String email; // Email
+  final String address; // Địa chỉ
+  final String idCardNumber; // Số CCCD
+  final String ethnicity; // Dân tộc
+  final String nationality; // Quốc tịch
 
-  User({
+  UserMain({
     required this.userId,
     required this.fullName,
     required this.gender,
@@ -42,8 +42,8 @@ class User {
   }
 
   // Factory method để tạo User từ Firebase Document
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory UserMain.fromMap(Map<String, dynamic> map) {
+    return UserMain(
       userId: map['userId'] ?? '',
       fullName: map['fullName'] ?? '',
       gender: map['gender'] ?? 'Other',
@@ -61,7 +61,7 @@ class User {
   int get age {
     final now = DateTime.now();
     int age = now.year - dateOfBirth.year;
-    if (now.month < dateOfBirth.month || 
+    if (now.month < dateOfBirth.month ||
         (now.month == dateOfBirth.month && now.day < dateOfBirth.day)) {
       age--;
     }
@@ -78,7 +78,7 @@ class AgeService {
   static int calculateAge(DateTime birthDate) {
     final now = DateTime.now();
     int age = now.year - birthDate.year;
-    if (now.month < birthDate.month || 
+    if (now.month < birthDate.month ||
         (now.month == birthDate.month && now.day < birthDate.day)) {
       age--;
     }

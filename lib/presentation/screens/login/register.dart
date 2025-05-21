@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medihub_app/core/utils/validators.dart';
@@ -8,6 +10,8 @@ import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/verifyCodeInput.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -81,23 +85,52 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _verifiGmail = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
+  late String codeVerify;
+  bool _isSendVerify = false;
+  Color _colorVerify = Colors.blue;
 
   @override
   void dispose() {
     _nameController.dispose();
-    _phoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _verifiGmail.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
+  void changeColor() {
+    setState(() {
+      _colorVerify = const Color.fromARGB(137, 33, 149, 243);
+    });
+  }
+
+  String randomCode() {
+    final r = Random();
+    return List.generate(6, (_) => r.nextInt(10)).join();
+  }
+
+  void _submitRecieveCodeVerify(String nameEmail) {
+    if (nameEmail.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Hãy nhập Email')));
+      return;
+    }
+    codeVerify = randomCode();
+    sendEmail(nameEmail, codeVerify);
+    _isSendVerify = true;
+    changeColor();
+  }
+
+  void _submitForm(String email, String password, String name) async {
     // First validate form fields
     if (_formKey.currentState!.validate()) {
       // Check if terms are agreed to
@@ -110,12 +143,24 @@ class _SignUpFormState extends State<SignUpForm> {
         return;
       }
 
-      // All validation passed, proceed with registration
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công')));
-
-      // Navigate back to login
+      try {
+        if (codeVerify != _verifiGmail.text) throw Exception(1);
+        if (await signUp(email, password, name)) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Đăng ký thành công')));
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Đăng ký thất bại')));
+        }
+      } catch (e) {
+        if (e == 1) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Mã xác thực không đúng')),
+          );
+        }
+      }
       Navigator.pop(context);
     }
   }
@@ -142,10 +187,24 @@ class _SignUpFormState extends State<SignUpForm> {
             hintText: 'Nhập họ và tên',
           ),
           const SizedBox(height: 3),
-          // Phone/Email input
-          EmailInputField(controller: _phoneController, hintText: 'Email'),
+          EmailInputField(controller: _emailController, hintText: 'Email'),
           const SizedBox(height: 16),
-          // Password input field
+          VerifyCodeInput(
+            controller: _verifiGmail,
+            required: true,
+            hintText: 'Mã xác thực',
+          ),
+          const SizedBox(height: 16),
+          PrimaryButton(
+            text: 'Nhận mã xác thực',
+            backgroundColor: _colorVerify,
+            onPressed: () {
+              _isSendVerify
+                  ? null
+                  : _submitRecieveCodeVerify(_emailController.text);
+            },
+          ),
+          const SizedBox(height: 16),
           PasswordInputField(
             controller: _passwordController,
             obscureText: _obscurePassword,
@@ -210,7 +269,17 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: 24),
           // Sign up button
-          PrimaryButton(text: 'ĐĂNG KÝ', onPressed: _submitForm),
+          PrimaryButton(
+            text: 'ĐĂNG KÝ',
+            onPressed:
+                () => {
+                  _submitForm(
+                    _emailController.text,
+                    _passwordController.text,
+                    _nameController.text,
+                  ),
+                },
+          ),
           const SizedBox(height: 16),
           // Login link
           AuthLinkText(

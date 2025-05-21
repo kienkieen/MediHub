@@ -1,57 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 
 // Danh sách vaccine toàn cục
-final List<Vaccine> allVaccines = [
-  Vaccine(
-    id: 'vaccine1',
-    name: 'PREVENAR 13.0.5ML INJ',
-    description: 'Phòng bệnh do Phế cầu',
-    diseases: ['Phế cầu'],
-    ageRange: '6 tháng - 5 tuổi',
-    price: 333050,
-    importedDate: DateTime(2023, 1, 1),
-    manufacturer: 'Bi',
-    imageUrl: 'assets/icons/vaccine/vaccine1.png',
-    vaccinationSchedules: [],
-    administrationRoute: 'Tiêm bắp',
-    contraindications: [],
-    storageCondition: '2-8°C',
-  ),
-  Vaccine(
-    id: 'vaccine2',
-    name: 'Vắc xin tổng hợp',
-    description: 'Phòng đa bệnh',
-    diseases: ['Đa bệnh'],
-    ageRange: '6 tháng - 5 tuổi',
-    price: 383080,
-    importedDate: DateTime(2023, 1, 1),
-    manufacturer: 'Đa quốc gia',
-    imageUrl: 'assets/icons/vaccine/vaccine2.png',
-    vaccinationSchedules: [],
-    administrationRoute: 'Tiêm bắp',
-    contraindications: [],
-    storageCondition: '2-8°C',
-  ),
-  Vaccine(
-    id: 'vaccine3',
-    name: 'VAXIGRIP TETRA',
-    description: 'Phòng Cúm',
-    diseases: ['Cúm'],
-    ageRange: '6 tháng - 5 tuổi',
-    price: 355000,
-    importedDate: DateTime(2023, 1, 1),
-    manufacturer: 'Pháp',
-    imageUrl: 'assets/icons/vaccine/vaccine3.png',
-    vaccinationSchedules: [],
-    administrationRoute: 'Tiêm bắp',
-    contraindications: [],
-    storageCondition: '2-8°C',
-  ),
-];
+// final List<Vaccine> allVaccines = [
+//   Vaccine(
+//     id: 'vaccine1',
+//     name: 'PREVENAR 13.0.5ML INJ',
+//     description: 'Phòng bệnh do Phế cầu',
+//     diseases: ['Phế cầu'],
+//     ageRange: '6 tháng - 5 tuổi',
+//     price: 333050,
+//     importedDate: DateTime(2023, 1, 1),
+//     manufacturer: 'Bi',
+//     imageUrl: 'assets/icons/vaccine/vaccine1.png',
+//     vaccinationSchedules: [],
+//     administrationRoute: 'Tiêm bắp',
+//     contraindications: [],
+//     storageCondition: '2-8°C',
+//   ),
+//   Vaccine(
+//     id: 'vaccine2',
+//     name: 'Vắc xin tổng hợp',
+//     description: 'Phòng đa bệnh',
+//     diseases: ['Đa bệnh'],
+//     ageRange: '6 tháng - 5 tuổi',
+//     price: 383080,
+//     importedDate: DateTime(2023, 1, 1),
+//     manufacturer: 'Đa quốc gia',
+//     imageUrl: 'assets/icons/vaccine/vaccine2.png',
+//     vaccinationSchedules: [],
+//     administrationRoute: 'Tiêm bắp',
+//     contraindications: [],
+//     storageCondition: '2-8°C',
+//   ),
+//   Vaccine(
+//     id: 'vaccine3',
+//     name: 'VAXIGRIP TETRA',
+//     description: 'Phòng Cúm',
+//     diseases: ['Cúm'],
+//     ageRange: '6 tháng - 5 tuổi',
+//     price: 355000,
+//     importedDate: DateTime(2023, 1, 1),
+//     manufacturer: 'Pháp',
+//     imageUrl: 'assets/icons/vaccine/vaccine3.png',
+//     vaccinationSchedules: [],
+//     administrationRoute: 'Tiêm bắp',
+//     contraindications: [],
+//     storageCondition: '2-8°C',
+//   ),
+// ];
 
 class VaccinePackageScreen extends StatefulWidget {
   const VaccinePackageScreen({super.key});
@@ -811,7 +812,7 @@ class _VaccinePackageDetailScreenState
         final quantity = _vaccineQuantities[key] ?? 1;
 
         // Tìm vaccine trong danh sách allVaccines
-        final vaccine = allVaccines.firstWhere(
+        final vaccine = allVaccines!.firstWhere(
           (v) => v.id.toLowerCase() == key.toLowerCase(),
           orElse:
               () => Vaccine(
