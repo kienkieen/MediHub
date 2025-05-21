@@ -6,6 +6,7 @@ import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart
 import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart';
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/verifyCodeInput.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -82,6 +83,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _verifiGmail = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
@@ -116,7 +118,7 @@ class _SignUpFormState extends State<SignUpForm> {
           prefixIcon: Icons.person_outline,
         ),
         const SizedBox(height: 16),
-        // Phone input with country code
+        VerifyCodeInput(controller: _verifiGmail, required: true),
         const SizedBox(height: 16),
         // Password input field
         PasswordInputField(
