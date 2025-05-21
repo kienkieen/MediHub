@@ -9,6 +9,7 @@ import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/register.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -86,13 +87,21 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm(String email, String password) async {
     if (_formKey.currentState!.validate()) {
-      // Form is valid, proceed with login
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => NavigationBottom()),
-      );
+      if (await SignIn(email, password)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NavigationBottom()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Thông tin đăng nhập không đúng')),
+        );
+      }
     }
   }
 
@@ -150,7 +159,13 @@ class _LoginFormState extends State<LoginForm> {
 
           const SizedBox(height: 20),
           // Login button
-          PrimaryButton(text: 'ĐĂNG NHẬP', onPressed: _submitForm),
+          PrimaryButton(
+            text: 'ĐĂNG NHẬP',
+            onPressed:
+                () => {
+                  _submitForm(_phoneController.text, _passwordController.text),
+                },
+          ),
           const SizedBox(height: 16),
           // Register link
           AuthLinkText(
