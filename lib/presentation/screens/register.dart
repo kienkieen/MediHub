@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // Import the extracted widgets
@@ -87,6 +89,9 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
+  late String codeVerify;
+  bool _isSendVerify = false;
+  Color _colorVerify = Colors.blue;
 
   @override
   void dispose() {
@@ -119,6 +124,15 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         const SizedBox(height: 16),
         VerifyCodeInput(controller: _verifiGmail, required: true),
+        PrimaryButton(
+          text: 'Nhận mã xác thực',
+          backgroundColor: _colorVerify,
+          onPressed: () {
+            _isSendVerify
+                ? null
+                : _submitRecieveCodeVerify(_phoneController.text);
+          },
+        ),
         const SizedBox(height: 16),
         // Password input field
         PasswordInputField(
@@ -204,5 +218,29 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
       ],
     );
+  }
+
+  void changeColor() {
+    setState(() {
+      _colorVerify = const Color.fromARGB(137, 33, 149, 243);
+    });
+  }
+
+  String randomCode() {
+    final r = Random();
+    return List.generate(6, (_) => r.nextInt(10)).join();
+  }
+
+  void _submitRecieveCodeVerify(String nameEmail) {
+    if (nameEmail.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Hãy nhập Email')));
+      return;
+    }
+    codeVerify = randomCode();
+    sendEmail(nameEmail, codeVerify);
+    _isSendVerify = true;
+    changeColor();
   }
 }
