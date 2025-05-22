@@ -37,9 +37,14 @@ Future<bool> signUp(String email, String password, String name) async {
       userId: user!.uid,
       fullName: name,
       gender: '',
+      job: 'Chưa xác định',
       dateOfBirth: DateTime.now(),
       phoneNumber: '',
-      email: '',
+      numberBHYT: '',
+      email: email,
+      city: '',
+      district: '',
+      ward: '',
       address: '',
       idCardNumber: '',
       ethnicity: '',
@@ -87,6 +92,28 @@ Future<bool> checkIDExist(String collection, String idItem) async {
             .doc(idItem)
             .get();
     return doc.exists;
+  } catch (e) {
+    return false;
+  }
+}
+
+Future<bool> ChangePassword(
+  String email,
+  String password,
+  String newPassword,
+) async {
+  try {
+    AuthCredential credential = EmailAuthProvider.credential(
+      email: email,
+      password: password,
+    );
+
+    await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(
+      credential,
+    );
+
+    await FirebaseAuth.instance.currentUser!.updatePassword(newPassword);
+    return true;
   } catch (e) {
     return false;
   }

@@ -6,6 +6,7 @@ class InputField extends StatelessWidget {
   final String hintText;
   final IconData? prefixIcon;
   final bool isRequired;
+  final bool enable;
 
   const InputField({
     super.key,
@@ -14,6 +15,7 @@ class InputField extends StatelessWidget {
     required this.hintText,
     this.prefixIcon,
     this.isRequired = false,
+    this.enable = true,
   });
 
   @override
@@ -36,6 +38,7 @@ class InputField extends StatelessWidget {
         const SizedBox(height: 4),
         TextField(
           controller: controller,
+          enabled: enable,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),

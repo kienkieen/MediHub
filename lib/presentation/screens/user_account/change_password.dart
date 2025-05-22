@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medihub_app/core/utils/validators.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
+import 'package:medihub_app/core/widgets/login_widgets/verifyCodeInput.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/main.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -14,29 +19,84 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
+  final _newpasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _verifiGmail = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  late String codeVerify;
+  bool _isSendVerify = false;
+  Color _colorVerify = Colors.blue;
 
   @override
   void dispose() {
     _passwordController.dispose();
+    _newpasswordController.dispose();
     _confirmPasswordController.dispose();
+    _verifiGmail.dispose();
     super.dispose();
   }
 
-  void _handleResetPassword() {
+  void _handleResetPassword() async {
     if (_formKey.currentState!.validate()) {
-      // Show success and navigate back to login
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mật khẩu đã được đặt lại thành công'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Navigate back to login screen
-      Navigator.popUntil(context, (route) => route.isFirst);
+      if (_verifiGmail.text == codeVerify) {
+        bool t = await ChangePassword(
+          useMainLogin!.email,
+          _passwordController.text,
+          _newpasswordController.text,
+        );
+        if (t) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Mật khẩu đã được đặt lại thành công'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // // Navigate back to login screen
+          Navigator.popUntil(context, (route) => route.isActive);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'thao tác thất bại! Mật khẩu sai hoặc mật khẩu mới không khớp',
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mã xác thực không đúng!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     }
+  }
+
+  void changeColor() {
+    setState(() {
+      _colorVerify = const Color.fromARGB(137, 33, 149, 243);
+    });
+  }
+
+  String randomCode() {
+    final r = Random();
+    return List.generate(6, (_) => r.nextInt(10)).join();
+  }
+
+  void _submitRecieveCodeVerify(String nameEmail) {
+    if (nameEmail.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Hãy nhập Email')));
+      return;
+    }
+    codeVerify = randomCode();
+    sendEmail(nameEmail, codeVerify);
+    _isSendVerify = true;
+    changeColor();
   }
 
   @override
@@ -93,7 +153,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           ),
                           SizedBox(height: constraints.maxHeight * 0.03),
                           PasswordInputField(
-                            controller: _passwordController,
+                            controller: _newpasswordController,
                             label: 'Mật khẩu mới',
                             hintText: 'Nhập mật khẩu mới',
                             obscureText: _obscurePassword,
@@ -114,13 +174,31 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 (value) =>
                                     Validators.validatePasswordConfirmation(
                                       value,
-                                      _passwordController.text,
+                                      _newpasswordController.text,
                                     ),
                             onToggleVisibility: () {
                               setState(() {
                                 _obscureConfirmPassword =
                                     !_obscureConfirmPassword;
                               });
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          VerifyCodeInput(
+                            controller: _verifiGmail,
+                            required: true,
+                            hintText: 'Mã xác thực',
+                          ),
+                          const SizedBox(height: 16),
+                          PrimaryButton(
+                            text: 'Nhận mã xác thực',
+                            backgroundColor: _colorVerify,
+                            onPressed: () {
+                              _isSendVerify
+                                  ? null
+                                  : _submitRecieveCodeVerify(
+                                    useMainLogin!.email,
+                                  );
                             },
                           ),
                           const SizedBox(height: 20),

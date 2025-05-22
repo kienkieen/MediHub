@@ -20,9 +20,7 @@ class UserAccountScreen extends StatelessWidget {
             children: [
               _AccountHeader(
                 userName:
-                    userLogin != null
-                        ? ' Xin chào ${useMainLogin?.fullName}'
-                        : 'Khách',
+                    userLogin != null ? '${useMainLogin?.fullName}' : 'Khách',
               ),
               if (userLogin != null) ...[
                 _Section(
@@ -205,6 +203,17 @@ class _AccountHeader extends StatelessWidget {
             backgroundColor: Colors.white,
             child: Icon(Icons.person, size: 50, color: Colors.grey),
           ),
+          if (useMainLogin != null) ...[
+            const SizedBox(height: 15),
+            Text(
+              "Xin chào",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
           const SizedBox(height: 15),
           Text(
             userName,

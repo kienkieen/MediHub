@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:medihub_app/core/widgets/button2.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -101,6 +103,7 @@ class _ProfileState extends State<ProfileScreen> {
     _addressController.addListener(_validateForm);
     // Set defaults
     _countryValue = 'Việt Nam';
+    setUpdataUser();
   }
 
   @override
@@ -115,9 +118,32 @@ class _ProfileState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  void setUpdataUser() {
+    if (useMainLogin != null) {
+      DateFormat format = DateFormat('dd/MM/yyyy');
+      String formattedDate = DateFormat(
+        'dd/MM/yyyy',
+      ).format(useMainLogin!.dateOfBirth);
+      _nameController.text = useMainLogin!.fullName;
+      _dobController.text = formattedDate;
+      _genderValue = useMainLogin!.gender;
+      _idController.text = useMainLogin!.idCardNumber;
+      _insuranceController.text = useMainLogin!.numberBHYT;
+      _phoneController.text = useMainLogin!.phoneNumber;
+      _addressController.text = useMainLogin!.address;
+      _countryValue = useMainLogin!.nationality;
+      _ethnicValue = useMainLogin!.ethnicity;
+      _provinceValue = useMainLogin!.city;
+      _districtValue = useMainLogin!.district;
+      _wardValue = useMainLogin!.ward;
+      _jobValue = useMainLogin!.job;
+    }
+  }
+
   void _validateForm() {
+    bool tmp = false;
     setState(() {
-      _isFormValid =
+      tmp =
           _nameController.text.isNotEmpty &&
           _dobController.text.isNotEmpty &&
           _idController.text.isNotEmpty &&
@@ -131,10 +157,10 @@ class _ProfileState extends State<ProfileScreen> {
           _phoneController.text.isNotEmpty;
     });
 
-    if (_isFormValid != _isFormValid) {
+    if (_isFormValid != tmp) {
       // Chỉ setState khi có thay đổi
       setState(() {
-        _isFormValid = _isFormValid;
+        _isFormValid = tmp;
       });
     }
   }
@@ -155,18 +181,42 @@ class _ProfileState extends State<ProfileScreen> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     _validateForm();
     if (_isFormValid) {
+      DateFormat format = DateFormat('dd/M/yyyy');
+      useMainLogin?.fullName = _nameController.text;
+      useMainLogin?.dateOfBirth = format.parse(_dobController.text);
+      useMainLogin?.gender = _genderValue!;
+      useMainLogin?.idCardNumber = _idController.text;
+      useMainLogin?.numberBHYT = _insuranceController.text;
+      useMainLogin?.job = _jobValue.toString();
+      useMainLogin?.phoneNumber = _phoneController.text;
+      useMainLogin?.nationality = _countryValue.toString();
+      useMainLogin?.ethnicity = _ethnicValue.toString();
+      useMainLogin?.city = _provinceValue.toString();
+      useMainLogin?.district = _districtValue.toString();
+      useMainLogin?.ward = _wardValue.toString();
+      useMainLogin?.address = _addressController.text;
+      bool up = await updateData(
+        "THONGTIN_NGUOIDUNG",
+        useMainLogin!.userId.toString(),
+        useMainLogin!.toMap(),
+      );
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Đang xử lý hồ sơ...')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vui lòng điền đầy đủ thông tin bắt buộc'),
-        ),
-      );
+      ).showSnackBar(const SnackBar(content: Text('Đang cập nhập...')));
+      if (up) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Cập nhập thành công')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Vui lòng điền đầy đủ thông tin bắt buộc'),
+          ),
+        );
+      }
     }
   }
 
@@ -510,11 +560,5 @@ class _ProfileState extends State<ProfileScreen> {
     if (district == null) return ['Chọn Phường/Xã'];
 
     return ['Phường 1', 'Phường 2', 'Phường 3', 'Xã An Phú'];
-  }
-
-  void setUpdataUser() {
-    if (useMainLogin != null) {
-      _nameController.text = useMainLogin!.fullName;
-    }
   }
 }

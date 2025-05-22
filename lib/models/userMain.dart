@@ -1,24 +1,34 @@
 import 'package:intl/intl.dart';
 
 class UserMain {
-  final String userId; // ID người dùng
-  final String fullName; // Họ tên
-  final String gender; // Giới tính (Male/Female/Other)
-  final DateTime dateOfBirth; // Ngày sinh
-  final String phoneNumber; // Số điện thoại
-  final String email; // Email
-  final String address; // Địa chỉ
-  final String idCardNumber; // Số CCCD
-  final String ethnicity; // Dân tộc
-  final String nationality; // Quốc tịch
+  String userId; // ID người dùng
+  String fullName; // Họ tên
+  String gender; // Giới tính (Male/Female/Other)
+  String job; // Nghề nghiệp
+  DateTime dateOfBirth; // Ngày sinh
+  String phoneNumber; // Số điện thoại
+  String numberBHYT; // Số bảo hiểm y tế
+  String email; // Email
+  String city; // Thành phố
+  String district; // Quận huyện
+  String ward; // Phường xã
+  String address; // Địa chỉ
+  String idCardNumber; // Số CCCD
+  String ethnicity; // Dân tộc
+  String nationality; // Quốc tịch
 
   UserMain({
     required this.userId,
     required this.fullName,
     required this.gender,
+    this.job = 'Chưa xác định',
     required this.dateOfBirth,
     required this.phoneNumber,
+    required this.numberBHYT,
     required this.email,
+    required this.city,
+    required this.district,
+    required this.ward,
     required this.address,
     required this.idCardNumber,
     required this.ethnicity,
@@ -31,9 +41,14 @@ class UserMain {
       'userId': userId,
       'fullName': fullName,
       'gender': gender,
+      'job': job,
       'dateOfBirth': dateOfBirth.toIso8601String(),
       'phoneNumber': phoneNumber,
+      'numberBHYT': numberBHYT,
       'email': email,
+      'city': city,
+      'district': district,
+      'ward': ward,
       'address': address,
       'idCardNumber': idCardNumber,
       'ethnicity': ethnicity,
@@ -47,9 +62,14 @@ class UserMain {
       userId: map['userId'] ?? '',
       fullName: map['fullName'] ?? '',
       gender: map['gender'] ?? 'Other',
+      job: map['job'] ?? 'Chưa xác định',
       dateOfBirth: DateTime.parse(map['dateOfBirth']),
       phoneNumber: map['phoneNumber'] ?? '',
+      numberBHYT: map['numberBHYT'] ?? '',
       email: map['email'] ?? '',
+      city: map['city'] ?? '',
+      district: map['district'] ?? '',
+      ward: map['ward'] ?? '',
       address: map['address'] ?? '',
       idCardNumber: map['idCardNumber'] ?? '',
       ethnicity: map['ethnicity'] ?? '',

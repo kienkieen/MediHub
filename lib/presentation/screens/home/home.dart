@@ -5,7 +5,9 @@ import 'package:medihub_app/core/widgets/partnered_hospitals_section.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
 import 'package:medihub_app/core/widgets/services_grid.dart';
 import 'package:medihub_app/core/widgets/auto_image_slider.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +18,52 @@ class HomeScreen extends StatefulWidget {
 
 class _VaccineListScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  bool checkNull() {
+    if (useMainLogin?.numberBHYT.isEmpty == true ||
+        useMainLogin?.numberBHYT == null ||
+        useMainLogin?.idCardNumber.isEmpty == true ||
+        useMainLogin?.idCardNumber == null ||
+        useMainLogin?.phoneNumber.isEmpty == true ||
+        useMainLogin?.phoneNumber == null) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userLogin != null && checkNull() == false) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Thông báo'),
+              content: const Text(
+                'Vui lòng cập nhật thông tin cá nhân trước khi sử dụng dịch vụ.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Cập nhật'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +133,6 @@ class _VaccineListScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-
       backgroundColor: Colors.white,
     );
   }
