@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
 import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
@@ -85,7 +86,9 @@ class UserAccountScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const UserAccountScreen(),
+                            builder:
+                                (context) =>
+                                    const NavigationBottom(initialIndex: 4),
                           ),
                         );
                       },
@@ -236,7 +239,9 @@ class _AccountHeader extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(isNewLoginl: true),
+                  ),
                 );
               },
               icon: const Icon(

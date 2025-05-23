@@ -6,7 +6,8 @@ import 'package:medihub_app/presentation/screens/user_account/user_account.dart'
 import 'package:medihub_app/presentation/screens/services/appointment.dart';
 
 class NavigationBottom extends StatefulWidget {
-  const NavigationBottom({super.key});
+  final int? initialIndex; // Mục được chọn ban đầu
+  const NavigationBottom({super.key, this.initialIndex});
 
   @override
   State<NavigationBottom> createState() => _NavigationBottomState();
@@ -22,6 +23,14 @@ class _NavigationBottomState extends State<NavigationBottom> {
     NotificationScreen(), // Thông báo
     UserAccountScreen(), // Tài khoản
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialIndex != null) {
+      _selectedIndex = widget.initialIndex!;
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {

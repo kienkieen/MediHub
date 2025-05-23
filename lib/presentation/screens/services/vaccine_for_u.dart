@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
@@ -32,6 +35,17 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
     super.initState();
     _loadVaccines();
     _initializeUser();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userLogin == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(isNewLoginl: false),
+          ),
+        );
+      }
+    });
   }
 
   void _loadVaccines() {

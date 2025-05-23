@@ -8,6 +8,7 @@ import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart
 import 'package:medihub_app/core/widgets/login_widgets/verifyCodeInput.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -53,7 +54,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             ),
           );
           // // Navigate back to login screen
-          Navigator.popUntil(context, (route) => route.isActive);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationBottom(initialIndex: 4),
+            ),
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

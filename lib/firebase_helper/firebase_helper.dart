@@ -139,6 +139,22 @@ Future<bool> insertData(
   }
 }
 
+Future<bool> insertDataAutoID(
+  String collection,
+  Map<String, dynamic> data,
+) async {
+  try {
+    if (collection.isEmpty || data.isEmpty) {
+      throw Exception(false);
+    }
+    await FirebaseFirestore.instance.collection(collection).add(data);
+    return true;
+  } catch (e) {
+    print(e);
+    return false;
+  }
+}
+
 Future<Map<String, dynamic>?> getData(String collection, String idItem) async {
   try {
     if (collection.isEmpty || idItem.isEmpty) throw Exception(false);

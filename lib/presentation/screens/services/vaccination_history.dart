@@ -4,9 +4,12 @@ import 'package:collection/collection.dart'; // Để sử dụng groupBy
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
 import 'package:medihub_app/core/utils/constants.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/models/vaccine_record.dart';
-import 'package:medihub_app/models/vaccine.dart'; // Giả sử có model Vaccine
+import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart'; // Giả sử có model Vaccine
 
 class VaccinationHistoryScreen extends StatefulWidget {
   const VaccinationHistoryScreen({super.key});
@@ -28,6 +31,17 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
     super.initState();
     _loadRecords();
     _searchController.addListener(_applyFilters);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userLogin == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(isNewLoginl: false),
+          ),
+        );
+      }
+    });
   }
 
   void _loadRecords() {

@@ -27,13 +27,13 @@ class ServicesGrid extends StatelessWidget {
         },
       },
       {
-        'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
-        'label': 'Các\ngói tiêm',
+        'iconPath': 'assets/icons/grid_service/age.png',
+        'label': 'Vắc xin\ncho bạn',
         'onPressed': () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const VaccinePackageScreen(),
+              builder: (context) => const VaccineForYouScreen(),
             ),
           );
         },
@@ -76,13 +76,13 @@ class ServicesGrid extends StatelessWidget {
         },
       },
       {
-        'iconPath': 'assets/icons/grid_service/age.png',
-        'label': 'Vắc xin\ncho bạn',
+        'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
+        'label': 'Các\ngói tiêm',
         'onPressed': () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const VaccineForYouScreen(),
+              builder: (context) => const VaccinePackageScreen(),
             ),
           );
         },

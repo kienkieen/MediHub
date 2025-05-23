@@ -12,53 +12,63 @@ import 'package:medihub_app/presentation/screens/login/register.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final bool isNewLoginl;
+  const LoginScreen({super.key, required this.isNewLoginl});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.lightBlue),
-          onPressed: () {
-            Navigator.pop(context); // Handle back button press
-          },
-        ),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            width: double.infinity, // Chiều ngang full
-            height: MediaQuery.of(context).size.height, // Chiều cao full
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Logo
-                Image.asset('assets/images/vietnam_flag.png', height: 70),
-                const SizedBox(height: 8),
-                // Slogan
-                const Text(
-                  'Giải pháp tiếp cận y tế thông minh',
-                  style: TextStyle(color: Colors.blue, fontSize: 18),
-                ),
-                const SizedBox(height: 40),
-                const LoginForm(),
-                const SizedBox(height: 20),
-                const Text(
-                  'Hoặc đăng nhập bằng tài khoản',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-                const SizedBox(height: 20),
-                const SocialLoginOptions(),
+    return PopScope(
+      canPop: isNewLoginl,
+      child: Scaffold(
+        appBar:
+            isNewLoginl
+                ? AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.lightBlue,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context); // Handle back button press
+                    },
+                  ),
+                  systemOverlayStyle: SystemUiOverlayStyle.light,
+                )
+                : null,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              width: double.infinity, // Chiều ngang full
+              height: MediaQuery.of(context).size.height, // Chiều cao full
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Logo
+                  Image.asset('assets/images/vietnam_flag.png', height: 70),
+                  const SizedBox(height: 8),
+                  // Slogan
+                  const Text(
+                    'Giải pháp tiếp cận y tế thông minh',
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),
+                  const SizedBox(height: 40),
+                  const LoginForm(),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Hoặc đăng nhập bằng tài khoản',
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                  const SizedBox(height: 20),
+                  const SocialLoginOptions(),
 
-                // Không dùng Spacer nữa vì nó gây lỗi với ScrollView
-                const SizedBox(height: 20),
-              ],
+                  // Không dùng Spacer nữa vì nó gây lỗi với ScrollView
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

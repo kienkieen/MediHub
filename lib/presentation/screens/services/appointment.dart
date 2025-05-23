@@ -5,7 +5,11 @@ import 'package:medihub_app/core/widgets/services_widgets/empty_appointment_view
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
@@ -125,8 +129,9 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   final FocusNode _focusNode = FocusNode();
   DateTime? _selectedDate;
   Vaccine? selectedVaccine;
+  double sumBill = 0;
 
-  final List<String> _selectedVaccines = [];
+  final List<Vaccine> _selectedVaccines = [];
   final Color _primaryColor = const Color(0xFF019BD3);
   final Color _secondaryColor = const Color(0xA701CBEE);
 
@@ -137,6 +142,30 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     'Trung tâm Y tế dự phòng Hà Nội',
     'Bệnh viện Bạch Mai',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userLogin == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(isNewLoginl: false),
+          ),
+        );
+      }
+    });
+  }
+
+  void _plusAllBill(Vaccine vaccine) {
+    sumBill += vaccine.price;
+  }
+
+  void _minusAllBill(Vaccine vaccine) {
+    sumBill -= vaccine.price;
+  }
 
   void _openCartToSelectVaccine() async {
     final result = await Navigator.push(
@@ -149,6 +178,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     if (result != null && result is Vaccine) {
       setState(() {
         selectedVaccine = result;
+        _selectedVaccines.add(result);
+        _plusAllBill(result);
       });
     }
   }
@@ -165,6 +196,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     if (result != null && result is Vaccine) {
       setState(() {
         selectedVaccine = result;
+        _selectedVaccines.add(result);
+        _plusAllBill(result);
       });
       print('Vắc xin được chọn: ${selectedVaccine!.name}');
     }
@@ -230,8 +263,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Phần thông tin người tiêm
-              const Text(
-                'Người tiêm: Kieu Van',
+              Text(
+                'Người tiêm: ${useMainLogin!.fullName}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 2),
@@ -301,12 +334,13 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                     return Card(
                       margin: const EdgeInsets.only(bottom: 8),
                       child: ListTile(
-                        title: Text(_selectedVaccines[index]),
+                        title: Text(_selectedVaccines[index].name),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             setState(() {
                               _selectedVaccines.removeAt(index);
+                              _minusAllBill(_selectedVaccines[index]);
                             });
                           },
                         ),
@@ -352,7 +386,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
               const Divider(height: 32),
 
               // Tổng cộng
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -360,7 +394,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '0 VNĐ',
+                    '${NumberFormat.currency(locale: 'vi', symbol: 'VND').format(sumBill)}',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -375,13 +409,73 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
               PrimaryButton(
                 text: 'XÁC NHẬN',
                 borderRadius: 40,
-                onPressed: () {},
+                onPressed: () {
+                  _submitBooking();
+                },
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _submitBooking() async {
+    if (_facilityValue != null &&
+        _facilityValue!.isNotEmpty &&
+        _selectedDate != null &&
+        _selectedDate!.toString().isNotEmpty &&
+        _selectedVaccines.isNotEmpty) {
+      Booking bk = Booking(
+        idUser: useMainLogin!.userId,
+        bookingCenter: _facilityValue!,
+        dateBooking: _selectedDate!,
+        lstVaccine: _selectedVaccines,
+      );
+      bool up = await insertDataAutoID("DATLICHTIEM", bk.toMap());
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Đang đặt lịch...')));
+      if (up) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Đặt lịch thành công')));
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Thông báo'),
+              content: const Text('Bạn muốn đặt tiếp không?'),
+              actions: [
+                TextButton(onPressed: () {}, child: const Text('Ok')),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppointmentScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Xem lịch đã đặt'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thông báo'),
+            content: const Text('Vui lòng nhập đầy đủ thông tin'),
+            actions: [TextButton(onPressed: () {}, child: const Text('Ok'))],
+          );
+        },
+      );
+    }
   }
 
   Widget _buildSectionTitle(String title) {

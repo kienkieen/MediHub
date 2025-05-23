@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({Key? key}) : super(key: key);
@@ -54,6 +57,22 @@ class _FeedbackFormState extends State<FeedbackForm> {
   String? willRecommend;
   String additionalFeedback = '';
   bool termsAccepted = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userLogin == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(isNewLoginl: false),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
