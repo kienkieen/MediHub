@@ -1,37 +1,80 @@
 import 'package:flutter/material.dart';
-import 'custom_checkbox_item.dart';
-import 'package:medihub_app/core/widgets/button2.dart';
-import 'date_range_selector.dart';
+import 'custom_checkbox_item.dart'; // Đảm bảo đường dẫn này đúng
+import 'package:medihub_app/core/widgets/button2.dart'; // Đảm bảo đường dẫn này đúng
+import 'date_range_selector.dart'; // Đảm bảo đường dẫn này đúng
 
 class AppointmentFilterModal extends StatefulWidget {
-  const AppointmentFilterModal({super.key});
+  // Thay vì nhận AppointmentFilterCriteria, nhận các tham số riêng lẻ
+  final bool notConfirmed;
+  final bool confirmed;
+  final bool cancelled;
+  final DateTime? fromDate;
+  final DateTime? toDate;
+  // Callback để trả về các giá trị lọc đã chọn
+  final Function(
+    bool notConfirmed,
+    bool confirmed,
+    bool cancelled,
+    DateTime? fromDate,
+    DateTime? toDate,
+  )?
+  onApplyFilters;
+
+  const AppointmentFilterModal({
+    super.key,
+    required this.notConfirmed,
+    required this.confirmed,
+    required this.cancelled,
+    this.fromDate,
+    this.toDate,
+    this.onApplyFilters,
+  });
 
   @override
   State<AppointmentFilterModal> createState() => _AppointmentFilterModalState();
 }
 
 class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
-  // Filter state values
-  bool notConfirmed = false;
-  bool confirmed = false;
-  bool cancelled = false;
-  bool vipAppointment = false;
-  bool regularAppointment = false;
+  // Filter state values - Khởi tạo từ widget.properties
+  late bool _notConfirmed;
+  late bool _confirmed;
+  late bool _cancelled;
 
-  // Date range states
-  DateTime? fromDate;
-  DateTime? toDate;
+  // Date range states - Khởi tạo từ widget.properties
+  late DateTime? _fromDate;
+  late DateTime? _toDate;
+
+  @override
+  void initState() {
+    super.initState();
+    // Khởi tạo trạng thái bộ lọc từ các tiêu chí được truyền vào
+    _notConfirmed = widget.notConfirmed;
+    _confirmed = widget.confirmed;
+    _cancelled = widget.cancelled;
+    _fromDate = widget.fromDate;
+    _toDate = widget.toDate;
+  }
 
   void _resetFilters() {
     setState(() {
-      notConfirmed = false;
-      confirmed = false;
-      cancelled = false;
-      vipAppointment = false;
-      regularAppointment = false;
-      fromDate = null;
-      toDate = null;
+      _notConfirmed = false;
+      _confirmed = false;
+      _cancelled = false;
+      _fromDate = null;
+      _toDate = null;
     });
+  }
+
+  // Phương thức để áp dụng bộ lọc và đóng modal
+  void _applyFilters() {
+    widget.onApplyFilters?.call(
+      _notConfirmed,
+      _confirmed,
+      _cancelled,
+      _fromDate,
+      _toDate,
+    ); // Gọi callback với các giá trị đã chọn
+    Navigator.pop(context); // Đóng modal
   }
 
   @override
@@ -46,103 +89,69 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildModalHeader(),
 
               // Status section
-              Text('Trạng thái', style: TextStyle(fontSize: 16)),
-
+              const Text('Trạng thái', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 5),
+
               // Status checkboxes
               CustomCheckboxItem(
                 label: 'Chưa xác nhận',
-                isChecked: notConfirmed,
+                isChecked: _notConfirmed,
                 onChanged: (value) {
                   setState(() {
-                    notConfirmed = value;
+                    _notConfirmed = value;
                   });
                 },
               ),
               CustomCheckboxItem(
                 label: 'Đã xác nhận',
-                isChecked: confirmed,
+                isChecked: _confirmed,
                 onChanged: (value) {
                   setState(() {
-                    confirmed = value;
+                    _confirmed = value;
                   });
                 },
               ),
               CustomCheckboxItem(
                 label: 'Đã hủy',
-                isChecked: cancelled,
+                isChecked: _cancelled,
                 onChanged: (value) {
                   setState(() {
-                    cancelled = value;
+                    _cancelled = value;
                   });
                 },
               ),
-              SizedBox(height: 10),
-              const Divider(height: 1, color: Colors.grey),
-
-              const SizedBox(height: 16),
-              // Appointment type section
-              Text('Loại đặt hẹn', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 5),
-              // Appointment type checkboxes
-              CustomCheckboxItem(
-                label: 'Đặt khám vip',
-                isChecked: vipAppointment,
-                onChanged: (value) {
-                  setState(() {
-                    vipAppointment = value;
-                  });
-                },
-              ),
-              CustomCheckboxItem(
-                label: 'Đặt khám thường',
-                isChecked: regularAppointment,
-                onChanged: (value) {
-                  setState(() {
-                    regularAppointment = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
               const Divider(height: 1, color: Colors.grey),
 
               const SizedBox(height: 16),
               // Date range section
-              Text('Khoảng thời gian', style: TextStyle(fontSize: 16)),
+              const Text('Khoảng thời gian', style: TextStyle(fontSize: 16)),
 
               // Date range pickers
               DateRangeSelector(
-                fromDate: fromDate,
-                toDate: toDate,
+                fromDate: _fromDate,
+                toDate: _toDate,
                 onFromDateChanged: (date) {
                   setState(() {
-                    fromDate = date;
-                    // If toDate is before fromDate, update toDate
-                    if (toDate != null && toDate!.isBefore(date)) {
-                      toDate = DateTime(date.year, date.month + 1, 1);
-                    }
+                    _fromDate = date;
                   });
                 },
+                // Khi chọn ngày kết thúc
                 onToDateChanged: (date) {
                   setState(() {
-                    toDate = date;
-                    // If fromDate is after toDate, update fromDate
-                    if (fromDate != null && fromDate!.isAfter(date)) {
-                      fromDate = DateTime(date.year, date.month - 1, 1);
-                    }
+                    _toDate = date;
                   });
                 },
               ),
 
               _buildActionButtons(),
 
-              const SizedBox(height: 16), // Extra bottom padding for safe area
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -198,7 +207,7 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
           Expanded(
             child: BuildButton3(
               text: 'Lọc',
-              onPressed: _resetFilters,
+              onPressed: _applyFilters,
               icon: Icons.filter_list,
               height: 48,
             ),
@@ -207,6 +216,8 @@ class _AppointmentFilterModalState extends State<AppointmentFilterModal> {
           Expanded(
             child: BuildButton4(
               onPressed: () {
+                _resetFilters();
+                widget.onApplyFilters?.call(false, false, false, null, null);
                 Navigator.pop(context);
               },
               text: 'Xoá lọc',

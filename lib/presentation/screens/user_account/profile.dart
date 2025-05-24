@@ -484,7 +484,7 @@ class _ProfileState extends State<ProfileScreen> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade700, width: 1),
+            border: Border.all(color: Colors.grey.shade400, width: 1),
           ),
           child: Row(
             children: [
@@ -496,7 +496,7 @@ class _ProfileState extends State<ProfileScreen> {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    right: BorderSide(color: Colors.grey.shade700),
+                    right: BorderSide(color: Colors.grey.shade400),
                   ),
                 ),
                 child: Row(

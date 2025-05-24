@@ -41,10 +41,14 @@ class InputField extends StatelessWidget {
           enabled: enable,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade400),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey.shade500),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade400),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -81,8 +85,8 @@ Widget buildPhoneInputField(
       const SizedBox(height: 4),
       Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade700, width: 1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey.shade400, width: 1),
         ),
         child: Row(
           children: [
@@ -90,7 +94,7 @@ Widget buildPhoneInputField(
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
-                border: Border(right: BorderSide(color: Colors.grey.shade700)),
+                border: Border(right: BorderSide(color: Colors.grey.shade400)),
               ),
               child: Row(
                 children: [
@@ -113,11 +117,15 @@ Widget buildPhoneInputField(
                   hintText: hintText,
                   hintStyle: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade500,
+                    color: Colors.grey.shade400,
                   ),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey.shade400),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey.shade400),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -186,10 +194,10 @@ class DropdownField extends StatelessWidget {
               _showBottomSheet(context);
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 11),
               decoration: BoxDecoration(
-                border: Border.all(width: 1.2, color: Colors.grey.shade600),
-                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 1.2, color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

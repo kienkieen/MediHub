@@ -27,7 +27,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _obscureConfirmPassword = true;
   late String codeVerify;
   bool _isSendVerify = false;
-  Color _colorVerify = Colors.blue;
+  Color _colorVerify = const Color(0xFF2F8CD8);
 
   @override
   void dispose() {
