@@ -14,7 +14,7 @@ class VaccineDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppbarWidget(title: 'Chi tiết vắc xin'),
+      appBar: AppbarWidget(isBackButton: true, title: 'Chi tiết vắc xin'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),

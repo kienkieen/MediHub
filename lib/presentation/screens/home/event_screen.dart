@@ -166,15 +166,15 @@ class _EventsScreenState extends State<EventsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.keyboard_backspace, color: Colors.white),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NavigationBottom()),
-            );
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.keyboard_backspace, color: Colors.white),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => NavigationBottom()),
+        //     );
+        //   },
+        // ),
         title: Text(
           "Sự kiện & Hoạt động",
           style: TextStyle(fontSize: 22, color: Colors.white),

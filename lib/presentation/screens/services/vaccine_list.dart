@@ -101,6 +101,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppbarWidget(
+        isBackButton: true,
         title: widget.isFromBookingScreen ? 'Chọn vắc xin' : 'Danh mục vắc xin',
         icon:
             widget.isFromBookingScreen

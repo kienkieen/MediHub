@@ -25,14 +25,9 @@ class _MedicalExaminationFormScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarWidget(title: 'Danh sách phiếu khám'),
+      appBar: AppbarWidget(isBackButton: true, title: 'Danh sách phiếu khám'),
       body: Column(
-        children: [
-          _buildFilterBar(),
-          Expanded(
-            child: _buildContent(),
-          ),
-        ],
+        children: [_buildFilterBar(), Expanded(child: _buildContent())],
       ),
     );
   }
@@ -80,10 +75,7 @@ class _MedicalExaminationFormScreenState
         const SizedBox(height: 20),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 20),
         Image.asset("assets/icons/icon_9.png", width: 260, height: 260),

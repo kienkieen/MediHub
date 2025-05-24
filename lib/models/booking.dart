@@ -30,7 +30,6 @@ class Booking {
       'dateBooking': convertDate(dateBooking),
       'lstVaccine': lstVaccine.map((v) => v.toMap()).toList(),
       'isConfirmed': isConfirmed,
-      
     };
   }
 
@@ -40,14 +39,15 @@ class Booking {
       idUser: map['idUser'] as String? ?? '',
       bookingCenter: map['bookingCenter'] as String? ?? '',
       dateBooking:
-           map['dateBooking'] is DateTime
-        ? map['dateBooking']
-        : DateTime.parse(map['dateBooking']),
+          map['dateBooking'] is DateTime
+              ? map['dateBooking']
+              : DateTime.parse(map['dateBooking']),
       lstVaccine:
           (map['lstVaccine'] as List<dynamic>?)
               ?.map((v) => Vaccine.fromMap(v as Map<String, dynamic>))
               .toList() ??
           [],
+
       isConfirmed: map['isConfirmed'] as int? ?? 0,
     );
   }

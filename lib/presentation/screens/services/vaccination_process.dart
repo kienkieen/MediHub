@@ -9,7 +9,7 @@ class VaccinationProcessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppbarWidget(title: 'Quy trình tiêm'),
+      appBar: AppbarWidget(isBackButton: true, title: 'Quy trình tiêm'),
       body: const SafeArea(
         child: SingleChildScrollView(
           child: Padding(

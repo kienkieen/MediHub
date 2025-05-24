@@ -95,7 +95,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppbarWidget(title: 'Gói vắc xin'),
+      appBar: AppbarWidget(isBackButton: true, title: 'Gói vắc xin'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -373,7 +373,7 @@ class _VaccinePackageDetailScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppbarWidget(title: widget.package.name),
+      appBar: AppbarWidget(isBackButton: true, title: widget.package.name),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

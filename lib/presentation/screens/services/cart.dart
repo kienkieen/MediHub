@@ -71,6 +71,7 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppbarWidget(
+        isBackButton: true,
         title: widget.isFromBookingScreen ? 'Chọn vắc xin' : 'Giỏ hàng',
         icon: Icons.home_rounded,
         onPressed: () {

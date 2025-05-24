@@ -3,13 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:collection/collection.dart'; // Để sử dụng groupBy
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
-import 'package:medihub_app/core/utils/constants.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/models/vaccine_record.dart';
-import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
-import 'package:medihub_app/presentation/screens/user_account/profile.dart'; // Giả sử có model Vaccine
 
 class VaccinationHistoryScreen extends StatefulWidget {
   const VaccinationHistoryScreen({super.key});
@@ -120,7 +117,7 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppbarWidget(title: 'Lịch Sử Tiêm Chủng'),
+      appBar: AppbarWidget(isBackButton: true, title: 'Lịch Sử Tiêm Chủng'),
       body: Column(
         children: [
           Container(

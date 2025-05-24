@@ -202,6 +202,18 @@ Future<List<Map<String, dynamic>>> getAllData(String collection) async {
   }
 }
 
+Future<bool> deleteData(String collection, String idItem) async {
+  try {
+    if (collection.isEmpty || idItem.isEmpty) throw Exception(false);
+    if (!await checkIDExist(collection, idItem)) throw Exception(false);
+    final url = FirebaseFirestore.instance.collection(collection);
+    await url.doc(idItem).delete();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 // void showClause(BuildContext context) {
 //   showDialog(
 //     context: context,

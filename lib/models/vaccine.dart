@@ -108,8 +108,8 @@ class VaccinationSchedule {
 
   factory VaccinationSchedule.fromMap(Map<String, dynamic> map) {
     return VaccinationSchedule(
-      ageGroup: map['ageGroup'] ?? 0,
-      doses: map['doses'] ?? 0,
+      ageGroup: map['ageGroup'] ?? '',
+      doses: List<String>.from(map['doses'] ?? []),
     );
   }
 }

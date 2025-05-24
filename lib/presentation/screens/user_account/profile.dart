@@ -223,7 +223,10 @@ class _ProfileState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppbarWidget(title: 'Thông tin tài khoản'),
+      appBar: const AppbarWidget(
+        isBackButton: true,
+        title: 'Thông tin tài khoản',
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [

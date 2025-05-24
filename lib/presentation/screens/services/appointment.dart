@@ -5,6 +5,7 @@ import 'package:medihub_app/core/widgets/services_widgets/empty_appointment_view
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
+import 'package:medihub_app/firebase_helper/booking_helper.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/booking.dart';
@@ -35,7 +36,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchBookings();
+    if (useMainLogin != null) {
+      _fetchBookings();
+    }
   }
 
   void _showFilterModal() {
@@ -72,55 +75,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   }
 
   Future<void> _fetchBookings() async {
-    List<Vaccine> vaccines_user1 = [vaccines[0]];
-    List<Vaccine> vaccines_user2 = [vaccines[1], vaccines[2]];
-    List<Vaccine> vaccines_user3 = [vaccines[1], vaccines[2], vaccines[0]];
-
-    List<Map<String, dynamic>> bookingData = [
-      {
-        'idBooking': 'b2',
-        'idUser': 'user123',
-        'bookingCenter': 'Bệnh viện Đa khoa Quốc tế Vinmec',
-        'dateBooking': '2025-05-25',
-        'lstVaccine': vaccines_user1.map((vaccine) => vaccine.toMap()).toList(),
-        'isConfirmed': 1, // Đã xác nhận
-      },
-      {
-        'idBooking': 'b1',
-        'idUser': 'user123',
-        'bookingCenter': 'Bệnh viện Bạch Mai',
-        'dateBooking': '2025-05-15',
-        'lstVaccine': vaccines_user2.map((vaccine) => vaccine.toMap()).toList(),
-        'isConfirmed': 0, // Chưa xác nhận
-      },
-      {
-        'idBooking': 'b3',
-        'idUser': 'user456',
-        'bookingCenter': 'Phòng khám Sài Gòn',
-        'dateBooking': '2025-06-01',
-        'lstVaccine': [vaccines[0].toMap()],
-        'isConfirmed': 1, // Đã xác nhận
-      },
-      {
-        'idBooking': 'b4',
-        'idUser': 'user789',
-        'bookingCenter': 'Trung tâm y tế Gia Định',
-        'dateBooking': '2025-05-20',
-        'lstVaccine': vaccines_user3.map((vaccine) => vaccine.toMap()).toList(),
-        'isConfirmed': 0, // Chưa xác nhận
-      },
-      {
-        'idBooking': 'b5',
-        'idUser': 'user123',
-        'bookingCenter': 'Bệnh viện Nhi Đồng 1',
-        'dateBooking': '2025-05-10',
-        'lstVaccine': [vaccines[2].toMap()],
-        'isConfirmed': -1, // Đã hủy
-      },
-    ];
-
+    final booking = await getAllBookingByIDUser(useMainLogin!.userId);
     setState(() {
-      _allBookings = bookingData.map((data) => Booking.fromMap(data)).toList();
+      _allBookings = booking;
       _applyFilters();
     });
   }
@@ -196,34 +153,38 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppbarWidget(
-        title: 'Lịch Hẹn',
-        icon: Icons.filter_list,
-        onPressed: _showFilterModal,
-      ),
-      body: Column(
-        children: [
-          _buildAppointmentHeader(),
-          const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
-          Expanded(
-            child:
-                _filteredBookings.isEmpty
-                    ? const EmptyAppointmentView()
-                    : ListView.builder(
-                      itemCount: _filteredBookings.length,
-                      itemBuilder: (context, index) {
-                        final booking = _filteredBookings[index];
-                        return _buildBookingCard(
-                          booking,
-                          () => _cancelBooking(index),
-                        );
-                      },
-                    ),
-          ),
-          _buildBookAppointmentButton(),
-        ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppbarWidget(
+          isBackButton: false,
+          title: 'Lịch Hẹn',
+          // icon: Icons.filter_list,
+          // onPressed: _showFilterModal,
+        ),
+        body: Column(
+          children: [
+            _buildAppointmentHeader(),
+            const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
+            Expanded(
+              child:
+                  _filteredBookings.isEmpty
+                      ? const EmptyAppointmentView()
+                      : ListView.builder(
+                        itemCount: _filteredBookings.length,
+                        itemBuilder: (context, index) {
+                          final booking = _filteredBookings[index];
+                          return _buildBookingCard(
+                            booking,
+                            () => _cancelBooking(index),
+                          );
+                        },
+                      ),
+            ),
+            _buildBookAppointmentButton(),
+          ],
+        ),
       ),
     );
   }
@@ -593,6 +554,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppbarWidget(
+        isBackButton: true,
         title: 'Đặt lịch tiêm',
         icon: Icons.home_rounded,
         onPressed: () {
@@ -793,6 +755,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         bookingCenter: _facilityValue!,
         dateBooking: _selectedDate!,
         lstVaccine: _selectedVaccines,
+        isConfirmed: 0,
       );
       bool up = await insertDataAutoID("DATLICHTIEM", bk.toMap());
       ScaffoldMessenger.of(
@@ -809,7 +772,12 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
               title: const Text('Thông báo'),
               content: const Text('Bạn muốn đặt tiếp không?'),
               actions: [
-                TextButton(onPressed: () {}, child: const Text('Ok')),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Ok'),
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(

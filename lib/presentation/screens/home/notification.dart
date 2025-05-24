@@ -38,12 +38,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ),
         centerTitle: true,
 
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace, size: 28, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.keyboard_backspace, size: 28, color: Colors.white),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(

@@ -109,6 +109,7 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppbarWidget(
+        isBackButton: true,
         title: 'Vắc xin phù hợp với bạn',
         icon: Icons.shopping_bag_outlined,
         onPressed: () {
