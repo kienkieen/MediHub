@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 
 class VaccinationProcessScreen extends StatelessWidget {
   const VaccinationProcessScreen({Key? key}) : super(key: key);
@@ -424,7 +425,14 @@ class CTASection extends StatelessWidget {
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const VaccinationBookingScreen(),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0091FF),
               padding: const EdgeInsets.symmetric(vertical: 16),

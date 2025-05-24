@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:collection/collection.dart'; // Để sử dụng groupBy
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
+import 'package:medihub_app/firebase_helper/VaccinationRecord_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/models/vaccine_record.dart';
@@ -41,10 +42,9 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
     });
   }
 
-  void _loadRecords() {
+  void _loadRecords() async {
+    _records = await getVaccinationRecords(useMainLogin!.userId);
     setState(() {
-      // Dữ liệu mẫu (thay bằng API hoặc database trong thực tế)
-      _records = records;
       _filteredRecords = _records;
     });
   }

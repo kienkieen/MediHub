@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/models/vaccine.dart';
@@ -13,83 +14,30 @@ class VaccinePackageScreen extends StatefulWidget {
 }
 
 class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
-  final Map<String, bool> _expandedPackages = {
-    '6_thang': false,
-    '12_thang': false,
-    '24_thang': false,
-    'tien_hoc_duong': false,
-    'thanh_thieu_nien': false,
-    'truong_thanh': false,
-  };
+  Map<String, bool> _expandedPackages = {};
 
   // Danh sách các gói vắc xin
-  final List<VaccinePackage> _vaccinePackages = [
-    VaccinePackage(
-      id: '6_thang',
-      name: 'Gói vắc xin cho trẻ 6 tháng',
-      ageGroup: 'Từ 0 đến 6 tháng',
-      description:
-          'Việc tiêm vắc xin cho trẻ từ 0 đến 6 tháng tuổi là cực kỳ quan trọng vì hệ miễn dịch'
-          'của trẻ ở độ tuổi này còn yếu và chưa phát triển đầy đủ. Tiêm vắc xin giúp bảo vệ trẻ'
-          'khỏi các bệnh nguy hiểm, đặc biệt là những bệnh truyền nhiễm có thể gây tử vong hoặc'
-          'để lại di chứng nghiêm trọng, như bạch hầu, ho gà, uốn ván, tiêu chảy, bệnh do phế cầu, bệnh cúm.',
-      vaccineIds: ['vaccine1', 'vaccine2'],
-      dosesByVaccine: {
-        'vaccine1': 2, // Vaccine 1 cần 2 liều
-        'vaccine2': 3, // Vaccine 2 cần 3 liều
-      },
-      totalPrice: 9161300,
-      discount: 440000,
-      imageUrl: 'assets/icons/vaccine_package/package1.png',
-    ),
-    VaccinePackage(
-      id: '12_thang',
-      name: 'Gói vắc xin cho trẻ 12 tháng',
-      ageGroup: 'Từ 0 đến 12 tháng',
-      description:
-          'Việc tiêm vắc xin cho trẻ từ 0 đến 12 tháng tuổi là rất cần thiết vì hệ miễn dịch của'
-          'trẻ trong giai đoạn này còn yếu, dễ bị tấn công bởi các bệnh truyền nhiễm nguy hiểm. '
-          'Các loại vắc xin quan trọng như 6 trong 1, vắc xin cúm giúp phòng ngừa các bệnh có thể'
-          'gây tử vong hoặc để lại di chứng nghiêm trọng, bảo vệ trẻ khỏi các biến chứng nặng nề do bệnh gây ra.',
-      vaccineIds: ['vaccine3'],
-      dosesByVaccine: {
-        'vaccine3': 1, // Vaccine 3 cần 1 liều
-      },
-      totalPrice: 8550000,
-      discount: 640000,
-      imageUrl: 'assets/icons/vaccine_package/package2.png',
-    ),
-    VaccinePackage(
-      id: '24_thang',
-      name: 'Gói vắc xin cho trẻ 24 tháng',
-      ageGroup: 'Từ 0 đến 24 tháng',
-      description:
-          'Việc tiêm vắc xin cho trẻ từ 0 đến 12 tháng tuổi là rất cần thiết vì hệ miễn dịch của'
-          'trẻ trong giai đoạn này còn yếu, dễ bị tấn công bởi các bệnh truyền nhiễm nguy hiểm. '
-          'Các loại vắc xin quan trọng như 6 trong 1, vắc xin cúm giúp phòng ngừa các bệnh có thể'
-          'gây tử vong hoặc để lại di chứng nghiêm trọng, bảo vệ trẻ khỏi các biến chứng nặng nề do bệnh gây ra.',
-      vaccineIds: ['vaccine1', 'vaccine2', 'vaccine3'],
-      dosesByVaccine: {'vaccine1': 1, 'vaccine3': 3, 'vaccine2': 2},
-      totalPrice: 12550000,
-      discount: 1000000,
-      imageUrl: 'assets/icons/vaccine_package/package3.png',
-    ),
-    VaccinePackage(
-      id: 'tien_hoc_duong',
-      name: 'Gói vắc xin cho trẻ tiền học đường (từ 3 - 9 tuổi)',
-      ageGroup: 'Từ 3 đến 9 tuổi',
-      description:
-          'Việc tiêm vắc xin cho trẻ từ 0 đến 12 tháng tuổi là rất cần thiết vì hệ miễn dịch của'
-          'trẻ trong giai đoạn này còn yếu, dễ bị tấn công bởi các bệnh truyền nhiễm nguy hiểm. '
-          'Các loại vắc xin quan trọng như 6 trong 1, vắc xin cúm giúp phòng ngừa các bệnh có thể'
-          'gây tử vong hoặc để lại di chứng nghiêm trọng, bảo vệ trẻ khỏi các biến chứng nặng nề do bệnh gây ra.',
-      vaccineIds: [],
-      dosesByVaccine: {},
-      totalPrice: 12550000,
-      discount: 1000000,
-      imageUrl: 'assets/icons/vaccine_package/package4.png',
-    ),
-  ];
+  List<VaccinePackage> _vaccinePackages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVaccinePackages();
+  }
+
+  void _loadVaccinePackages() async {
+    try {
+      _vaccinePackages = await getAllVaccinePackage();
+      for (var package in _vaccinePackages) {
+        Map<String, bool> packageState = {package.id: false};
+        setState(() {
+          _expandedPackages.addAll(packageState);
+        });
+      }
+    } catch (e) {
+      print('Error loading vaccine packages: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

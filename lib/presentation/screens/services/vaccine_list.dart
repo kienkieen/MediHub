@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/main.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
@@ -45,7 +46,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
 
   void _loadVaccines() {
     setState(() {
-      _vaccines = vaccines;
+      _vaccines = allVaccines;
       _filteredVaccines = _vaccines;
     });
   }

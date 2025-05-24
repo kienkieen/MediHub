@@ -25,11 +25,42 @@ class VaccinePackage {
 
   // Lấy danh sách vaccine từ danh sách ID
   List<Vaccine> getVaccines(List<Vaccine> allVaccines) {
-    return allVaccines.where((vaccine) => vaccineIds.contains(vaccine.id)).toList();
+    return allVaccines
+        .where((vaccine) => vaccineIds.contains(vaccine.id))
+        .toList();
   }
 
   // Lấy số liều tiêm của một vaccine trong gói
   int getDosesForVaccine(String vaccineId) {
-    return dosesByVaccine[vaccineId] ?? 1; // Mặc định là 1 liều nếu không có thông tin
+    return dosesByVaccine[vaccineId] ??
+        1; // Mặc định là 1 liều nếu không có thông tin
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'ageGroup': ageGroup,
+      'description': description,
+      'vaccineIds': vaccineIds,
+      'dosesByVaccine': dosesByVaccine,
+      'totalPrice': totalPrice,
+      'discount': discount,
+      'imageUrl': imageUrl,
+    };
+  }
+
+  factory VaccinePackage.fromMap(Map<String, dynamic> map) {
+    return VaccinePackage(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      ageGroup: map['ageGroup'] ?? '',
+      description: map['description'] ?? '',
+      vaccineIds: List<String>.from(map['vaccineIds'] ?? []),
+      dosesByVaccine: Map<String, int>.from(map['dosesByVaccine'] ?? {}),
+      totalPrice: (map['totalPrice'] ?? 0).toDouble(),
+      discount: (map['discount'] ?? 0).toDouble(),
+      imageUrl: map['imageUrl'] ?? '',
+    );
   }
 }
