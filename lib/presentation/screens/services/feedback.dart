@@ -433,7 +433,14 @@ class _FeedbackFormState extends State<FeedbackForm> {
           decoration: InputDecoration(
             hintText: 'Viết ý kiến',
             hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 12,

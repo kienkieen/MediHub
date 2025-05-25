@@ -341,47 +341,39 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
   }
 
   Widget _emptyContent() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              "assets/images/find_vaccie.png",
-              width: 150,
-              height: 150,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Không có lịch sử tiêm chủng',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NavigationBottom(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 50),
+          Image.asset("assets/images/find_vaccie.png", width: 250, height: 250),
+          const Text(
+            'Không có lịch sử tiêm chủng',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NavigationBottom(),
                 ),
-                minimumSize: const Size(200, 48),
-              ),
-              child: const Text(
-                'Quay về trang chính',
-                style: TextStyle(color: Colors.white),
-              ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              side: BorderSide(color: Colors.grey, width: 1.5),
             ),
-          ],
-        ),
+            child: const Text(
+              'Quay về trang chủ',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? label;
   final String hintText;
   final IconData? prefixIcon;
@@ -10,7 +10,7 @@ class InputField extends StatelessWidget {
 
   const InputField({
     super.key,
-    required this.controller,
+    this.controller,
     this.label,
     required this.hintText,
     this.prefixIcon,
@@ -37,7 +37,7 @@ class InputField extends StatelessWidget {
           ),
         const SizedBox(height: 4),
         TextField(
-          controller: controller,
+          controller: controller != null ? controller : null,
           enabled: enable,
           decoration: InputDecoration(
             hintText: hintText,
@@ -120,12 +120,8 @@ Widget buildPhoneInputField(
                     color: Colors.grey.shade400,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,

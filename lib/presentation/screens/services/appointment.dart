@@ -13,6 +13,7 @@ import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
+import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/core/widgets/button2.dart';
 
@@ -145,6 +146,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         _allBookings[originalIndex].isConfirmed = -1;
         _applyFilters();
       });
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Đã hủy lịch tiêm')));
@@ -257,38 +259,38 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     color: Colors.black,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đã huỷ lịch hẹn')),
-                    );
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Thông báo'),
-                          content: const Text('Bạn có chắc muốn huỷ lịch hẹn?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                onCancel();
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Có'),
+                if (booking.isConfirmed != -1)
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.red),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Thông báo'),
+                            content: const Text(
+                              'Bạn có chắc muốn huỷ lịch hẹn?',
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Không'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  onCancel();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Có'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Không'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
               ],
             ),
             const SizedBox(height: 8),
@@ -614,10 +616,10 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 14,
+                    vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(width: 1.4, color: Colors.grey.shade600),
+                    border: Border.all(width: 1.4, color: Colors.grey.shade400),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -646,27 +648,56 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
               SizedBox(height: 8),
               // Danh sách vắc xin đã chọn
               if (_selectedVaccines.isNotEmpty) ...[
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _selectedVaccines.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        title: Text(_selectedVaccines[index].name),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            setState(() {
-                              _selectedVaccines.removeAt(index);
-                              _minusAllBill(_selectedVaccines[index]);
-                            });
-                          },
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade400),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _selectedVaccines.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: Colors.grey.shade300),
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                        child: Container(
+                          height: 48,
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _selectedVaccines[index].name,
+                                  style: const TextStyle(fontSize: 15),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    final vaccineToRemove =
+                                        _selectedVaccines[index];
+                                    _selectedVaccines.removeAt(index);
+                                    _minusAllBill(vaccineToRemove);
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.delete,
+                                  size: 20,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ] else ...[
                 Align(
@@ -758,36 +789,38 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         isConfirmed: 0,
       );
       bool up = await insertDataAutoID("DATLICHTIEM", bk.toMap());
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Đang đặt lịch...')));
+      // ScaffoldMessenger.of(
+      //   context,
+      // ).showSnackBar(const SnackBar(content: Text('Đang đặt lịch...')));
       if (up) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Đặt lịch thành công')));
+        // ScaffoldMessenger.of(
+        //   context,
+        // ).showSnackBar(const SnackBar(content: Text('Đặt lịch thành công')));
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Thông báo'),
-              content: const Text('Bạn muốn đặt tiếp không?'),
+              content: const Text('Bạn có chắc chắn muốn đặt lịch hẹn?'),
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
                   },
-                  child: const Text('Ok'),
+                  child: const Text('Xem lại lịch'),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AppointmentScreen(),
+                        builder:
+                            (context) =>
+                                VaccineTermsScreen(isFromBookingScreen: true),
                       ),
                     );
                   },
-                  child: const Text('Xem lịch đã đặt'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -801,7 +834,14 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
           return AlertDialog(
             title: const Text('Thông báo'),
             content: const Text('Vui lòng nhập đầy đủ thông tin'),
-            actions: [TextButton(onPressed: () {}, child: const Text('Ok'))],
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Ok'),
+              ),
+            ],
           );
         },
       );

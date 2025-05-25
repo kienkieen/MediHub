@@ -67,7 +67,7 @@ class ServicesGrid extends StatelessWidget {
     final List<Map<String, dynamic>> bottomServices = [
       {
         'iconPath': 'assets/icons/grid_service/category.png',
-        'label': 'Danh mục\nVắc xin',
+        'label': 'Danh sách\nVắc xin',
         'onPressed': () {
           Navigator.push(
             context,

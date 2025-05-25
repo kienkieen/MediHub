@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
-import 'package:medihub_app/core/utils/constants.dart';
-import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_detail.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
@@ -217,6 +215,10 @@ class _CartScreenState extends State<CartScreen> {
                         const SizedBox(height: 4),
                         Text(
                           'Phòng: ${vaccine.diseases.join(', ')}',
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                        Text(
+                          'Tuổi: ${vaccine.ageRange}',
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                         const SizedBox(height: 8),

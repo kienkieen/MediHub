@@ -36,7 +36,7 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
                 },
               )
               : null,
-
+      automaticallyImplyLeading: isBackButton ? false : true,
       actions:
           icon != null
               ? [
