@@ -27,7 +27,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
 
   void _loadVaccinePackages() async {
     try {
-      _vaccinePackages = await getAllVaccinePackage();
+      _vaccinePackages = allVaccinePackages;
       for (var package in _vaccinePackages) {
         Map<String, bool> packageState = {package.id: false};
         setState(() {

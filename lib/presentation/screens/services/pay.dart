@@ -3,23 +3,32 @@ import 'package:intl/intl.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/presentation/screens/services/payment_info.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final Booking booking;
+  const PaymentScreen({super.key, required this.booking});
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final List<Map<String, dynamic>> vaccines = [
-    {'name': 'Vắc xin 5 trong 1', 'price': 1500000},
-    {'name': 'Vắc xin Sởi', 'price': 500000},
-    {'name': 'Vắc xin Cúm', 'price': 300000},
-  ];
   String? _selectedPaymentMethod;
 
-  final double total = 3400000;
+  void _submitPayment(Booking booking) async {
+    bool up = await insertDataAutoID("DATLICHTIEM", booking.toMap());
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Đang đặt lịch...')));
+    if (up) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Đặt lịch thành công')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +46,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              InputField(label: 'Họ tên', hintText: 'HT', enable: false),
               InputField(
-                label: 'Số điện thoại',
-                hintText: 'Sdt',
+                label: 'Họ tên',
+                hintText: useMainLogin!.fullName,
                 enable: false,
               ),
-              InputField(label: 'Email', hintText: 'Email', enable: false),
+              InputField(
+                label: 'Số điện thoại',
+                hintText: useMainLogin!.phoneNumber,
+                enable: false,
+              ),
+              InputField(
+                label: 'Email',
+                hintText: useMainLogin!.email,
+                enable: false,
+              ),
               InputField(
                 label: 'Trung tâm tiêm',
-                hintText: 'Hà Nội',
+                hintText: widget.booking.bookingCenter,
                 enable: false,
               ),
               InputField(
                 label: 'Ngày mong muốn tiêm',
-                hintText: '20/2/2024',
+                hintText: widget.booking.convertDate(
+                  widget.booking.dateBooking,
+                ),
                 enable: false,
               ),
               const SizedBox(height: 8),
@@ -63,10 +82,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              ...vaccines
+              ...widget.booking.lstVaccine
                   .map(
-                    (vaccine) =>
-                        _buildVaccineItem(vaccine['name'], vaccine['price']),
+                    (vaccine) => _buildVaccineItem(vaccine.name, vaccine.price),
                   )
                   .toList(),
               const SizedBox(height: 8),
@@ -98,7 +116,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     NumberFormat.currency(
                       locale: 'vi_VN',
                       symbol: 'VND',
-                    ).format(total),
+                    ).format(widget.booking.totalPrice),
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -111,7 +129,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PaymentInfoScreen(),
+                      builder:
+                          (context) => PaymentInfoScreen(
+                            booking: widget.booking,
+                            paymentMethod: _selectedPaymentMethod!,
+                          ),
                     ),
                   );
                 },
@@ -124,7 +146,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildVaccineItem(String name, int price) {
+  Widget _buildVaccineItem(String name, double price) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, left: 20),
       child: Row(

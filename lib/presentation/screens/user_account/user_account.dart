@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
@@ -142,7 +143,17 @@ class UserAccountScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const VaccineTermsScreen(),
+                          builder:
+                              (context) => VaccineTermsScreen(
+                                booking: Booking(
+                                  idUser: '',
+                                  idBooking: '',
+                                  bookingCenter: '',
+                                  dateBooking: DateTime.now(),
+                                  totalPrice: 0.0,
+                                  lstVaccine: [],
+                                ),
+                              ),
                         ),
                       );
                     },

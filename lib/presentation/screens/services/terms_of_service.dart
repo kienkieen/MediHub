@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/presentation/screens/services/pay.dart';
 
 class VaccineTermsScreen extends StatefulWidget {
   final bool isFromBookingScreen;
+  final Booking booking;
 
-  const VaccineTermsScreen({super.key, this.isFromBookingScreen = false});
+  const VaccineTermsScreen({
+    super.key,
+    this.isFromBookingScreen = false,
+    required this.booking,
+  });
 
   @override
   State<VaccineTermsScreen> createState() => _VaccineTermsScreenState();
@@ -139,7 +145,7 @@ class _VaccineTermsScreenState extends State<VaccineTermsScreen> {
           if (widget.isFromBookingScreen) ...[
             _buildTermsAgreement(),
             SizedBox(height: 15),
-            _buildSubmitButton(),
+            _buildSubmitButton(widget.booking),
           ],
         ],
       ),
@@ -227,7 +233,7 @@ class _VaccineTermsScreenState extends State<VaccineTermsScreen> {
     );
   }
 
-  Widget _buildSubmitButton() {
+  Widget _buildSubmitButton(Booking booking) {
     return PrimaryButton(
       text: 'XÁC NHẬN',
       borderRadius: 40,
@@ -235,7 +241,9 @@ class _VaccineTermsScreenState extends State<VaccineTermsScreen> {
         if (termsAccepted) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PaymentScreen()),
+            MaterialPageRoute(
+              builder: (context) => PaymentScreen(booking: booking),
+            ),
           );
         } else if (!termsAccepted) {
           ScaffoldMessenger.of(context).showSnackBar(

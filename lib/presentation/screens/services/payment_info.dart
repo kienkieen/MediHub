@@ -1,17 +1,122 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medihub_app/api/APIQRequest.dart';
+import 'package:medihub_app/api/APIService.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/models/bill.dart';
+import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
+import 'dart:convert';
 
-class PaymentInfoScreen extends StatelessWidget {
-  const PaymentInfoScreen({super.key});
-  final String orderId = "10YRKJqV5";
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
+
+class PaymentInfoScreen extends StatefulWidget {
+  final Booking booking;
+  final String paymentMethod;
+  const PaymentInfoScreen({
+    super.key,
+    required this.booking,
+    required this.paymentMethod,
+  });
+
+  State<PaymentInfoScreen> createState() => _PaymentInfoScreenState();
+}
+
+class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
+  late String orderId = '';
   final String accountNumber = "19132680330012";
   final String accountHolder = "Công ty cổ phần vắc xin Việt Nam - CN TPHCM";
   final String bank = "Techcombank - CN Thắng Lợi, Tp.HCM";
   final String qrCodeNote = "QR Pay 10YRKJqV5";
-  final double totalAmount = 3400000;
+  late double totalAmount = 0;
+  final apiService = APIService();
+  Image? qrImage;
+  String generateRandomString(int length) {
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final rand = Random.secure(); // dùng Random.secure() để bảo mật hơn
+    return List.generate(
+      length,
+      (index) => chars[rand.nextInt(chars.length)],
+    ).join();
+  }
+
+  Future<Image> generateQR() async {
+    final request = APIRequest(
+      accountNo: int.parse(accountNumber),
+      accountName: accountHolder,
+      acqId: 970436,
+      amount: totalAmount,
+      addInfo: "THANH TOAN HOA DON TIEM TRUNG VNVC",
+      format: "text",
+      template: "compact",
+    );
+
+    try {
+      final response = await apiService.generateQRCode(request);
+
+      String? qrDataUrl = response.data?.qrDataURL;
+
+      if (qrDataUrl != null && qrDataUrl.contains(',')) {
+        // Lấy phần base64 thực sự
+        final base64Str = qrDataUrl.split(',').last;
+        final decodedBytes = base64Decode(base64Str);
+
+        return Image.memory(decodedBytes);
+      }
+      throw Exception("Không tìm thấy dữ liệu QR Code hợp lệ");
+    } catch (e) {
+      print("Lỗi: ${e}");
+      return Image.asset('assets/images/qr_code.jpg');
+    }
+  }
+
+  void _setQRImage() async {
+    final image = await generateQR();
+    setState(() {
+      qrImage = image;
+    });
+  }
+
+  @override
+  void initState() {
+    totalAmount = widget.booking.totalPrice;
+    orderId = generateRandomString(8);
+    _setQRImage();
+  }
+
+  void _submitbooking() async {
+    // Giả lập việc gửi thông tin đặt lịch
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Đang xử lý thanh toán...')));
+    bool up = await insertDataAutoID("DATLICHTIEM", widget.booking.toMap());
+    if (up) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Thanh toán thành công')));
+      Bill bill = Bill(
+        id: orderId,
+        paymentMethod: widget.paymentMethod,
+        totalAmount: totalAmount,
+        dueDate: DateTime.now().add(const Duration(days: 30)),
+        isPaid: false,
+      );
+      insertData("HOADON", bill.id, bill.toMap());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AppointmentScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Thanh toán thất bại')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +128,8 @@ class PaymentInfoScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Thanh toán đơn hàng 10YRKJqV5',
+            Text(
+              'Thanh toán đơn hàng ${orderId}',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -63,10 +168,10 @@ class PaymentInfoScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Center(
-                      child: Image.asset(
-                        'assets/images/qr_code.jpg', // Thay bằng đường dẫn ảnh QR thực tế
-                        height: 150,
-                      ),
+                      child:
+                          qrImage != null
+                              ? qrImage!
+                              : CircularProgressIndicator(),
                     ),
                     const SizedBox(height: 8),
                     const Center(
@@ -201,6 +306,14 @@ class PaymentInfoScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             PrimaryButton(
+              text: 'XÁC NHẬN THANH TOÁN',
+              borderRadius: 40,
+              onPressed: () {
+                _submitbooking();
+              },
+            ),
+            const SizedBox(height: 16),
+            PrimaryButton(
               text: 'VỀ LẠI TRANG CHỦ',
               borderRadius: 40,
               onPressed: () {
@@ -216,8 +329,4 @@ class PaymentInfoScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: PaymentInfoScreen()));
 }

@@ -8,6 +8,7 @@ class Booking {
   DateTime dateBooking;
   List<Vaccine> lstVaccine;
   int isConfirmed;
+  double totalPrice;
 
   Booking({
     required this.idUser,
@@ -15,6 +16,7 @@ class Booking {
     required this.bookingCenter,
     required this.dateBooking,
     required this.lstVaccine,
+    required this.totalPrice,
     this.isConfirmed = 0,
   });
 
@@ -29,6 +31,7 @@ class Booking {
       'bookingCenter': bookingCenter,
       'dateBooking': convertDate(dateBooking),
       'lstVaccine': lstVaccine.map((v) => v.toMap()).toList(),
+      'totalPrice': totalPrice,
       'isConfirmed': isConfirmed,
     };
   }
@@ -47,6 +50,7 @@ class Booking {
               ?.map((v) => Vaccine.fromMap(v as Map<String, dynamic>))
               .toList() ??
           [],
+      totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0.0,
 
       isConfirmed: map['isConfirmed'] as int? ?? 0,
     );

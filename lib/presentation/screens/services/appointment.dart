@@ -466,8 +466,6 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (userLogin == null) {
         Navigator.push(
@@ -478,6 +476,9 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         );
       }
     });
+    if (userLogin != null) {
+      super.initState();
+    }
   }
 
   void _plusAllBill(Vaccine vaccine) {
@@ -786,47 +787,41 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         bookingCenter: _facilityValue!,
         dateBooking: _selectedDate!,
         lstVaccine: _selectedVaccines,
+        totalPrice: sumBill,
         isConfirmed: 0,
       );
-      bool up = await insertDataAutoID("DATLICHTIEM", bk.toMap());
-      // ScaffoldMessenger.of(
-      //   context,
-      // ).showSnackBar(const SnackBar(content: Text('Đang đặt lịch...')));
-      if (up) {
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(const SnackBar(content: Text('Đặt lịch thành công')));
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Thông báo'),
-              content: const Text('Bạn có chắc chắn muốn đặt lịch hẹn?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Xem lại lịch'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                VaccineTermsScreen(isFromBookingScreen: true),
-                      ),
-                    );
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thông báo'),
+            content: const Text('Bạn có chắc chắn muốn đặt lịch hẹn?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Xem lại lịch'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => VaccineTermsScreen(
+                            isFromBookingScreen: true,
+                            booking: bk,
+                          ),
+                    ),
+                  );
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
       showDialog(
         context: context,

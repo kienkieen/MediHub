@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 import 'package:medihub_app/models/userMain.dart';
 import 'package:medihub_app/models/vaccine.dart';
@@ -17,6 +18,7 @@ import 'package:medihub_app/providers/cart_provider.dart';
 User? userLogin;
 UserMain? useMainLogin;
 List<Vaccine> allVaccines = [];
+List<VaccinePackage> allVaccinePackages = [];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,6 +75,7 @@ void main() async {
   // }
 
   allVaccines = await loadAllVaccines();
+  allVaccinePackages = await getAllVaccinePackage();
 
   // VaccinationRecord record = VaccinationRecord(
   //   idRecord: '',
