@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Bill {
   final String id;
   final String paymentMethod;
@@ -18,7 +20,7 @@ class Bill {
       id: map['id'] as String,
       paymentMethod: map['paymentMethod'] as String,
       totalAmount: (map['totalAmount'] as num).toDouble(),
-      dueDate: DateTime.parse(map['dueDate'] as String),
+      dueDate: (map['dueDate'] as Timestamp).toDate(),
       isPaid: map['isPaid'] as bool,
     );
   }
@@ -27,7 +29,7 @@ class Bill {
     return {
       'paymentMethod': paymentMethod,
       'totalAmount': totalAmount,
-      'dueDate': dueDate.toIso8601String(),
+      'dueDate': dueDate,
       'isPaid': isPaid,
     };
   }

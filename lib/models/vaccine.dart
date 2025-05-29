@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Vaccine {
@@ -45,7 +46,7 @@ class Vaccine {
       'diseases': diseases,
       'ageRange': ageRange,
       'price': price,
-      'importedDate': importedDate.toIso8601String(),
+      'importedDate': importedDate,
       'manufacturer': manufacturer,
       'isPopular': isPopular,
       'imageUrl': imageUrl,
@@ -67,7 +68,7 @@ class Vaccine {
       diseases: List<String>.from(map['diseases'] ?? []),
       ageRange: map['ageRange'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
-      importedDate: DateTime.parse(map['importedDate']),
+      importedDate: (map['importedDate'] as Timestamp).toDate(),
       manufacturer: map['manufacturer'] ?? '',
       isPopular: map['isPopular'] ?? false,
       imageUrl: map['imageUrl'] ?? '',

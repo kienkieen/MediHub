@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class UserMain {
@@ -42,7 +43,7 @@ class UserMain {
       'fullName': fullName,
       'gender': gender,
       'job': job,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
+      'dateOfBirth': dateOfBirth,
       'phoneNumber': phoneNumber,
       'numberBHYT': numberBHYT,
       'email': email,
@@ -63,7 +64,7 @@ class UserMain {
       fullName: map['fullName'] ?? '',
       gender: map['gender'] ?? 'Other',
       job: map['job'] ?? 'Chưa xác định',
-      dateOfBirth: DateTime.parse(map['dateOfBirth']),
+      dateOfBirth: (map['dateOfBirth'] as Timestamp).toDate(),
       phoneNumber: map['phoneNumber'] ?? '',
       numberBHYT: map['numberBHYT'] ?? '',
       email: map['email'] ?? '',

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/models/vaccine.dart';
 
@@ -28,7 +29,7 @@ class VaccinationRecord {
     return {
       'userId': userId,
       'vaccine': vaccine.toMap(),
-      'date': date.toIso8601String(),
+      'date': date,
       'dose': dose,
       'location': location,
       'vaccineId': vaccineId,
@@ -40,7 +41,7 @@ class VaccinationRecord {
       idRecord: map['idRecord'],
       userId: map['userId'] ?? '',
       vaccine: Vaccine.fromMap(map['vaccine']),
-      date: map['date'] is DateTime ? map['date'] : DateTime.parse(map['date']),
+      date: (map['date'] as Timestamp).toDate(),
       dose: map['dose'] ?? '',
       location: map['location'] ?? '',
       vaccineId: map['vaccineId'] ?? '',

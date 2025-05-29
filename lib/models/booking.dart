@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/models/vaccine.dart';
 
@@ -29,7 +30,7 @@ class Booking {
       'idBooking': idBooking,
       'idUser': idUser,
       'bookingCenter': bookingCenter,
-      'dateBooking': convertDate(dateBooking),
+      'dateBooking': dateBooking,
       'lstVaccine': lstVaccine.map((v) => v.toMap()).toList(),
       'totalPrice': totalPrice,
       'isConfirmed': isConfirmed,
@@ -41,10 +42,7 @@ class Booking {
       idBooking: map['idBooking'] as String? ?? '',
       idUser: map['idUser'] as String? ?? '',
       bookingCenter: map['bookingCenter'] as String? ?? '',
-      dateBooking:
-          map['dateBooking'] is DateTime
-              ? map['dateBooking']
-              : DateTime.parse(map['dateBooking']),
+      dateBooking: (map['dateBooking'] as Timestamp).toDate(),
       lstVaccine:
           (map['lstVaccine'] as List<dynamic>?)
               ?.map((v) => Vaccine.fromMap(v as Map<String, dynamic>))
