@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
@@ -7,6 +8,7 @@ import 'package:medihub_app/core/widgets/services_widgets/filter_vaccine_list.da
 import 'package:medihub_app/core/widgets/services_widgets/filterchip.dart';
 import 'package:medihub_app/core/utils/constants.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_detail.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
@@ -28,9 +30,12 @@ class VaccineListScreen extends StatefulWidget {
 }
 
 class _VaccineListScreenState extends State<VaccineListScreen> {
+  Map<String, bool> _expandedPackages = {};
   final TextEditingController _searchController = TextEditingController();
   List<Vaccine> _vaccines = [];
+  List<VaccinePackage> _vaccinePackages = [];
   List<Vaccine> _filteredVaccines = [];
+  bool isState = true;
   FilterOptions _filterOptions = FilterOptions();
 
   @override
@@ -44,10 +49,25 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
     }
   }
 
+  void _toggleExpand(String packageKey) {
+    setState(() {
+      _expandedPackages[packageKey] = !_expandedPackages[packageKey]!;
+    });
+  }
+
   void _loadVaccines() {
     setState(() {
       _vaccines = allVaccines;
       _filteredVaccines = _vaccines;
+      if (widget.isFromBookingScreen) {
+        _vaccinePackages = allVaccinePackages;
+        for (var package in _vaccinePackages) {
+          Map<String, bool> packageState = {package.id: false};
+          setState(() {
+            _expandedPackages.addAll(packageState);
+          });
+        }
+      }
     });
   }
 
@@ -135,17 +155,18 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               onSubmitted: _applyFilters,
             ),
           ),
-          if (!widget.isFromBookingScreen)
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade400, width: 1),
-                ),
-                color: Colors.white,
+
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.grey.shade400, width: 1),
               ),
-              height: 57,
-              child: Row(
-                children: [
+              color: Colors.white,
+            ),
+            height: 57,
+            child: Row(
+              children: [
+                if (!widget.isFromBookingScreen)
                   InkWell(
                     onTap: () async {
                       final options = await showModalBottomSheet<FilterOptions>(
@@ -188,20 +209,41 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                const SizedBox(width: 10),
+                if (widget.isFromBookingScreen)
                   Expanded(child: _buildCategoryButtons()),
-                ],
-              ),
+              ],
             ),
+          ),
           Expanded(
             child:
-                _filteredVaccines.isEmpty
-                    ? _emptyContent()
-                    : ListView.builder(
-                      itemCount: _filteredVaccines.length,
-                      itemBuilder:
-                          (context, index) =>
-                              _buildVaccineCard(_filteredVaccines[index]),
+                isState
+                    ? _filteredVaccines.isEmpty
+                        ? _emptyContent()
+                        : ListView.builder(
+                          itemCount: _filteredVaccines.length,
+                          itemBuilder:
+                              (context, index) =>
+                                  _buildVaccineCard(_filteredVaccines[index]),
+                        )
+                    : Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        children:
+                            _vaccinePackages.map((package) {
+                              return PackageItem(
+                                img: package.imageUrl,
+                                title: package.name,
+                                price: package.totalPrice.toString(),
+                                discount: package.discount.toString(),
+                                packageKey: package.id,
+                                vaccinePackages: allVaccinePackages,
+                                expandedPackages: _expandedPackages,
+                                allVaccines: allVaccines,
+                                onExpandToggle: _toggleExpand,
+                              );
+                            }).toList(),
+                      ),
                     ),
           ),
         ],
@@ -210,7 +252,10 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
   }
 
   Widget _buildCategoryButtons() {
-    const categories = ['Tất cả', 'Trẻ em', 'Người lớn'];
+    var categories = ['Vắc xin', 'Gói vắc xin'];
+    if (_filterOptions.category == null && isState) {
+      _filterOptions.category = categories[0];
+    }
     return SizedBox(
       height: 50,
       child: ListView.builder(
@@ -224,9 +269,16 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                 isSelected: _filterOptions.category == categories[index],
                 onSelected: (selected) {
                   setState(() {
-                    _filterOptions.category =
-                        selected ? categories[index] : null;
-                    _applyFilters();
+                    if (_filterOptions.category != categories[index]) {
+                      _filterOptions.category = categories[index];
+
+                      if (_filterOptions.category == categories[0]) {
+                        isState = true;
+                      } else if (_filterOptions.category == categories[1]) {
+                        isState = false;
+                      }
+                      _applyFilters();
+                    }
                   });
                 },
               ),

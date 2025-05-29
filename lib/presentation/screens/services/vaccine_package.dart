@@ -49,7 +49,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
         child: Column(
           children:
               _vaccinePackages.map((package) {
-                return _buildPackageItem(
+                return buildPackageItem(
                   img: package.imageUrl,
                   title: package.name,
                   price: package.totalPrice.toString(),
@@ -62,7 +62,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
     );
   }
 
-  Widget _buildPackageItem({
+  Widget buildPackageItem({
     required String img,
     required String title,
     required String price,
