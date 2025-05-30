@@ -226,25 +226,52 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                               (context, index) =>
                                   _buildVaccineCard(_filteredVaccines[index]),
                         )
-                    : Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children:
-                            _vaccinePackages.map((package) {
-                              return PackageItem(
-                                img: package.imageUrl,
-                                title: package.name,
-                                price: package.totalPrice.toString(),
-                                discount: package.discount.toString(),
-                                packageKey: package.id,
-                                vaccinePackages: allVaccinePackages,
-                                expandedPackages: _expandedPackages,
-                                allVaccines: allVaccines,
-                                onExpandToggle: _toggleExpand,
-                              );
-                            }).toList(),
-                      ),
-                    ),
+                    : _vaccinePackages.length > 0
+                    ? ListView.builder(
+                      itemCount: _vaccinePackages.length,
+                      itemBuilder:
+                          (context, index) =>
+                              _vaccinePackages[index].isActive
+                                  ? PackageItem(
+                                    img: _vaccinePackages[index].imageUrl,
+                                    title: _vaccinePackages[index].name,
+                                    price:
+                                        _vaccinePackages[index].totalPrice
+                                            .toString(),
+                                    discount:
+                                        _vaccinePackages[index].discount
+                                            .toString(),
+                                    packageKey: _vaccinePackages[index].id,
+                                    vaccinePackage: _vaccinePackages[index],
+                                    expandedPackages: _expandedPackages,
+                                    allVaccines: allVaccines,
+                                    onExpandToggle: _toggleExpand,
+                                    typeBooking: true,
+                                  )
+                                  : const SizedBox.shrink(),
+                    )
+                    : _emptyContent(),
+            // : Padding(
+            //   padding: const EdgeInsets.all(8),
+            //   child:
+
+            //   // Column(
+            //   //   children:
+            //   //       _vaccinePackages.map((package) {
+            //   //         return PackageItem(
+            //   //           img: package.imageUrl,
+            //   //           title: package.name,
+            //   //           price: package.totalPrice.toString(),
+            //   //           discount: package.discount.toString(),
+            //   //           packageKey: package.id,
+            //   //           vaccinePackages: allVaccinePackages,
+            //   //           expandedPackages: _expandedPackages,
+            //   //           allVaccines: allVaccines,
+            //   //           onExpandToggle: _toggleExpand,
+            //   //         );
+            //   //       }).toList(),
+            //   // ),
+            // ),
           ),
         ],
       ),
@@ -284,6 +311,21 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               ),
             ),
       ),
+    );
+  }
+
+  Widget _buildVaccinePackageCard(VaccinePackage package) {
+    return PackageItem(
+      img: package.imageUrl,
+      title: package.name,
+      price: package.totalPrice.toString(),
+      discount: package.discount.toString(),
+      packageKey: package.id,
+      vaccinePackage: package,
+      expandedPackages: _expandedPackages,
+      allVaccines: allVaccines,
+      onExpandToggle: _toggleExpand,
+      typeBooking: widget.isFromBookingScreen,
     );
   }
 

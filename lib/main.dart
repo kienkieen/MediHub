@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
+import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/models/userMain.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
-import 'package:medihub_app/models/vaccine_record.dart';
 import 'package:provider/provider.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
@@ -19,10 +18,16 @@ User? userLogin;
 UserMain? useMainLogin;
 List<Vaccine> allVaccines = [];
 List<VaccinePackage> allVaccinePackages = [];
+Cart cart = Cart();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  allVaccines = await loadAllVaccines();
+  allVaccinePackages = await getAllVaccinePackage();
+
+  runApp(const MyApp());
   // final List<Vaccine> allVaccines = [
   //   Vaccine(
   //     id: 'vaccine1',
@@ -73,9 +78,6 @@ void main() async {
   // for (var vaccine in allVaccines) {
   //   final success = await insertData('VACCINE', vaccine.id, vaccine.toMap());
   // }
-
-  allVaccines = await loadAllVaccines();
-  allVaccinePackages = await getAllVaccinePackage();
 
   // VaccinationRecord record = VaccinationRecord(
   //   idRecord: '',
@@ -175,7 +177,6 @@ void main() async {
   //     print('Failed to insert package: ${package.name}');
   //   }
   // }
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

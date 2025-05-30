@@ -109,7 +109,9 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
       insertData("HOADON", bill.id, bill.toMap());
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AppointmentScreen()),
+        MaterialPageRoute(
+          builder: (context) => NavigationBottom(initialIndex: 2),
+        ),
       );
     } else {
       ScaffoldMessenger.of(

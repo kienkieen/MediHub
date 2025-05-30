@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // Import the extracted widgets
@@ -6,6 +7,8 @@ import 'package:medihub_app/core/widgets/login_widgets/social_login_options.dart
 import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
+import 'package:medihub_app/firebase_helper/cart_helper.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/register.dart';
@@ -100,6 +103,7 @@ class _LoginFormState extends State<LoginForm> {
   void _submitForm(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       if (await SignIn(email, password)) {
+        cart = await getCartbyUserID(useMainLogin!.userId);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));

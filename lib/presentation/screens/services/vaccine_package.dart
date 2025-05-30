@@ -156,6 +156,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
             totalPrice: 0,
             discount: 0,
             imageUrl: '',
+            isActive: false,
           ),
     );
 

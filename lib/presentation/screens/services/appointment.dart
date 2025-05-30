@@ -10,6 +10,7 @@ import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
@@ -453,6 +454,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   double sumBill = 0;
 
   final List<Vaccine> _selectedVaccines = [];
+  final List<VaccinePackage> _selectedPackages = [];
   final Color _primaryColor = const Color(0xFF019BD3);
   final Color _secondaryColor = const Color(0xA701CBEE);
 
@@ -481,12 +483,20 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     }
   }
 
-  void _plusAllBill(Vaccine vaccine) {
+  void _plusVaccineBill(Vaccine vaccine) {
     sumBill += vaccine.price;
   }
 
-  void _minusAllBill(Vaccine vaccine) {
+  void _minusVaccineBill(Vaccine vaccine) {
     sumBill -= vaccine.price;
+  }
+
+  void _plusVaccinePackageBill(VaccinePackage package) {
+    sumBill += (package.totalPrice - package.discount);
+  }
+
+  void _minusVaccinePackageBill(VaccinePackage package) {
+    sumBill -= (package.totalPrice - package.discount);
   }
 
   void _openCartToSelectVaccine() async {
@@ -501,7 +511,12 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
       setState(() {
         selectedVaccine = result;
         _selectedVaccines.add(result);
-        _plusAllBill(result);
+        _plusVaccineBill(result);
+      });
+    } else if (result != null && result is VaccinePackage) {
+      setState(() {
+        _selectedPackages.add(result);
+        _plusVaccinePackageBill(result);
       });
     }
   }
@@ -519,9 +534,13 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
       setState(() {
         selectedVaccine = result;
         _selectedVaccines.add(result);
-        _plusAllBill(result);
+        _plusVaccineBill(result);
       });
-      print('Vắc xin được chọn: ${selectedVaccine!.name}');
+    } else if (result != null && result is VaccinePackage) {
+      setState(() {
+        _selectedPackages.add(result);
+        _plusVaccinePackageBill(result);
+      });
     }
   }
 
@@ -582,194 +601,273 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Phần thông tin người tiêm
-              Text(
-                'Người tiêm: ${useMainLogin!.fullName}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 2),
-              const Divider(height: 24),
-
-              // Phần chọn trung tâm
-              DropdownField(
-                label: 'Chọn trung tâm mong muốn tiêm',
-                value: _facilityValue,
-                items: _facilityOptions,
-                isRequired: true,
-                onChanged: (newValue) {
-                  setState(() {
-                    _facilityValue = newValue;
-                  });
-                },
-                hintText: 'Chọn trung tâm',
-                focusNode: _focusNode,
-              ),
-              const SizedBox(height: 16),
-
-              // Phần chọn ngày
-              _buildSectionTitle('Chọn ngày mong muốn tiêm'),
-              SizedBox(height: 8),
-              InkWell(
-                onTap: () => _selectDate(context),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1.4, color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
+          child:
+              userLogin != null
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.calendar_today),
-                      const SizedBox(width: 16),
+                      // Phần thông tin người tiêm
                       Text(
-                        _selectedDate != null
-                            ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-                            : 'Chọn ngày tiêm',
+                        'Người tiêm: ${useMainLogin!.fullName}',
                         style: TextStyle(
-                          color:
-                              _selectedDate != null
-                                  ? Colors.black
-                                  : Colors.grey,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
+                      const SizedBox(height: 2),
+                      const Divider(height: 24),
 
-              // Phần chọn vắc xin
-              _buildSectionTitle('Chọn vắc xin'),
-              SizedBox(height: 8),
-              // Danh sách vắc xin đã chọn
-              if (_selectedVaccines.isNotEmpty) ...[
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _selectedVaccines.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(color: Colors.grey.shade300),
-                          ),
-                        ),
+                      // Phần chọn trung tâm
+                      DropdownField(
+                        label: 'Chọn trung tâm mong muốn tiêm',
+                        value: _facilityValue,
+                        items: _facilityOptions,
+                        isRequired: true,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _facilityValue = newValue;
+                          });
+                        },
+                        hintText: 'Chọn trung tâm',
+                        focusNode: _focusNode,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Phần chọn ngày
+                      _buildSectionTitle('Chọn ngày mong muốn tiêm'),
+                      SizedBox(height: 8),
+                      InkWell(
+                        onTap: () => _selectDate(context),
                         child: Container(
-                          height: 48,
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1.4,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  _selectedVaccines[index].name,
-                                  style: const TextStyle(fontSize: 15),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    final vaccineToRemove =
-                                        _selectedVaccines[index];
-                                    _selectedVaccines.removeAt(index);
-                                    _minusAllBill(vaccineToRemove);
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.delete,
-                                  size: 20,
-                                  color: Colors.red,
+                              Icon(Icons.calendar_today),
+                              const SizedBox(width: 16),
+                              Text(
+                                _selectedDate != null
+                                    ? DateFormat(
+                                      'dd/MM/yyyy',
+                                    ).format(_selectedDate!)
+                                    : 'Chọn ngày tiêm',
+                                style: TextStyle(
+                                  color:
+                                      _selectedDate != null
+                                          ? Colors.black
+                                          : Colors.grey,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ] else ...[
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Danh sách vắc xin chọn mua trống',
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  BuildButton3(
-                    text: 'Thêm từ giỏ',
-                    textSize: 14,
-                    width: 150,
-                    height: 42,
-                    onPressed: () {
-                      _openCartToSelectVaccine();
-                    },
-                  ),
+                      ),
+                      const SizedBox(height: 24),
 
-                  BuildButton4(
-                    text: 'Thêm mới',
-                    textSize: 14,
-                    width: 150,
-                    height: 42,
-                    onPressed: () {
-                      _openVaccineListToSelectVaccine();
-                    },
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
+                      // Phần chọn vắc xin
+                      _buildSectionTitle('Chọn vắc xin'),
+                      SizedBox(height: 8),
+                      // Danh sách vắc xin đã chọn
+                      if (_selectedVaccines.isNotEmpty) ...[
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _selectedVaccines.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  height: 48,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _selectedVaccines[index].name,
+                                          style: const TextStyle(fontSize: 15),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            final vaccineToRemove =
+                                                _selectedVaccines[index];
+                                            _selectedVaccines.removeAt(index);
+                                            _minusVaccineBill(vaccineToRemove);
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.delete,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ] else if (_selectedPackages.length > 0) ...[
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _selectedPackages.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  height: 48,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _selectedPackages[index].name,
+                                          style: const TextStyle(fontSize: 15),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            final vaccinePackageToRemove =
+                                                _selectedPackages[index];
+                                            _selectedPackages.removeAt(index);
+                                            _minusVaccinePackageBill(
+                                              vaccinePackageToRemove,
+                                            );
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.delete,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ] else ...[
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Danh sách vắc xin chọn mua trống',
+                            style: TextStyle(color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BuildButton3(
+                            text: 'Thêm từ giỏ',
+                            textSize: 14,
+                            width: 150,
+                            height: 42,
+                            onPressed: () {
+                              _openCartToSelectVaccine();
+                            },
+                          ),
 
-              // Tổng cộng
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Tổng cộng',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    NumberFormat.currency(
-                      locale: 'vi',
-                      symbol: 'VND',
-                    ).format(sumBill),
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+                          BuildButton4(
+                            text: 'Thêm mới',
+                            textSize: 14,
+                            width: 150,
+                            height: 42,
+                            onPressed: () {
+                              _openVaccineListToSelectVaccine();
+                            },
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 32),
 
-              // Nút xác nhận
-              PrimaryButton(
-                text: 'XÁC NHẬN',
-                borderRadius: 40,
-                onPressed: () {
-                  _submitBooking();
-                },
-              ),
-            ],
-          ),
+                      // Tổng cộng
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Tổng cộng',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.currency(
+                              locale: 'vi',
+                              symbol: 'VND',
+                            ).format(sumBill),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Nút xác nhận
+                      PrimaryButton(
+                        text: 'XÁC NHẬN',
+                        borderRadius: 40,
+                        onPressed: () {
+                          _submitBooking();
+                        },
+                      ),
+                    ],
+                  )
+                  : null,
         ),
       ),
     );

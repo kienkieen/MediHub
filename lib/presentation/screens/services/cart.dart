@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
@@ -26,12 +28,19 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<CartItem> _filteredCartItems = [];
-
+  List<CartVaccineItem> _filteredCartItems = [];
+  List<CartVaccinePackage> _listCartVaccinePackages = [];
+  Map<String, bool> _expandedPackages = {};
   @override
   void initState() {
     super.initState();
-    _loadCartItems();
+    if (userLogin != null) {
+      _loadCartItems();
+      for (var package in _listCartVaccinePackages) {
+        _expandedPackages[package.package.id] =
+            false; // Khởi tạo trạng thái mở gói
+      }
+    }
 
     if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
       _searchController.text = widget.initialSearch!;
@@ -42,15 +51,23 @@ class _CartScreenState extends State<CartScreen> {
   void _loadCartItems() {
     setState(() {
       _filteredCartItems =
-          Provider.of<CartProvider>(context, listen: false).cart.items;
+          Provider.of<CartProvider>(
+            context,
+            listen: false,
+          ).getCart.vaccineItems;
+      _listCartVaccinePackages =
+          Provider.of<CartProvider>(
+            context,
+            listen: false,
+          ).getCart.vaccinePackages;
     });
   }
 
   void _applyFilters() {
-    final cart = Provider.of<CartProvider>(context, listen: false).cart;
+    final cart = Provider.of<CartProvider>(context, listen: false).getCart;
     setState(() {
       _filteredCartItems =
-          cart.items.where((cartItem) {
+          cart.vaccineItems.where((cartItem) {
             final vaccine = cartItem.vaccine;
             if (_searchController.text.isNotEmpty &&
                 !vaccine.name.toLowerCase().contains(
@@ -60,6 +77,12 @@ class _CartScreenState extends State<CartScreen> {
             }
             return true;
           }).toList();
+    });
+  }
+
+  void _toggleExpand(String packageKey) {
+    setState(() {
+      _expandedPackages[packageKey] = !_expandedPackages[packageKey]!;
     });
   }
 
@@ -103,6 +126,42 @@ class _CartScreenState extends State<CartScreen> {
                               _buildVaccineCard(_filteredCartItems[index]),
                     ),
           ),
+          if (_listCartVaccinePackages.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: _listCartVaccinePackages.length,
+                itemBuilder:
+                    (context, index) =>
+                        _listCartVaccinePackages[index].package.isActive
+                            ? PackageItem(
+                              img:
+                                  _listCartVaccinePackages[index]
+                                      .package
+                                      .imageUrl,
+                              title:
+                                  _listCartVaccinePackages[index].package.name,
+                              price:
+                                  _listCartVaccinePackages[index]
+                                      .package
+                                      .totalPrice
+                                      .toString(),
+                              discount:
+                                  _listCartVaccinePackages[index]
+                                      .package
+                                      .discount
+                                      .toString(),
+                              packageKey:
+                                  _listCartVaccinePackages[index].package.id,
+                              vaccinePackage:
+                                  _listCartVaccinePackages[index].package,
+                              expandedPackages: _expandedPackages,
+                              allVaccines: allVaccines,
+                              onExpandToggle: _toggleExpand,
+                              typeBooking: true,
+                            )
+                            : const SizedBox.shrink(),
+              ),
+            ),
           // Chỉ hiển thị tổng tiền và nút đặt lịch nếu không phải từ BookingScreen
           if (!widget.isFromBookingScreen)
             Container(
@@ -117,7 +176,7 @@ class _CartScreenState extends State<CartScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Tổng tiền: ${NumberFormat.currency(locale: 'vi_VN', symbol: 'đ').format(cartProvider.cart.totalPrice)}',
+                      'Tổng tiền: ${NumberFormat.currency(locale: 'vi_VN', symbol: 'đ').format(cartProvider.getCart.totalPrice)}',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -135,7 +194,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildVaccineCard(CartItem cartItem) {
+  Widget _buildVaccineCard(CartVaccineItem cartItem) {
     final vaccine = cartItem.vaccine;
     return Container(
       padding: EdgeInsets.all(8),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_package.dart';
 
 class PackageItem extends StatefulWidget {
-  final List<VaccinePackage> vaccinePackages;
+  final VaccinePackage vaccinePackage;
   final String img;
   final String title;
   final String price;
@@ -13,10 +14,11 @@ class PackageItem extends StatefulWidget {
   final List<Vaccine> allVaccines;
   final Map<String, bool> expandedPackages; // Truyền trạng thái mở rộng
   final Function(String) onExpandToggle; // Callback để cập nhật trạng thái
+  final bool typeBooking;
 
   const PackageItem({
     super.key,
-    required this.vaccinePackages,
+    required this.vaccinePackage,
     required this.img,
     required this.title,
     required this.price,
@@ -25,6 +27,7 @@ class PackageItem extends StatefulWidget {
     required this.allVaccines,
     required this.expandedPackages,
     required this.onExpandToggle,
+    required this.typeBooking,
   });
 
   @override
@@ -105,9 +108,10 @@ class _PackageItemState extends State<PackageItem> {
               padding: const EdgeInsets.only(bottom: 8),
               child: ListVaccine(
                 packageKey: widget.packageKey,
-                vaccinePackages:
-                    widget.vaccinePackages, // Truyền dữ liệu cần thiết
+                vaccinePackage:
+                    widget.vaccinePackage, // Truyền dữ liệu cần thiết
                 allVaccines: widget.allVaccines, // Truyền dữ liệu cần thiết
+                typeBooking: widget.typeBooking, // Truyền dữ liệu cần thiết
               ),
             ),
         ],
@@ -118,42 +122,50 @@ class _PackageItemState extends State<PackageItem> {
 
 class ListVaccine extends StatelessWidget {
   final String packageKey;
-  final List<VaccinePackage> vaccinePackages;
   final List<Vaccine> allVaccines;
-
+  final VaccinePackage vaccinePackage;
+  final bool typeBooking;
   const ListVaccine({
     Key? key,
     required this.packageKey,
-    required this.vaccinePackages,
+    required this.vaccinePackage,
     required this.allVaccines,
+    required this.typeBooking,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final package = vaccinePackages.firstWhere(
-      (package) => package.id == packageKey,
-      orElse:
-          () => VaccinePackage(
-            id: 'unknown',
-            name: 'Không xác định',
-            ageGroup: 'Không xác định',
-            description: 'Không có thông tin',
-            vaccineIds: [],
-            dosesByVaccine: {},
-            totalPrice: 0,
-            discount: 0,
-            imageUrl: '',
-          ),
-    );
+    // final package = vaccinePackages.firstWhere(
+    //   (package) => package.id == packageKey,
+    //   orElse:
+    //       () => VaccinePackage(
+    //         id: 'unknown',
+    //         name: 'Không xác định',
+    //         ageGroup: 'Không xác định',
+    //         description: 'Không có thông tin',
+    //         vaccineIds: [],
+    //         dosesByVaccine: {},
+    //         totalPrice: 0,
+    //         discount: 0,
+    //         imageUrl: '',
+    //         isActive: false,
+    //       ),
+    // );
 
-    if (package.id == 'unknown') {
+    // if (package.id == 'unknown') {
+    //   return const Padding(
+    //     padding: EdgeInsets.all(16),
+    //     child: Text('Không tìm thấy thông tin gói.'),
+    //   );
+    // }
+    if (vaccinePackage == null) {
       return const Padding(
         padding: EdgeInsets.all(16),
         child: Text('Không tìm thấy thông tin gói.'),
       );
     }
 
-    final vaccines = package.getVaccines(allVaccines);
+    final vaccines = vaccinePackage.getVaccines(allVaccines);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
@@ -224,8 +236,9 @@ class ListVaccine extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder:
-                            (context) =>
-                                VaccinePackageDetailScreen(package: package),
+                            (context) => VaccinePackageDetailScreen(
+                              package: vaccinePackage,
+                            ),
                       ),
                     );
                   },
@@ -243,7 +256,20 @@ class ListVaccine extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: InkWell(
                   onTap: () {
-                    // Xử lý đặt lịch tiêm
+                    if (typeBooking) {
+                      Navigator.pop(
+                        context,
+                        vaccinePackage,
+                      ); // tôi đang hỏi chỗ này á
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => const VaccinationBookingScreen(),
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(

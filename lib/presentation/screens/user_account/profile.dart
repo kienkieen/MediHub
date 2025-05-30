@@ -7,6 +7,7 @@ import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/input_field.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -210,6 +211,34 @@ class _ProfileState extends State<ProfileScreen> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Cập nhập thành công')));
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Thông báo'),
+              content: const Text('Bạn có muốn về trang chủ không?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NavigationBottom(initialIndex: 0),
+                      ),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Đóng dialog
+                  },
+                  child: const Text('Không'),
+                ),
+              ],
+            );
+          },
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
