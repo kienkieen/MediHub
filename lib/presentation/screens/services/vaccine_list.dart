@@ -247,6 +247,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                                     allVaccines: allVaccines,
                                     onExpandToggle: _toggleExpand,
                                     typeBooking: true,
+                                    isFormBooking: false,
                                   )
                                   : const SizedBox.shrink(),
                     )
@@ -326,6 +327,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
       allVaccines: allVaccines,
       onExpandToggle: _toggleExpand,
       typeBooking: widget.isFromBookingScreen,
+      isFormBooking: widget.isFromBookingScreen,
     );
   }
 

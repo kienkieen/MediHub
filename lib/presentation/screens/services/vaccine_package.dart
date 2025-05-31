@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
@@ -25,6 +26,12 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
     _loadVaccinePackages();
   }
 
+  void _toggleExpand(String packageKey) {
+    setState(() {
+      _expandedPackages[packageKey] = !_expandedPackages[packageKey]!;
+    });
+  }
+
   void _loadVaccinePackages() async {
     try {
       _vaccinePackages = allVaccinePackages;
@@ -44,19 +51,60 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppbarWidget(isBackButton: true, title: 'Gói vắc xin'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body:
+          _vaccinePackages.isEmpty
+              ? _emptyContent()
+              : ListView.builder(
+                itemCount: _vaccinePackages.length,
+                itemBuilder:
+                    (context, index) =>
+                        _vaccinePackages[index].isActive
+                            ? PackageItem(
+                              img: _vaccinePackages[index].imageUrl,
+                              title: _vaccinePackages[index].name,
+                              price:
+                                  _vaccinePackages[index].totalPrice.toString(),
+                              discount:
+                                  _vaccinePackages[index].discount.toString(),
+                              packageKey: _vaccinePackages[index].id,
+                              vaccinePackage: _vaccinePackages[index],
+                              expandedPackages: _expandedPackages,
+                              allVaccines: allVaccines,
+                              onExpandToggle: _toggleExpand,
+                              typeBooking: false,
+                              isFormBooking: false,
+                            )
+                            : const SizedBox.shrink(),
+              ),
+      // body: SingleChildScrollView(
+      //   padding: const EdgeInsets.all(16),
+      //   child: Column(
+      //     children: [
+      //       Expanded(
+      //         child:
+
+      //       ),
+      //     ],
+      //   ),
+      // ),
+    );
+  }
+
+  Widget _emptyContent() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          children:
-              _vaccinePackages.map((package) {
-                return buildPackageItem(
-                  img: package.imageUrl,
-                  title: package.name,
-                  price: package.totalPrice.toString(),
-                  discount: package.discount.toString(),
-                  packageKey: package.id,
-                );
-              }).toList(),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("assets/images/find_vaccie.png"),
+            const SizedBox(height: 16),
+            Text(
+              'Không có gói vắc xin nào, vui lòng thử lại',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
         ),
       ),
     );

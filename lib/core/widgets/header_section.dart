@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/services/cart.dart';
 // import 'package:medihub_app/presentation/screens/home/notification.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -50,6 +53,25 @@ class HeaderSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
+          if (userLogin != null)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(8),
+              ),
+              child: const Icon(
+                Icons.shopping_bag_outlined,
+                color: Color(0xFF0091FF),
+                size: 24,
+              ),
+            ),
           // ElevatedButton(
           //   onPressed: () {
           //     Navigator.push(

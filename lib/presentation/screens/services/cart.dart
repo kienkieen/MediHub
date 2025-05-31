@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
@@ -116,52 +117,83 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           Expanded(
-            child:
-                _filteredCartItems.isEmpty
-                    ? _emptyContent()
-                    : ListView.builder(
-                      itemCount: _filteredCartItems.length,
-                      itemBuilder:
-                          (context, index) =>
-                              _buildVaccineCard(_filteredCartItems[index]),
+            child: ListView(
+              children: [
+                if (_filteredCartItems.isEmpty &&
+                    _listCartVaccinePackages.isEmpty) ...[
+                  _emptyContent(),
+                ] else ...[
+                  if (_filteredCartItems.isNotEmpty)
+                    ..._filteredCartItems
+                        .map((item) => _buildVaccineCard(item))
+                        .toList(),
+                  if (_listCartVaccinePackages.isNotEmpty)
+                    ..._listCartVaccinePackages.map(
+                      (package) =>
+                          package.package.isActive
+                              ? PackageItem(
+                                img: package.package.imageUrl,
+                                title: package.package.name,
+                                price: package.package.totalPrice.toString(),
+                                discount: package.package.discount.toString(),
+                                packageKey: package.package.id,
+                                vaccinePackage: package.package,
+                                expandedPackages: _expandedPackages,
+                                allVaccines: allVaccines,
+                                onExpandToggle: _toggleExpand,
+                                typeBooking: widget.isFromBookingScreen,
+                                isFormBooking: true,
+                              )
+                              : const SizedBox.shrink(),
                     ),
-          ),
-          if (_listCartVaccinePackages.isNotEmpty)
-            Expanded(
-              child: ListView.builder(
-                itemCount: _listCartVaccinePackages.length,
-                itemBuilder:
-                    (context, index) =>
-                        _listCartVaccinePackages[index].package.isActive
-                            ? PackageItem(
-                              img:
-                                  _listCartVaccinePackages[index]
-                                      .package
-                                      .imageUrl,
-                              title:
-                                  _listCartVaccinePackages[index].package.name,
-                              price:
-                                  _listCartVaccinePackages[index]
-                                      .package
-                                      .totalPrice
-                                      .toString(),
-                              discount:
-                                  _listCartVaccinePackages[index]
-                                      .package
-                                      .discount
-                                      .toString(),
-                              packageKey:
-                                  _listCartVaccinePackages[index].package.id,
-                              vaccinePackage:
-                                  _listCartVaccinePackages[index].package,
-                              expandedPackages: _expandedPackages,
-                              allVaccines: allVaccines,
-                              onExpandToggle: _toggleExpand,
-                              typeBooking: true,
-                            )
-                            : const SizedBox.shrink(),
-              ),
+                ],
+              ],
             ),
+            //       _filteredCartItems.isEmpty
+            //           ? _emptyContent()
+            //           : ListView.builder(
+            //             itemCount: _filteredCartItems.length,
+            //             itemBuilder:
+            //                 (context, index) =>
+            //                     _buildVaccineCard(_filteredCartItems[index]),
+            //           ),
+            // ),
+            // if (_listCartVaccinePackages.isNotEmpty)
+            //   Expanded(
+            //     child: ListView.builder(
+            //       itemCount: _listCartVaccinePackages.length,
+            //       itemBuilder:
+            //           (context, index) =>
+            //               _listCartVaccinePackages[index].package.isActive
+            //                   ? PackageItem(
+            //                     img:
+            //                         _listCartVaccinePackages[index]
+            //                             .package
+            //                             .imageUrl,
+            //                     title:
+            //                         _listCartVaccinePackages[index].package.name,
+            //                     price:
+            //                         _listCartVaccinePackages[index]
+            //                             .package
+            //                             .totalPrice
+            //                             .toString(),
+            //                     discount:
+            //                         _listCartVaccinePackages[index]
+            //                             .package
+            //                             .discount
+            //                             .toString(),
+            //                     packageKey:
+            //                         _listCartVaccinePackages[index].package.id,
+            //                     vaccinePackage:
+            //                         _listCartVaccinePackages[index].package,
+            //                     expandedPackages: _expandedPackages,
+            //                     allVaccines: allVaccines,
+            //                     onExpandToggle: _toggleExpand,
+            //                     typeBooking: true,
+            //                   )
+            //                   : const SizedBox.shrink(),
+            //     ),
+          ),
           // Chỉ hiển thị tổng tiền và nút đặt lịch nếu không phải từ BookingScreen
           if (!widget.isFromBookingScreen)
             Container(
@@ -184,7 +216,15 @@ class _CartScreenState extends State<CartScreen> {
                   PrimaryButton(
                     text: 'ĐẶT LỊCH TIÊM',
                     borderRadius: 40,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => const VaccinationBookingScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
