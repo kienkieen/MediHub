@@ -10,7 +10,8 @@ import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool isNewUser;
+  const ProfileScreen({super.key, required this.isNewUser});
 
   @override
   State<ProfileScreen> createState() => _ProfileState();
@@ -92,6 +93,19 @@ class _ProfileState extends State<ProfileScreen> {
   ];
 
   bool _isFormValid = false;
+  bool firstTime = true;
+
+  bool checkNull() {
+    if (useMainLogin?.numberBHYT.isEmpty == true ||
+        useMainLogin?.numberBHYT == null ||
+        useMainLogin?.idCardNumber.isEmpty == true ||
+        useMainLogin?.idCardNumber == null ||
+        useMainLogin?.phoneNumber.isEmpty == true ||
+        useMainLogin?.phoneNumber == null) {
+      return false;
+    }
+    return true;
+  }
 
   @override
   void initState() {
@@ -102,6 +116,9 @@ class _ProfileState extends State<ProfileScreen> {
     _phoneController.addListener(_validateForm);
     _insuranceController.addListener(_validateForm);
     _addressController.addListener(_validateForm);
+    if (checkNull()) {
+      firstTime = false;
+    }
     // Set defaults
     _countryValue = 'Việt Nam';
     setUpdataUser();
@@ -184,7 +201,29 @@ class _ProfileState extends State<ProfileScreen> {
 
   Future<void> _submitForm() async {
     _validateForm();
-    if (_isFormValid) {
+    if (!checkLengthNumber()) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thông báo'),
+            content: const Text(
+              'Vui lòng nhập đúng định dạng số điện thoại, CCCD và BHYT',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Đóng dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+
+      return;
+    } else if (_isFormValid) {
       DateFormat format = DateFormat('dd/M/yyyy');
       useMainLogin?.fullName = _nameController.text;
       useMainLogin?.dateOfBirth = format.parse(_dobController.text);
@@ -211,34 +250,46 @@ class _ProfileState extends State<ProfileScreen> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Cập nhập thành công')));
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Thông báo'),
-              content: const Text('Bạn có muốn về trang chủ không?'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NavigationBottom(initialIndex: 0),
-                      ),
-                    );
-                  },
-                  child: const Text('OK'),
+        if (firstTime) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationBottom(initialIndex: 0),
+            ),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Thông báo'),
+                content: const Text(
+                  'Cập nhập thành công! Bạn có muốn về trang chủ không?',
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Đóng dialog
-                  },
-                  child: const Text('Không'),
-                ),
-              ],
-            );
-          },
-        );
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => NavigationBottom(initialIndex: 0),
+                        ),
+                      );
+                    },
+                    child: const Text('OK'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Đóng dialog
+                    },
+                    child: const Text('Không'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -249,11 +300,24 @@ class _ProfileState extends State<ProfileScreen> {
     }
   }
 
+  bool checkLengthNumber() {
+    if (_phoneController.text.length != 10) {
+      return false;
+    }
+    if (_idController.text.length != 12) {
+      return false;
+    }
+    if (_insuranceController.text.length != 10) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppbarWidget(
-        isBackButton: true,
+      appBar: AppbarWidget(
+        isBackButton: widget.isNewUser ? false : true,
         title: 'Thông tin tài khoản',
       ),
       body: SingleChildScrollView(

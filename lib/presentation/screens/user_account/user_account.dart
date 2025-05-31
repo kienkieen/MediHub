@@ -36,7 +36,9 @@ class UserAccountScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
+                            builder:
+                                (context) =>
+                                    const ProfileScreen(isNewUser: false),
                           ),
                         );
                       },

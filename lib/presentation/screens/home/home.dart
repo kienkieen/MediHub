@@ -39,29 +39,35 @@ class _VaccineListScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (userLogin != null && checkNull() == false) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Thông báo'),
-              content: const Text(
-                'Vui lòng cập nhật thông tin cá nhân trước khi sử dụng dịch vụ.',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfileScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text('Cập nhật'),
-                ),
-              ],
-            );
-          },
+        // showDialog(
+        //   context: context,
+        //   builder: (BuildContext context) {
+        //     return AlertDialog(
+        //       title: const Text('Thông báo'),
+        //       content: const Text(
+        //         'Vui lòng cập nhật thông tin cá nhân trước khi sử dụng dịch vụ.',
+        //       ),
+        //       actions: [
+        //         TextButton(
+        //           onPressed: () {
+        //             Navigator.push(
+        //               context,
+        //               MaterialPageRoute(
+        //                 builder: (context) => const ProfileScreen(),
+        //               ),
+        //             );
+        //           },
+        //           child: const Text('Cập nhật'),
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProfileScreen(isNewUser: true),
+          ),
         );
       }
     });

@@ -86,6 +86,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _emailControllerOld = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _verifiGmail = TextEditingController();
@@ -103,7 +104,27 @@ class _SignUpFormState extends State<SignUpForm> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _verifiGmail.dispose();
+    _emailControllerOld.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(() {
+      if (_emailController.text != _emailControllerOld.text) {
+        setState(() {
+          _isSendVerify = false;
+          _colorVerify = Colors.blue;
+          _verifiGmail.clear();
+        });
+      } else {
+        setState(() {
+          _isSendVerify = true;
+          changeColor();
+        });
+      }
+    });
   }
 
   void changeColor() {
@@ -128,6 +149,7 @@ class _SignUpFormState extends State<SignUpForm> {
     sendEmail(nameEmail, codeVerify);
     _isSendVerify = true;
     changeColor();
+    _emailControllerOld.text = nameEmail;
   }
 
   void _submitForm(String email, String password, String name) async {

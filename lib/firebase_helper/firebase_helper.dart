@@ -4,6 +4,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:medihub_app/firebase_helper/user_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/models/userMain.dart';
 
 Future<bool> sendEmail(String userEmail, String numberVerify) async {
@@ -81,6 +82,9 @@ Future<bool> SignIn(String email, String password) async {
 
 Future<void> SignOut() async {
   await FirebaseAuth.instance.signOut();
+  userLogin = null;
+  useMainLogin = null;
+  cart = Cart();
 }
 
 Future<bool> checkIDExist(String collection, String idItem) async {
