@@ -96,6 +96,10 @@ class FilterOptions {
   bool onlyPopular = false;
 
   FilterOptions();
+
+  setCategory(String? value) {
+    category = value;
+  }
 }
 
 class VaccinationSchedule {

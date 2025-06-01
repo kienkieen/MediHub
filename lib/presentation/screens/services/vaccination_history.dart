@@ -3,8 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:collection/collection.dart'; // Để sử dụng groupBy
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
+import 'package:medihub_app/core/widgets/services_widgets/filterchip.dart';
+import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/firebase_helper/VaccinationRecord_helper.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccinePackage_record.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/models/vaccine_record.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
@@ -23,13 +27,23 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
   final TextEditingController _toDateController = TextEditingController();
   List<VaccinationRecord> _records = [];
   List<VaccinationRecord> _filteredRecords = [];
+  List<VaccinePackageRecord> _vaccinePackageRecords = [];
+  bool isState = true;
+  Map<String, bool> _expandedPackages = {};
+  FilterOptions _filterOptions = FilterOptions();
+
+  void _toggleExpand(String packageKey) {
+    setState(() {
+      _expandedPackages[packageKey] = !_expandedPackages[packageKey]!;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _loadRecords();
     _searchController.addListener(_applyFilters);
-
+    _filterOptions.category = 'Vắc xin';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (userLogin == null) {
         Navigator.push(
@@ -44,6 +58,13 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
 
   void _loadRecords() async {
     _records = await getVaccinationRecords(useMainLogin!.userId);
+    _vaccinePackageRecords = await getVaccinePackageRecords(
+      useMainLogin!.userId,
+    );
+
+    for (var record in _vaccinePackageRecords) {
+      _expandedPackages[record.vaccinePackage.id] = false;
+    }
     setState(() {
       _filteredRecords = _records;
     });
@@ -114,6 +135,11 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
       (VaccinationRecord record) =>
           DateFormat('dd/MM/yyyy').format(record.date),
     );
+    final groupedPackageRecords = groupBy(
+      _vaccinePackageRecords,
+      (VaccinePackageRecord record) =>
+          DateFormat('dd/MM/yyyy').format(record.date),
+    );
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -170,6 +196,7 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
                     ),
                   ),
                 ),
+
                 const SizedBox(width: 30),
                 Expanded(
                   child: GestureDetector(
@@ -212,15 +239,72 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
               ],
             ),
           ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            color: Colors.white,
+            child: _buildCategoryButtons(),
+          ),
           Expanded(
             child:
-                _filteredRecords.isEmpty
+                isState
+                    ? _filteredRecords.isEmpty
+                        ? _emptyContent()
+                        : ListView.builder(
+                          itemCount: groupedRecords.keys.length,
+                          itemBuilder: (context, index) {
+                            final date = groupedRecords.keys.elementAt(index);
+                            final recordsForDate = groupedRecords[date]!;
+                            return Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(color: Colors.white),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Colors.grey.shade400,
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    margin: const EdgeInsets.all(10),
+                                    child: Text(
+                                      date,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: recordsForDate.length,
+                                    itemBuilder:
+                                        (context, recordIndex) =>
+                                            _buildRecordCard(
+                                              recordsForDate[recordIndex],
+                                            ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                    : _vaccinePackageRecords.isEmpty
                     ? _emptyContent()
                     : ListView.builder(
-                      itemCount: groupedRecords.keys.length,
+                      itemCount: groupedPackageRecords.keys.length,
                       itemBuilder: (context, index) {
-                        final date = groupedRecords.keys.elementAt(index);
-                        final recordsForDate = groupedRecords[date]!;
+                        final date = groupedPackageRecords.keys.elementAt(
+                          index,
+                        );
+                        final recordsForDate = groupedPackageRecords[date]!;
                         return Container(
                           margin: const EdgeInsets.only(top: 10),
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -252,8 +336,37 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemCount: recordsForDate.length,
                                 itemBuilder:
-                                    (context, recordIndex) => _buildRecordCard(
-                                      recordsForDate[recordIndex],
+                                    (context, recordIndex) => PackageItem(
+                                      img:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage
+                                              .imageUrl,
+                                      title:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage
+                                              .name,
+                                      price:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage
+                                              .totalPrice
+                                              .toString(),
+                                      discount:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage
+                                              .discount
+                                              .toString(),
+                                      packageKey:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage
+                                              .id,
+                                      vaccinePackage:
+                                          recordsForDate[recordIndex]
+                                              .vaccinePackage,
+                                      expandedPackages: _expandedPackages,
+                                      allVaccines: allVaccines,
+                                      onExpandToggle: _toggleExpand,
+                                      typeBooking: true,
+                                      isFormBooking: false,
                                     ),
                               ),
                             ],
@@ -261,8 +374,86 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
                         );
                       },
                     ),
+
+            // ListView.builder(
+            //   itemCount: _vaccinePackageRecords.length,
+            //   itemBuilder:
+            //       (context, index) =>
+            //           _vaccinePackageRecords[index]
+            //                   .vaccinePackage
+            //                   .isActive
+            //               ? PackageItem(
+            //                 img:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage
+            //                         .imageUrl,
+            //                 title:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage
+            //                         .name,
+            //                 price:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage
+            //                         .totalPrice
+            //                         .toString(),
+            //                 discount:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage
+            //                         .discount
+            //                         .toString(),
+            //                 packageKey:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage
+            //                         .id,
+            //                 vaccinePackage:
+            //                     _vaccinePackageRecords[index]
+            //                         .vaccinePackage,
+            //                 expandedPackages: _expandedPackages,
+            //                 allVaccines: allVaccines,
+            //                 onExpandToggle: _toggleExpand,
+            //                 typeBooking: true,
+            //                 isFormBooking: false,
+            //               )
+            //               : const SizedBox.shrink(),
+            // ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryButtons() {
+    var categories = ['Vắc xin', 'Gói vắc xin'];
+    if (_filterOptions.category == null && isState) {
+      _filterOptions.category = categories[0];
+    }
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder:
+            (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 7.0),
+              child: CustomFilterChip(
+                label: categories[index],
+                isSelected: _filterOptions.category == categories[index],
+                onSelected: (selected) {
+                  setState(() {
+                    if (_filterOptions.category != categories[index]) {
+                      _filterOptions.category = categories[index];
+
+                      if (_filterOptions.category == categories[0]) {
+                        isState = true;
+                      } else if (_filterOptions.category == categories[1]) {
+                        isState = false;
+                      }
+                      _applyFilters();
+                    }
+                  });
+                },
+              ),
+            ),
       ),
     );
   }

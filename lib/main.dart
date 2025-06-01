@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/models/userMain.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccinePackage_record.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
+import 'package:medihub_app/models/vaccine_record.dart';
 import 'package:provider/provider.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
@@ -81,7 +84,7 @@ void main() async {
 
   // VaccinationRecord record = VaccinationRecord(
   //   idRecord: '',
-  //   userId: 'sPJPokuvyydAf2264SIAZsUt3ym1',
+  //   userId: 'pkTN29uKJhaRU77d8OzLuKvT8le2',
   //   vaccine: allVaccines[0],
   //   date: DateTime.now(),
   //   dose: 'Liều 1',
@@ -89,7 +92,25 @@ void main() async {
   //   vaccineId: allVaccines[0].id,
   // );
 
-  // insertDataAutoID("LICHSUTIEM", record.toMap())
+  // VaccinePackageRecord record1 = VaccinePackageRecord(
+  //   idRecord: '',
+  //   userId: 'pkTN29uKJhaRU77d8OzLuKvT8le2',
+  //   vaccinePackage: allVaccinePackages[0],
+  //   date: DateTime.now(),
+  //   dose: 'Liều 1',
+  //   location: 'VNVC',
+  //   vaccinePackageId: allVaccinePackages[0].id,
+  // );
+
+  // insertDataAutoID("LICHSUTIEM_VACCINE", record.toMap())
+  //     .then((value) {
+  //       print("Insert successful: $value");
+  //     })
+  //     .catchError((error) {
+  //       print("Insert failed: $error");
+  //     });
+
+  // insertDataAutoID("LICHSUTIEM_GOI_VACCINE", record1.toMap())
   //     .then((value) {
   //       print("Insert successful: $value");
   //     })
