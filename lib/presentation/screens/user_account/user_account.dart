@@ -154,6 +154,7 @@ class UserAccountScreen extends StatelessWidget {
                                   dateBooking: DateTime.now(),
                                   totalPrice: 0.0,
                                   lstVaccine: [],
+                                  lstVaccinePackage: [],
                                 ),
                               ),
                         ),

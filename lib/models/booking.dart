@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccine_package.dart';
 
 class Booking {
   String idUser;
@@ -8,6 +9,7 @@ class Booking {
   String bookingCenter;
   DateTime dateBooking;
   List<Vaccine> lstVaccine;
+  List<VaccinePackage> lstVaccinePackage;
   int isConfirmed;
   double totalPrice;
 
@@ -17,6 +19,7 @@ class Booking {
     required this.bookingCenter,
     required this.dateBooking,
     required this.lstVaccine,
+    required this.lstVaccinePackage,
     required this.totalPrice,
     this.isConfirmed = 0,
   });
@@ -32,6 +35,7 @@ class Booking {
       'bookingCenter': bookingCenter,
       'dateBooking': dateBooking,
       'lstVaccine': lstVaccine.map((v) => v.toMap()).toList(),
+      'lstVaccinePackage': lstVaccinePackage.map((v) => v.toMap()).toList(),
       'totalPrice': totalPrice,
       'isConfirmed': isConfirmed,
     };
@@ -46,6 +50,11 @@ class Booking {
       lstVaccine:
           (map['lstVaccine'] as List<dynamic>?)
               ?.map((v) => Vaccine.fromMap(v as Map<String, dynamic>))
+              .toList() ??
+          [],
+      lstVaccinePackage:
+          (map['lstVaccinePackage'] as List<dynamic>?)
+              ?.map((v) => VaccinePackage.fromMap(v as Map<String, dynamic>))
               .toList() ??
           [],
       totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0.0,

@@ -222,8 +222,23 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   Widget _buildBookingCard(Booking booking, VoidCallback onCancel) {
     // Tính toán tổng chi phí từ danh sách vắc xin
-    double _calculateTotalCost(List<Vaccine> vaccines) {
-      return vaccines.fold(0, (sum, vaccine) => sum + vaccine.price);
+    double _calculateTotalCost(
+      List<Vaccine> vaccines,
+      List<VaccinePackage> packages,
+    ) {
+      double tv = 0;
+      double tvp = 0;
+
+      if (vaccines.isNotEmpty) {
+        tv = vaccines.fold(0, (sum, vaccine) => sum + vaccine.price);
+      }
+      if (packages.isNotEmpty) {
+        tvp = packages.fold(
+          0,
+          (sum, package) => sum + (package.totalPrice - package.discount),
+        );
+      }
+      return tv + tvp;
     }
 
     return Container(
@@ -337,24 +352,52 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            ...booking.lstVaccine.map(
-              (vaccine) => Padding(
-                padding: const EdgeInsets.only(left: 10, bottom: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(vaccine.name, style: const TextStyle(fontSize: 14)),
-                    Text(
-                      NumberFormat.currency(
-                        locale: 'vi',
-                        symbol: 'VND',
-                      ).format(vaccine.price),
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
+            if (booking.lstVaccine.isNotEmpty) ...[
+              ...booking.lstVaccine.map(
+                (vaccine) => Padding(
+                  padding: const EdgeInsets.only(left: 10, bottom: 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(vaccine.name, style: const TextStyle(fontSize: 14)),
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'vi',
+                          symbol: 'VND',
+                        ).format(vaccine.price),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
+            ],
+            if (booking.lstVaccinePackage.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Danh sách gói vắc xin:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              ...booking.lstVaccinePackage.map(
+                (package) => Padding(
+                  padding: const EdgeInsets.only(left: 10, bottom: 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(package.name, style: const TextStyle(fontSize: 14)),
+                      Text(
+                        NumberFormat.currency(
+                          locale: 'vi',
+                          symbol: 'VND',
+                        ).format(package.totalPrice - package.discount),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const Divider(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -364,10 +407,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  NumberFormat.currency(
-                    locale: 'vi',
-                    symbol: 'VND',
-                  ).format(_calculateTotalCost(booking.lstVaccine)),
+                  NumberFormat.currency(locale: 'vi', symbol: 'VND').format(
+                    _calculateTotalCost(
+                      booking.lstVaccine,
+                      booking.lstVaccinePackage,
+                    ),
+                  ),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -676,125 +721,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                       // Phần chọn vắc xin
                       _buildSectionTitle('Chọn vắc xin'),
                       SizedBox(height: 8),
-                      // Danh sách vắc xin đã chọn
-                      if (_selectedVaccines.isNotEmpty) ...[
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _selectedVaccines.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                ),
-                                child: Container(
-                                  height: 48,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          _selectedVaccines[index].name,
-                                          style: const TextStyle(fontSize: 15),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            final vaccineToRemove =
-                                                _selectedVaccines[index];
-                                            _selectedVaccines.removeAt(index);
-                                            _minusVaccineBill(vaccineToRemove);
-                                          });
-                                        },
-                                        child: const Icon(
-                                          Icons.delete,
-                                          size: 20,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ] else if (_selectedPackages.length > 0) ...[
-                        const SizedBox(height: 16),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _selectedPackages.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                ),
-                                child: Container(
-                                  height: 48,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          _selectedPackages[index].name,
-                                          style: const TextStyle(fontSize: 15),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            final vaccinePackageToRemove =
-                                                _selectedPackages[index];
-                                            _selectedPackages.removeAt(index);
-                                            _minusVaccinePackageBill(
-                                              vaccinePackageToRemove,
-                                            );
-                                          });
-                                        },
-                                        child: const Icon(
-                                          Icons.delete,
-                                          size: 20,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ] else ...[
+                      if (_selectedPackages.isEmpty &&
+                          _selectedVaccines.isEmpty) ...[
                         Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -803,7 +731,134 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                      ] else ...[
+                        if (_selectedVaccines.isNotEmpty) ...[
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: _selectedVaccines.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    height: 48,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _selectedVaccines[index].name,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              final vaccineToRemove =
+                                                  _selectedVaccines[index];
+                                              _selectedVaccines.removeAt(index);
+                                              _minusVaccineBill(
+                                                vaccineToRemove,
+                                              );
+                                            });
+                                          },
+                                          child: const Icon(
+                                            Icons.delete,
+                                            size: 20,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                        if (_selectedPackages.length > 0) ...[
+                          const SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: _selectedPackages.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    height: 48,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _selectedPackages[index].name,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              final vaccinePackageToRemove =
+                                                  _selectedPackages[index];
+                                              _selectedPackages.removeAt(index);
+                                              _minusVaccinePackageBill(
+                                                vaccinePackageToRemove,
+                                              );
+                                            });
+                                          },
+                                          child: const Icon(
+                                            Icons.delete,
+                                            size: 20,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ],
+                      // Danh sách vắc xin đã chọn
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -878,13 +933,14 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         _facilityValue!.isNotEmpty &&
         _selectedDate != null &&
         _selectedDate!.toString().isNotEmpty &&
-        _selectedVaccines.isNotEmpty) {
+        (_selectedVaccines.isNotEmpty || _selectedPackages.isNotEmpty)) {
       Booking bk = Booking(
         idBooking: '',
         idUser: useMainLogin!.userId,
         bookingCenter: _facilityValue!,
         dateBooking: _selectedDate!,
         lstVaccine: _selectedVaccines,
+        lstVaccinePackage: _selectedPackages,
         totalPrice: sumBill,
         isConfirmed: 0,
       );
