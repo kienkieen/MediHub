@@ -1,9 +1,15 @@
+import 'dart:math';
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medihub_app/core/utils/validators.dart';
 // Import the extracted widgets
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/login/reset_password.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -15,14 +21,37 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   bool _isVerificationSent = false;
   final _otpControllers = List.generate(6, (_) => TextEditingController());
   final _focusNodes = List.generate(6, (_) => FocusNode());
+  String codeVerify = '';
+  Timer? _timer;
+  int _secondsRemaining = 0;
+
+  void startTimer() {
+    setState(() {
+      _secondsRemaining = 60;
+    });
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_secondsRemaining > 1) {
+        setState(() {
+          _secondsRemaining--;
+        });
+      } else {
+        timer.cancel();
+        setState(() {
+          _secondsRemaining = 0;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
-    _phoneController.dispose();
+    _timer?.cancel();
+    _emailController.dispose();
     for (var controller in _otpControllers) {
       controller.dispose();
     }
@@ -32,16 +61,37 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  void _sendVerification() {
-    if (_formKey.currentState!.validate()) {
-      // In a real app, this would send a verification code
-      setState(() {
-        _isVerificationSent = true;
-      });
-    }
+  String randomCode() {
+    final r = Random();
+    return List.generate(6, (_) => r.nextInt(10)).join();
   }
 
-  void _verifyOtp() {
+  void _submitRecieveCodeVerify(String nameEmail) {
+    if (nameEmail.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Hãy nhập Email')));
+      return;
+    }
+    codeVerify = randomCode();
+    sendEmail(nameEmail, codeVerify);
+  }
+
+  void _sendVerification(bool isNewSend) {
+    if (isNewSend) {
+      if (_formKey.currentState!.validate()) {
+        _submitRecieveCodeVerify(_emailController.text.trim());
+        setState(() {
+          _isVerificationSent = true;
+        });
+      }
+    } else {
+      _submitRecieveCodeVerify(_emailController.text.trim());
+    }
+    startTimer();
+  }
+
+  void _verifyOtp() async {
     // Combine all OTP digits
     String otp = _otpControllers.map((controller) => controller.text).join();
 
@@ -53,9 +103,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ).showSnackBar(SnackBar(content: Text(otpError)));
       return;
     }
+    if (otp != codeVerify) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Mã xác nhận không đúng')));
+      return;
+    }
+    bool up = false;
+    if (otp == codeVerify) {
+      up = await resetPassword(_emailController.text.trim());
+    }
 
-    // If valid, proceed to reset password screen
-    _navigateToResetPassword();
+    if (up) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thông báo'),
+            content: const Text(
+              'Gửi thiết lập lại mật khẩu thành công. Vui lòng kiểm tra email của bạn.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(isNewLoginl: false),
+                    ),
+                  );
+                },
+                child: const Text('Quay về trang đăng nhập'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Đặt lại mật khẩu thất bại')),
+      );
+    }
   }
 
   @override
@@ -107,14 +196,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Column(
         children: [
           const Text(
-            'Vui lòng nhập số điện thoại để lấy lại mật khẩu',
+            'Vui lòng nhập email để lấy lại mật khẩu',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
           const SizedBox(height: 30),
-          EmailInputField(controller: _phoneController, hintText: 'Email'),
+          EmailInputField(controller: _emailController, hintText: 'Email'),
           const SizedBox(height: 40),
-          PrimaryButton(text: 'GỬI MÃ XÁC NHẬN', onPressed: _sendVerification),
+          PrimaryButton(
+            text: 'GỬI MÃ XÁC NHẬN',
+            onPressed: () {
+              _sendVerification(true);
+            },
+          ),
         ],
       ),
     );
@@ -124,7 +218,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Column(
       children: [
         const Text(
-          'Vui lòng nhập mã xác nhận đã được gửi đến số điện thoại của bạn',
+          'Vui lòng nhập mã xác nhận đã được gửi đến email của bạn',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
@@ -142,15 +236,39 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
             children: [
               TextSpan(
-                text: 'Gửi lại',
+                text:
+                    _secondsRemaining == 0
+                        ? 'Gửi lại mã'
+                        : 'Gửi lại mã ($_secondsRemaining giây)',
                 style: const TextStyle(
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Calistoga',
                 ),
-                // Add gesture recognizer here
+                recognizer:
+                    TapGestureRecognizer()
+                      ..onTap = () {
+                        if (_secondsRemaining == 0) {
+                          _sendVerification(false);
+                          startTimer();
+                        }
+                      },
               ),
             ],
+            // children: [
+            //   TextSpan(
+            //     onEnter: (event) {
+            //       _secondsRemaining == 0 ? _sendVerification : startTimer();
+            //     },
+            //     text: 'Gửi lại mã ($_secondsRemaining giây)',
+            //     style: const TextStyle(
+            //       color: Colors.blue,
+            //       fontWeight: FontWeight.bold,
+            //       fontFamily: 'Calistoga',
+            //     ),
+            //     // Add gesture recognizer here
+            //   ),
+            // ],
           ),
         ),
         const SizedBox(height: 40),

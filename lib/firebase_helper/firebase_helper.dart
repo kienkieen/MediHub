@@ -123,6 +123,16 @@ Future<bool> ChangePassword(
   }
 }
 
+Future<bool> resetPassword(String email) async {
+  try {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 Future<bool> insertData(
   String collection,
   String idItem,
