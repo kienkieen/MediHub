@@ -366,7 +366,7 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
                                       allVaccines: allVaccines,
                                       onExpandToggle: _toggleExpand,
                                       typeBooking: true,
-                                      isFormBooking: false,
+                                      isFromBooking: false,
                                     ),
                               ),
                             ],

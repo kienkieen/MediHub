@@ -6,7 +6,7 @@ import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
 import 'package:medihub_app/core/widgets/services_widgets/filter_vaccine_list.dart';
 import 'package:medihub_app/core/widgets/services_widgets/filterchip.dart';
-import 'package:medihub_app/core/utils/constants.dart';
+
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_detail.dart';
@@ -227,29 +227,32 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                                   _buildVaccineCard(_filteredVaccines[index]),
                         )
                     : _vaccinePackages.length > 0
-                    ? ListView.builder(
-                      itemCount: _vaccinePackages.length,
-                      itemBuilder:
-                          (context, index) =>
-                              _vaccinePackages[index].isActive
-                                  ? PackageItem(
-                                    img: _vaccinePackages[index].imageUrl,
-                                    title: _vaccinePackages[index].name,
-                                    price:
-                                        _vaccinePackages[index].totalPrice
-                                            .toString(),
-                                    discount:
-                                        _vaccinePackages[index].discount
-                                            .toString(),
-                                    packageKey: _vaccinePackages[index].id,
-                                    vaccinePackage: _vaccinePackages[index],
-                                    expandedPackages: _expandedPackages,
-                                    allVaccines: allVaccines,
-                                    onExpandToggle: _toggleExpand,
-                                    typeBooking: true,
-                                    isFormBooking: false,
-                                  )
-                                  : const SizedBox.shrink(),
+                    ? Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: ListView.builder(
+                        itemCount: _vaccinePackages.length,
+                        itemBuilder:
+                            (context, index) =>
+                                _vaccinePackages[index].isActive
+                                    ? PackageItem(
+                                      img: _vaccinePackages[index].imageUrl,
+                                      title: _vaccinePackages[index].name,
+                                      price:
+                                          _vaccinePackages[index].totalPrice
+                                              .toString(),
+                                      discount:
+                                          _vaccinePackages[index].discount
+                                              .toString(),
+                                      packageKey: _vaccinePackages[index].id,
+                                      vaccinePackage: _vaccinePackages[index],
+                                      expandedPackages: _expandedPackages,
+                                      allVaccines: allVaccines,
+                                      onExpandToggle: _toggleExpand,
+                                      typeBooking: true,
+                                      isFromBooking: true,
+                                    )
+                                    : const SizedBox.shrink(),
+                      ),
                     )
                     : _emptyContent(),
             // : Padding(
@@ -312,22 +315,6 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               ),
             ),
       ),
-    );
-  }
-
-  Widget _buildVaccinePackageCard(VaccinePackage package) {
-    return PackageItem(
-      img: package.imageUrl,
-      title: package.name,
-      price: package.totalPrice.toString(),
-      discount: package.discount.toString(),
-      packageKey: package.id,
-      vaccinePackage: package,
-      expandedPackages: _expandedPackages,
-      allVaccines: allVaccines,
-      onExpandToggle: _toggleExpand,
-      typeBooking: widget.isFromBookingScreen,
-      isFormBooking: widget.isFromBookingScreen,
     );
   }
 

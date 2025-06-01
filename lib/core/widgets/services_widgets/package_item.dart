@@ -17,7 +17,8 @@ class PackageItem extends StatefulWidget {
   final Map<String, bool> expandedPackages; // Truyền trạng thái mở rộng
   final Function(String) onExpandToggle; // Callback để cập nhật trạng thái
   final bool typeBooking;
-  final bool isFormBooking;
+  final bool isFromBooking;
+  final bool isFromCart;
 
   const PackageItem({
     super.key,
@@ -31,7 +32,8 @@ class PackageItem extends StatefulWidget {
     required this.expandedPackages,
     required this.onExpandToggle,
     required this.typeBooking,
-    required this.isFormBooking,
+    required this.isFromBooking,
+    this.isFromCart = false,
   });
 
   @override
@@ -83,6 +85,9 @@ class _PackageItemState extends State<PackageItem> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
+                              overflow:
+                                  TextOverflow.ellipsis, // Thêm thuộc tính này
+                              maxLines: 2,
                             ),
                             Text(
                               'Giảm còn ${newPrice.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}đ',
@@ -96,22 +101,25 @@ class _PackageItemState extends State<PackageItem> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.only(right: 2),
                       child: Icon(
                         widget.expandedPackages[widget.packageKey]!
                             ? Icons.expand_less
                             : Icons.expand_more,
                       ),
                     ),
-                    if (widget.isFormBooking) ...[
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          Provider.of<CartProvider>(
-                            context,
-                            listen: false,
-                          ).removePackage(widget.vaccinePackage.id);
-                        },
+                    if (widget.isFromCart) ...[
+                      Padding(
+                        padding: EdgeInsets.only(right: 14),
+                        child: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            Provider.of<CartProvider>(
+                              context,
+                              listen: false,
+                            ).removePackage(widget.vaccinePackage.id);
+                          },
+                        ),
                       ),
                     ],
                   ],
@@ -128,7 +136,7 @@ class _PackageItemState extends State<PackageItem> {
                     widget.vaccinePackage, // Truyền dữ liệu cần thiết
                 allVaccines: widget.allVaccines, // Truyền dữ liệu cần thiết
                 typeBooking: widget.typeBooking, // Truyền dữ liệu cần thiết
-                isformbooking: widget.isFormBooking, // Truyền dữ liệu cần thiết
+                isFromBooking: widget.isFromBooking, // Truyền dữ liệu cần thiết
               ),
             ),
         ],
@@ -142,14 +150,14 @@ class ListVaccine extends StatelessWidget {
   final List<Vaccine> allVaccines;
   final VaccinePackage vaccinePackage;
   final bool typeBooking;
-  final bool isformbooking;
+  final bool isFromBooking;
   const ListVaccine({
     Key? key,
     required this.packageKey,
     required this.vaccinePackage,
     required this.allVaccines,
     required this.typeBooking,
-    required this.isformbooking,
+    required this.isFromBooking,
   }) : super(key: key);
 
   @override
@@ -270,47 +278,51 @@ class ListVaccine extends StatelessWidget {
                   ),
                 ),
               ),
-              if (!isformbooking) ...[
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      if (typeBooking) {
-                        Navigator.pop(context, vaccinePackage);
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => const VaccinationBookingScreen(),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 35,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: const Color(0xFF2F8CD8),
-                          width: 1.3,
+              Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: () {
+                    if (typeBooking) {
+                      Navigator.pop(context, vaccinePackage);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => const VaccinationBookingScreen(),
                         ),
-                      ),
-                      child: const Text(
-                        'Đặt lịch tiêm',
-                        style: TextStyle(color: Color(0xFF2F8CD8)),
+                      );
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 35,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xFF2F8CD8),
+                        width: 1.3,
                       ),
                     ),
+                    child:
+                        isFromBooking
+                            ? Text(
+                              'Chọn gói tiêm',
+                              style: TextStyle(color: Color(0xFF2F8CD8)),
+                            )
+                            : Text(
+                              'Đặt lịch tiêm',
+                              style: TextStyle(color: Color(0xFF2F8CD8)),
+                            ),
                   ),
                 ),
-              ],
+              ),
             ],
           ),
-          if (!isformbooking) ...[
+          if (!isFromBooking) ...[
             const SizedBox(height: 6),
             Material(
               color: Colors.white,

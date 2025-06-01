@@ -131,18 +131,25 @@ class _CartScreenState extends State<CartScreen> {
                     ..._listCartVaccinePackages.map(
                       (package) =>
                           package.package.isActive
-                              ? PackageItem(
-                                img: package.package.imageUrl,
-                                title: package.package.name,
-                                price: package.package.totalPrice.toString(),
-                                discount: package.package.discount.toString(),
-                                packageKey: package.package.id,
-                                vaccinePackage: package.package,
-                                expandedPackages: _expandedPackages,
-                                allVaccines: allVaccines,
-                                onExpandToggle: _toggleExpand,
-                                typeBooking: widget.isFromBookingScreen,
-                                isFormBooking: true,
+                              ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 10,
+                                ),
+                                child: PackageItem(
+                                  img: package.package.imageUrl,
+                                  title: package.package.name,
+                                  price: package.package.totalPrice.toString(),
+                                  discount: package.package.discount.toString(),
+                                  packageKey: package.package.id,
+                                  vaccinePackage: package.package,
+                                  expandedPackages: _expandedPackages,
+                                  allVaccines: allVaccines,
+                                  onExpandToggle: _toggleExpand,
+                                  typeBooking: widget.isFromBookingScreen,
+                                  isFromBooking: true,
+                                  isFromCart: true,
+                                ),
                               )
                               : const SizedBox.shrink(),
                     ),
@@ -237,8 +244,8 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildVaccineCard(CartVaccineItem cartItem) {
     final vaccine = cartItem.vaccine;
     return Container(
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 4),
+      margin: EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(10),
@@ -248,7 +255,6 @@ class _CartScreenState extends State<CartScreen> {
         onTap:
             widget.isFromBookingScreen
                 ? () {
-                  // Trả về vắc xin được chọn khi nhấn
                   Navigator.pop(context, vaccine);
                 }
                 : () => Navigator.push(
@@ -340,11 +346,10 @@ class _CartScreenState extends State<CartScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  // Hiển thị nút xóa hoặc nút chọn tùy thuộc vào nguồn
+
                   widget.isFromBookingScreen
                       ? ElevatedButton(
                         onPressed: () {
-                          // Trả về vắc xin được chọn
                           Navigator.pop(context, vaccine);
                         },
                         style: ElevatedButton.styleFrom(
