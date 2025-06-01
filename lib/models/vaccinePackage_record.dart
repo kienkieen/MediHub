@@ -27,6 +27,7 @@ class VaccinePackageRecord {
 
   Map<String, dynamic> toMap() {
     return {
+      'idRecord': idRecord,
       'userId': userId,
       'vaccinePackage': vaccinePackage.toMap(),
       'date': date,

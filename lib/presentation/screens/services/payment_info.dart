@@ -101,6 +101,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
       ).showSnackBar(const SnackBar(content: Text('Thanh toán thành công')));
       Bill bill = Bill(
         id: orderId,
+        idUser: widget.booking.idUser,
         paymentMethod: widget.paymentMethod,
         totalAmount: totalAmount,
         dueDate: DateTime.now().add(const Duration(days: 30)),
