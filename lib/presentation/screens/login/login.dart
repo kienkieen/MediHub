@@ -111,7 +111,7 @@ class _LoginFormState extends State<LoginForm> {
           cart = await getCartbyUserID(useMainLogin!.userId);
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));
+          ).showSnackBar(const SnackBar(content: Text('Đăng nhập thành công')));
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => NavigationBottom()),

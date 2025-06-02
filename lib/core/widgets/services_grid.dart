@@ -41,15 +41,17 @@ class ServicesGrid extends StatelessWidget {
     }
 
     void _submitActivitiesRelatveUser(Widget Function() screen) async {
-      bool v = await checkState.getStateUser(context, useMainLogin!.email);
-      if (v) {
-        showListError(context);
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => screen()),
-        );
+      if (useMainLogin != null) {
+        bool v = await checkState.getStateUser(context, useMainLogin!.email);
+        if (v) {
+          showListError(context);
+          return;
+        }
       }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => screen()),
+      );
     }
 
     final List<Map<String, dynamic>> topServices = [

@@ -24,6 +24,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _confirmPasswordController = TextEditingController();
   final _verifiGmail = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
   late String codeVerify;
   bool _isSendVerify = false;
@@ -154,7 +155,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             hintText: 'Nhập mật khẩu cũ',
                             obscureText: _obscurePassword,
                             onToggleVisibility: () {
-                              setState(() {});
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
                             },
                           ),
                           SizedBox(height: constraints.maxHeight * 0.03),
@@ -162,11 +165,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             controller: _newpasswordController,
                             label: 'Mật khẩu mới',
                             hintText: 'Nhập mật khẩu mới',
-                            obscureText: _obscurePassword,
+                            obscureText: _obscureNewPassword,
                             validator: Validators.validatePassword,
                             onToggleVisibility: () {
                               setState(() {
-                                _obscurePassword = !_obscurePassword;
+                                _obscureNewPassword = !_obscureNewPassword;
                               });
                             },
                           ),

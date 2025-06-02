@@ -85,8 +85,7 @@ class _PackageItemState extends State<PackageItem> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
-                              overflow:
-                                  TextOverflow.ellipsis, // Thêm thuộc tính này
+                              overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
                             Text(
@@ -270,7 +269,7 @@ class ListVaccine extends StatelessWidget {
                     );
                   },
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 23),
                     child: Text(
                       'Chi tiết gói tiêm',
                       style: TextStyle(color: Colors.white),
@@ -298,7 +297,7 @@ class ListVaccine extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 10,
-                      horizontal: 35,
+                      horizontal: 33,
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),

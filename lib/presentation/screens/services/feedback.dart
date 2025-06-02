@@ -3,6 +3,7 @@ import 'package:medihub_app/core/widgets/input_field.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/user_account/profile.dart';
+import 'package:medihub_app/core/widgets/appbar.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({Key? key}) : super(key: key);
@@ -77,21 +78,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: const Text(
-          'Góp ý & Phản hồi',
-          style: TextStyle(color: Colors.white),
-        ),
-
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
+      appBar: AppbarWidget(title: 'Góp ý & Phản hồi', isBackButton: true),
       body: Form(
         key: _formKey,
         child: ListView(

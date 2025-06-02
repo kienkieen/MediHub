@@ -359,7 +359,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(vaccine.name, style: const TextStyle(fontSize: 14)),
+                      Expanded(
+                        child: Text(
+                          vaccine.name,
+                          style: const TextStyle(fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
                       Text(
                         NumberFormat.currency(
                           locale: 'vi',
@@ -385,7 +392,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(package.name, style: const TextStyle(fontSize: 14)),
+                      Expanded(
+                        child: Text(
+                          package.name,
+                          style: const TextStyle(fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      SizedBox(width: 10),
                       Text(
                         NumberFormat.currency(
                           locale: 'vi',

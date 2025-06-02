@@ -320,7 +320,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
 
   Widget _buildVaccineCard(Vaccine vaccine) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(4),
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.8),
@@ -431,7 +431,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                     BuildButton3(
                       text: 'Thêm vào giỏ',
                       textSize: 14,
-                      width: 150,
+                      width: 140,
                       height: 42,
                       onPressed: () {
                         Provider.of<CartProvider>(
@@ -451,7 +451,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                     BuildButton4(
                       text: 'Đặt lịch tiêm',
                       textSize: 14,
-                      width: 150,
+                      width: 140,
                       height: 42,
                       onPressed: () {},
                     ),
