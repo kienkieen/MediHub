@@ -10,7 +10,7 @@ class CartProvider with ChangeNotifier {
 
   Cart get getCart => _cart;
 
-  void addItem(Vaccine vaccine) {
+  void addItem(String vaccine) {
     _cart.addVaccineItem(vaccine);
     cart = _cart; // Cập nhật cart toàn cục
     saveCart(cart);
@@ -24,7 +24,7 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addPackage(VaccinePackage package) {
+  void addPackage(String package) {
     _cart.addVaccinePackage(package);
     cart = _cart; // Cập nhật cart toàn cục
     saveCart(cart);

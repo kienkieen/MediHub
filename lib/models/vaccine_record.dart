@@ -5,7 +5,6 @@ import 'package:medihub_app/models/vaccine.dart';
 class VaccinationRecord {
   final String? idRecord;
   final String userId;
-  final Vaccine vaccine;
   final DateTime date;
   final String dose;
   final String location;
@@ -14,7 +13,6 @@ class VaccinationRecord {
   VaccinationRecord({
     this.idRecord,
     required this.userId,
-    required this.vaccine,
     required this.date,
     required this.dose,
     required this.location,
@@ -29,7 +27,6 @@ class VaccinationRecord {
     return {
       'idRecord': idRecord,
       'userId': userId,
-      'vaccine': vaccine.toMap(),
       'date': date,
       'dose': dose,
       'location': location,
@@ -41,7 +38,6 @@ class VaccinationRecord {
     return VaccinationRecord(
       idRecord: map['idRecord'],
       userId: map['userId'] ?? '',
-      vaccine: Vaccine.fromMap(map['vaccine']),
       date: (map['date'] as Timestamp).toDate(),
       dose: map['dose'] ?? '',
       location: map['location'] ?? '',

@@ -275,7 +275,7 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
                       Provider.of<CartProvider>(
                         context,
                         listen: false,
-                      ).addItem(vaccine);
+                      ).addItem(vaccine.id);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

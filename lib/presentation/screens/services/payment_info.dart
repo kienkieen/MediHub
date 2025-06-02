@@ -6,6 +6,7 @@ import 'package:medihub_app/api/APIQRequest.dart';
 import 'package:medihub_app/api/APIService.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/firebase_helper/booking_helper.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/firebase_helper/stateData_helper.dart';
 import 'package:medihub_app/main.dart';
@@ -112,7 +113,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Đang xử lý thanh toán...')));
-      bool up = await insertDataAutoID("DATLICHTIEM", widget.booking.toMap());
+      bool up = await insertBookingAutoID(widget.booking.toMap());
       if (up) {
         ScaffoldMessenger.of(
           context,
@@ -120,6 +121,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
         Bill bill = Bill(
           id: orderId,
           idUser: widget.booking.idUser,
+          idBookig: widget.booking.idBooking,
           paymentMethod: widget.paymentMethod,
           totalAmount: totalAmount,
           dueDate: DateTime.now().add(const Duration(days: 30)),

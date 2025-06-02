@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
 import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:provider/provider.dart';
@@ -37,10 +39,6 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     if (userLogin != null) {
       _loadCartItems();
-      for (var package in _listCartVaccinePackages) {
-        _expandedPackages[package.package.id] =
-            false; // Khởi tạo trạng thái mở gói
-      }
     }
 
     if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
@@ -69,9 +67,12 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       _filteredCartItems =
           cart.vaccineItems.where((cartItem) {
-            final vaccine = cartItem.vaccine;
+            final vaccine =
+                allVaccines
+                    .where((v) => v.id == cartItem.vaccineId)
+                    .firstOrNull;
             if (_searchController.text.isNotEmpty &&
-                !vaccine.name.toLowerCase().contains(
+                !vaccine!.name.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 )) {
               return false;
@@ -117,45 +118,48 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           Expanded(
-            child: ListView(
-              children: [
-                if (_filteredCartItems.isEmpty &&
-                    _listCartVaccinePackages.isEmpty) ...[
-                  _emptyContent(),
-                ] else ...[
-                  if (_filteredCartItems.isNotEmpty)
-                    ..._filteredCartItems
-                        .map((item) => _buildVaccineCard(item))
-                        .toList(),
-                  if (_listCartVaccinePackages.isNotEmpty)
-                    ..._listCartVaccinePackages.map(
-                      (package) =>
-                          package.package.isActive
-                              ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 10,
-                                ),
-                                child: PackageItem(
-                                  img: package.package.imageUrl,
-                                  title: package.package.name,
-                                  price: package.package.totalPrice.toString(),
-                                  discount: package.package.discount.toString(),
-                                  packageKey: package.package.id,
-                                  vaccinePackage: package.package,
-                                  expandedPackages: _expandedPackages,
-                                  allVaccines: allVaccines,
-                                  onExpandToggle: _toggleExpand,
-                                  typeBooking: widget.isFromBookingScreen,
-                                  isFromBooking: true,
-                                  isFromCart: true,
-                                ),
-                              )
-                              : const SizedBox.shrink(),
-                    ),
-                ],
-              ],
-            ),
+            child: buildList(_filteredCartItems, _listCartVaccinePackages),
+
+            // ListView(
+            //   children: [
+            //     if (_filteredCartItems.isEmpty &&
+            //         _listCartVaccinePackages.isEmpty) ...[
+            //       _emptyContent(),
+            //     ] else ...[
+            //       buildList(_filteredCartItems, _listCartVaccinePackages),
+            //       if (_filteredCartItems.isNotEmpty)
+            //         ..._filteredCartItems
+            //             .map((item) => _buildVaccineCard(item))
+            //             .toList(),
+            //       if (_listCartVaccinePackages.isNotEmpty)
+            //         ..._listCartVaccinePackages.map(
+            //           (package) =>
+            //               package.package.isActive
+            //                   ? Padding(
+            //                     padding: EdgeInsets.symmetric(
+            //                       vertical: 4,
+            //                       horizontal: 10,
+            //                     ),
+            //                     child: PackageItem(
+            //                       img: package.package.imageUrl,
+            //                       title: package.package.name,
+            //                       price: package.package.totalPrice.toString(),
+            //                       discount: package.package.discount.toString(),
+            //                       packageKey: package.package.id,
+            //                       vaccinePackage: package.package,
+            //                       expandedPackages: _expandedPackages,
+            //                       allVaccines: allVaccines,
+            //                       onExpandToggle: _toggleExpand,
+            //                       typeBooking: widget.isFromBookingScreen,
+            //                       isFromBooking: true,
+            //                       isFromCart: true,
+            //                     ),
+            //                   )
+            //                   : const SizedBox.shrink(),
+            //         ),
+            //     ],
+            //   ],
+            // ),
             //       _filteredCartItems.isEmpty
             //           ? _emptyContent()
             //           : ListView.builder(
@@ -215,7 +219,7 @@ class _CartScreenState extends State<CartScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Tổng tiền: ${NumberFormat.currency(locale: 'vi_VN', symbol: 'đ').format(cartProvider.getCart.totalPrice)}',
+                      'Tổng tiền: ${NumberFormat.currency(locale: 'vi_VN', symbol: 'đ').format(cartProvider.getCart.totalCartPrice)}',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -241,8 +245,61 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildVaccineCard(CartVaccineItem cartItem) {
-    final vaccine = cartItem.vaccine;
+  Widget buildList(
+    List<CartVaccineItem> cartItems,
+    List<CartVaccinePackage> cartPackages,
+  ) {
+    List<Vaccine> cvaccines = [];
+    for (Vaccine i in allVaccines) {
+      if (cartItems.any((item) => item.vaccineId == i.id)) {
+        cvaccines.add(i);
+      }
+    }
+    List<VaccinePackage> cvaccinePackages = [];
+    for (VaccinePackage i in allVaccinePackages) {
+      if (cartPackages.any((item) => item.packageId == i.id)) {
+        cvaccinePackages.add(i);
+      }
+    }
+
+    for (var package in cvaccinePackages) {
+      _expandedPackages[package.id] = false;
+    }
+    return ListView(
+      children: [
+        if (cvaccines.isNotEmpty)
+          ...cvaccines.map((item) => _buildVaccineCard(item)).toList(),
+        if (cvaccinePackages.isNotEmpty)
+          ...cvaccinePackages.map(
+            (package) =>
+                package.isActive
+                    ? Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 10,
+                      ),
+                      child: PackageItem(
+                        img: package.imageUrl,
+                        title: package.name,
+                        price: package.totalPrice.toString(),
+                        discount: package.discount.toString(),
+                        packageKey: package.id,
+                        vaccinePackage: package,
+                        expandedPackages: _expandedPackages,
+                        allVaccines: allVaccines,
+                        onExpandToggle: _toggleExpand,
+                        typeBooking: widget.isFromBookingScreen,
+                        isFromBooking: true,
+                        isFromCart: true,
+                      ),
+                    )
+                    : const SizedBox.shrink(),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildVaccineCard(Vaccine vaccine) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4),
       margin: EdgeInsets.symmetric(horizontal: 9, vertical: 5),

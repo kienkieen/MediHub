@@ -331,7 +331,7 @@ class ListVaccine extends StatelessWidget {
                   Provider.of<CartProvider>(
                     context,
                     listen: false,
-                  ).addPackage(vaccinePackage);
+                  ).addPackage(vaccinePackage.id);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(

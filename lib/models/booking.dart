@@ -8,8 +8,8 @@ class Booking {
   String idBooking;
   String bookingCenter;
   DateTime dateBooking;
-  List<Vaccine> lstVaccine;
-  List<VaccinePackage> lstVaccinePackage;
+  List<String> lstVaccine;
+  List<String> lstVaccinePackage;
   int isConfirmed;
   double totalPrice;
 
@@ -34,8 +34,8 @@ class Booking {
       'idUser': idUser,
       'bookingCenter': bookingCenter,
       'dateBooking': dateBooking,
-      'lstVaccine': lstVaccine.map((v) => v.toMap()).toList(),
-      'lstVaccinePackage': lstVaccinePackage.map((v) => v.toMap()).toList(),
+      'lstVaccine': lstVaccine,
+      'lstVaccinePackage': lstVaccinePackage,
       'totalPrice': totalPrice,
       'isConfirmed': isConfirmed,
     };
@@ -49,12 +49,12 @@ class Booking {
       dateBooking: (map['dateBooking'] as Timestamp).toDate(),
       lstVaccine:
           (map['lstVaccine'] as List<dynamic>?)
-              ?.map((v) => Vaccine.fromMap(v as Map<String, dynamic>))
+              ?.map((v) => v as String)
               .toList() ??
           [],
       lstVaccinePackage:
           (map['lstVaccinePackage'] as List<dynamic>?)
-              ?.map((v) => VaccinePackage.fromMap(v as Map<String, dynamic>))
+              ?.map((v) => v as String)
               .toList() ??
           [],
       totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0.0,

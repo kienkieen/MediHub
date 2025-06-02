@@ -74,9 +74,10 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
     setState(() {
       _filteredRecords =
           _records.where((record) {
-            // Lọc theo tên vắc xin
+            final vaccine =
+                allVaccines.where((v) => v.id == record.vaccineId).firstOrNull;
             if (_searchController.text.isNotEmpty &&
-                !record.vaccine.name.toLowerCase().contains(
+                !vaccine!.name.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 )) {
               return false;
@@ -459,76 +460,81 @@ class _VaccinationHistoryScreenState extends State<VaccinationHistoryScreen> {
   }
 
   Widget _buildRecordCard(VaccinationRecord record) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade400, width: 1),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Xem chi tiết: ${record.vaccine.name}'),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Image.asset(
-                  record.vaccine.imageUrl.isNotEmpty
-                      ? record.vaccine.imageUrl
-                      : 'assets/images/vaccine/default.jpg',
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
+    final vaccine =
+        allVaccines.where((v) => v.id == record.vaccineId).firstOrNull;
+    if (vaccine != null) {
+      return Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey.shade400, width: 1),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Xem chi tiết: ${vaccine.name}'),
+                duration: const Duration(seconds: 2),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      record.vaccine.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Image.asset(
+                    vaccine.imageUrl.isNotEmpty
+                        ? vaccine.imageUrl
+                        : 'assets/images/vaccine/default.jpg',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        vaccine.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Ngày tiêm: ${DateFormat('dd/MM/yyyy').format(record.date)}',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    Text(
-                      'Liều: ${record.dose}',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                    Text(
-                      'Nơi tiêm: ${record.location}',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        'Ngày tiêm: ${DateFormat('dd/MM/yyyy').format(record.date)}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                      Text(
+                        'Liều: ${record.dose}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                      Text(
+                        'Nơi tiêm: ${record.location}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _emptyContent() {

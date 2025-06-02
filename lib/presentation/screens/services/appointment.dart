@@ -222,21 +222,23 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   Widget _buildBookingCard(Booking booking, VoidCallback onCancel) {
     // Tính toán tổng chi phí từ danh sách vắc xin
-    double _calculateTotalCost(
-      List<Vaccine> vaccines,
-      List<VaccinePackage> packages,
-    ) {
+    double _calculateTotalCost(List<String> vaccines, List<String> packages) {
       double tv = 0;
       double tvp = 0;
 
       if (vaccines.isNotEmpty) {
-        tv = vaccines.fold(0, (sum, vaccine) => sum + vaccine.price);
+        for (Vaccine i in allVaccines) {
+          if (vaccines.contains(i.id)) {
+            tv += i.price;
+          }
+        }
       }
       if (packages.isNotEmpty) {
-        tvp = packages.fold(
-          0,
-          (sum, package) => sum + (package.totalPrice - package.discount),
-        );
+        for (VaccinePackage i in allVaccinePackages) {
+          if (packages.contains(i.id)) {
+            tvp += (i.totalPrice - i.discount);
+          }
+        }
       }
       return tv + tvp;
     }
@@ -361,7 +363,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          vaccine.name,
+                          allVaccines.firstWhere((v) => v.id == vaccine).name,
                           style: const TextStyle(fontSize: 14),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -371,7 +373,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         NumberFormat.currency(
                           locale: 'vi',
                           symbol: 'VND',
-                        ).format(vaccine.price),
+                        ).format(
+                          allVaccines.firstWhere((v) => v.id == vaccine).price,
+                        ),
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
@@ -394,7 +398,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          package.name,
+                          allVaccinePackages
+                              .firstWhere((p) => p.id == package)
+                              .name,
                           style: const TextStyle(fontSize: 14),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -405,7 +411,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         NumberFormat.currency(
                           locale: 'vi',
                           symbol: 'VND',
-                        ).format(package.totalPrice - package.discount),
+                        ).format(
+                          allVaccinePackages
+                                  .firstWhere((p) => p.id == package)
+                                  .totalPrice -
+                              allVaccinePackages
+                                  .firstWhere((p) => p.id == package)
+                                  .discount,
+                        ),
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
@@ -943,6 +956,14 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     );
   }
 
+  List<String> _getSelectedVaccines() {
+    return _selectedVaccines.map((v) => v.id).toList();
+  }
+
+  List<String> _getSelectedPackages() {
+    return _selectedPackages.map((p) => p.id).toList();
+  }
+
   Future<void> _submitBooking() async {
     if (_facilityValue != null &&
         _facilityValue!.isNotEmpty &&
@@ -954,8 +975,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         idUser: useMainLogin!.userId,
         bookingCenter: _facilityValue!,
         dateBooking: _selectedDate!,
-        lstVaccine: _selectedVaccines,
-        lstVaccinePackage: _selectedPackages,
+        lstVaccine: _getSelectedVaccines(),
+        lstVaccinePackage: _getSelectedPackages(),
         totalPrice: sumBill,
         isConfirmed: 0,
       );

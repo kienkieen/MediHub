@@ -2,6 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/models/booking.dart';
 
+Future<bool> insertBookingAutoID(Map<String, dynamic> data) async {
+  try {
+    if (data.isEmpty) {
+      throw Exception("Collection or data is empty");
+    }
+
+    DocumentReference docRef = await FirebaseFirestore.instance
+        .collection('DATLICHTIEM')
+        .add(data);
+
+    data['idBooking'] = docRef.id;
+    updateData("DATLICHTIEM", docRef.id, data);
+    return true;
+  } catch (e) {
+    print(e);
+    return false;
+  }
+}
+
 Future<List<Booking>> getAllBookingByIDUser(String idUser) async {
   QuerySnapshot snapshot =
       await FirebaseFirestore.instance

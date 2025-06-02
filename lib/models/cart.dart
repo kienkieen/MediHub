@@ -1,49 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 
 class CartVaccineItem {
-  final Vaccine vaccine;
+  final String vaccineId;
   final DateTime addedAt;
 
-  CartVaccineItem({required this.vaccine, DateTime? addedAt})
+  CartVaccineItem({required this.vaccineId, DateTime? addedAt})
     : addedAt = addedAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
-    return {
-      'vaccine': vaccine.toMap(), // Giả sử Vaccine đã có toMap()
-      'addedAt': addedAt,
-    };
+    return {'vaccine': vaccineId, 'addedAt': addedAt};
   }
 
   factory CartVaccineItem.fromMap(Map<String, dynamic> map) {
     return CartVaccineItem(
-      vaccine: Vaccine.fromMap(
-        map['vaccine'],
-      ), // Giả sử Vaccine đã có fromMap()
+      vaccineId: map['vaccine'] as String,
       addedAt: (map['addedAt'] as Timestamp).toDate(),
     );
   }
 }
 
 class CartVaccinePackage {
-  final VaccinePackage package;
+  final String packageId;
   final DateTime addedAt;
-  CartVaccinePackage({required this.package, DateTime? addedAt})
+  CartVaccinePackage({required this.packageId, DateTime? addedAt})
     : addedAt = addedAt ?? DateTime.now();
   Map<String, dynamic> toMap() {
     return {
-      'package': package.toMap(), // Giả sử VaccinePackage đã có toMap()
+      'package': packageId, // Giả sử VaccinePackage đã có toMap()
       'addedAt': addedAt,
     };
   }
 
   factory CartVaccinePackage.fromMap(Map<String, dynamic> map) {
     return CartVaccinePackage(
-      package: VaccinePackage.fromMap(
-        map['package'],
-      ), // Giả sử VaccinePackage đã có fromMap()
+      packageId: map['package'] as String,
       addedAt: (map['addedAt'] as Timestamp).toDate(),
     );
   }
@@ -71,30 +65,30 @@ class Cart {
   }
 
   // Thêm vắc xin vào giỏ
-  void addVaccineItem(Vaccine vaccine) {
-    if (!vaccineItems.any((item) => item.vaccine.id == vaccine.id)) {
-      vaccineItems.add(CartVaccineItem(vaccine: vaccine));
+  void addVaccineItem(String vaccineId) {
+    if (!vaccineItems.any((item) => item.vaccineId == vaccineId)) {
+      vaccineItems.add(CartVaccineItem(vaccineId: vaccineId));
       updatedAt = DateTime.now();
     }
   }
 
   // Thêm gói vắc xin vào giỏ
-  void addVaccinePackage(VaccinePackage package) {
-    if (!vaccinePackages.any((item) => item.package.id == package.id)) {
-      vaccinePackages.add(CartVaccinePackage(package: package));
+  void addVaccinePackage(String packageId) {
+    if (!vaccinePackages.any((item) => item.packageId == packageId)) {
+      vaccinePackages.add(CartVaccinePackage(packageId: packageId));
       updatedAt = DateTime.now();
     }
   }
 
   // Xóa vắc xin khỏi giỏ
   void removeVaccineItem(String vaccineId) {
-    vaccineItems.removeWhere((item) => item.vaccine.id == vaccineId);
+    vaccineItems.removeWhere((item) => item.vaccineId == vaccineId);
     updatedAt = DateTime.now();
   }
 
   // Xóa gói vắc xin khỏi giỏ
   void removeVaccinePackage(String packageId) {
-    vaccinePackages.removeWhere((item) => item.package.id == packageId);
+    vaccinePackages.removeWhere((item) => item.packageId == packageId);
     updatedAt = DateTime.now();
   }
 
@@ -111,12 +105,28 @@ class Cart {
   int get packageCount => vaccinePackages.length;
 
   // Tính tổng tiền
-  double get totalPrice =>
-      vaccineItems.fold(0, (sum, item) => sum + item.vaccine.price);
+  double get totalPrice {
+    double total = 0.0;
+
+    for (Vaccine i in allVaccines) {
+      if (vaccineItems.any((item) => item.vaccineId == i.id)) {
+        total += i.price;
+      }
+    }
+    return total;
+  }
 
   // Tính tổng tiền cho các gói vắc xin
-  double get totalPackagePrice =>
-      vaccinePackages.fold(0, (sum, item) => sum + item.package.totalPrice);
+  double get totalPackagePrice {
+    double total = 0.0;
+
+    for (VaccinePackage i in allVaccinePackages) {
+      if (vaccinePackages.any((item) => item.packageId == i.id)) {
+        total += i.totalPrice;
+      }
+    }
+    return total;
+  }
 
   double get totalCartPrice => totalPrice + totalPackagePrice;
 

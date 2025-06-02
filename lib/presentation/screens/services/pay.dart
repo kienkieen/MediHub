@@ -6,6 +6,7 @@ import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/booking.dart';
+import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/presentation/screens/services/payment_info.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -83,9 +84,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               const SizedBox(height: 8),
               ...widget.booking.lstVaccine
-                  .map(
-                    (vaccine) => _buildVaccineItem(vaccine.name, vaccine.price),
-                  )
+                  .map((vaccine) => _buildVaccineItem(vaccine))
                   .toList(),
               const SizedBox(height: 8),
               Divider(),
@@ -146,20 +145,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildVaccineItem(String name, double price) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(name, style: const TextStyle(fontSize: 16)),
-          Text(
-            NumberFormat.currency(locale: 'vi_VN', symbol: 'VND').format(price),
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
-    );
+  Widget _buildVaccineItem(String idvaccine) {
+    Vaccine v = allVaccines.where((vaccine) => vaccine.id == idvaccine).first;
+    if (v != null) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8.0, left: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(v.name, style: const TextStyle(fontSize: 16)),
+            Text(
+              NumberFormat.currency(
+                locale: 'vi_VN',
+                symbol: 'VND',
+              ).format(v.price),
+              style: const TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   Widget _buildPaymentOption(String text) {
