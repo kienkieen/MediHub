@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 
 class StateDate_helper {
@@ -142,6 +144,9 @@ void showErrorUser(BuildContext context) {
         actions: [
           TextButton(
             onPressed: () {
+              userLogin = null;
+              useMainLogin = null;
+              cart = Cart();
               Navigator.push(
                 context,
                 MaterialPageRoute(

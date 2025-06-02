@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/firebase_helper/stateData_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
@@ -14,6 +15,20 @@ class UserAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _submitActivitiesRelatveUser(Widget Function() screen) async {
+      if (useMainLogin != null) {
+        bool v = await checkState.getStateUser(context, useMainLogin!.email);
+        if (v) {
+          showErrorUser(context);
+          return;
+        }
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => screen()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -33,14 +48,8 @@ class UserAccountScreen extends StatelessWidget {
                       iconColor: Colors.cyan,
                       title: 'Chỉnh sửa tài khoản',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    const ProfileScreen(isNewUser: false),
-                          ),
-                        );
+                        _submitActivitiesRelatveUser() =>
+                            const ProfileScreen(isNewUser: false);
                       },
                       showArrow: true,
                     ),
@@ -70,12 +79,8 @@ class UserAccountScreen extends StatelessWidget {
                       iconColor: Colors.blue,
                       title: 'Đổi mật khẩu',
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ChangePasswordScreen(),
-                          ),
-                        );
+                        _submitActivitiesRelatveUser() =>
+                            const ChangePasswordScreen();
                       },
                       showArrow: true,
                     ),

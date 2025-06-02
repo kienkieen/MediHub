@@ -232,18 +232,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<bool> _checkFuture;
+  bool? _checkFuture;
 
   @override
   void initState() {
     super.initState();
-    _checkFuture = checktStateList(context);
+    checktStateList(context);
   }
 
-  Future<bool> checktStateList(BuildContext context) async {
+  Future<void> checktStateList(BuildContext context) async {
     bool v = await checkState.getStateVaccines(context);
     bool vp = await checkState.getStateVaccinesPackage(context);
-    return (!v && !vp); // true = OK to run
+    setState(() {
+      if (!v && !vp) {
+        _checkFuture = true;
+      } else {
+        _checkFuture = false;
+      }
+    });
   }
 
   void setUpList() async {
@@ -251,97 +257,178 @@ class _MyAppState extends State<MyApp> {
     allVaccinePackages = await getAllVaccinePackage();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: FutureBuilder<bool>(
-        future: _checkFuture, // Future của bạn
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else if (snapshot.hasError) {
-            return const Scaffold(
-              body: Center(child: Text('Lỗi khi kiểm tra trạng thái dữ liệu')),
-            );
-          } else if (snapshot.hasData && snapshot.data == false) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: Scaffold(
-                backgroundColor: Colors.white,
-                body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.warning_amber_rounded,
-                          size: 80,
-                          color: Colors.orange,
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Hệ thống đang bảo trì',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Vui lòng quay lại sau khi bảo trì hoàn tất.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, color: Colors.black54),
-                        ),
-                        const SizedBox(height: 30),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            exit(0); // Thoát app
-                          },
-                          icon: const Icon(Icons.exit_to_app),
-                          label: const Text('Thoát'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 12,
-                            ),
-                            backgroundColor: Colors.redAccent,
-                            foregroundColor: Colors.white,
-                            textStyle: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
+  Widget showScreen() {
+    if (_checkFuture == null) {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+          backgroundColor: Colors.white,
+        ),
+      );
+    } else if (!_checkFuture!) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    size: 80,
+                    color: Colors.orange,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Hệ thống đang bảo trì',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
-                ),
-              ),
-            );
-          } else {
-            setUpList();
-            return ChangeNotifierProvider(
-              create: (context) => CartProvider(),
-              child: MaterialApp(
-                title: 'VNVC',
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(
-                  primaryColor: const Color(0xFF0091FF),
-                  colorScheme: ColorScheme.fromSeed(
-                    seedColor: const Color(0xFF0091FF),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Vui lòng quay lại sau khi bảo trì hoàn tất.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
-                  useMaterial3: true,
-                  fontFamily: 'Calistoga',
-                ),
-                home: const NavigationBottom(),
+                  const SizedBox(height: 30),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      exit(0); // Thoát app
+                    },
+                    icon: const Icon(Icons.exit_to_app),
+                    label: const Text('Thoát'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.white,
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
-            );
-          }
-        },
-      ),
-    );
+            ),
+          ),
+        ),
+      );
+    } else {
+      setUpList();
+      return ChangeNotifierProvider(
+        create: (context) => CartProvider(),
+        child: MaterialApp(
+          title: 'VNVC',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: const Color(0xFF0091FF),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF0091FF),
+            ),
+            useMaterial3: true,
+            fontFamily: 'Calistoga',
+          ),
+          home: const NavigationBottom(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showScreen();
+    // FutureBuilder<bool>(
+    //   future: _checkFuture, // Future của bạn
+    //   builder: (context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return const Scaffold(
+    //         body: Center(child: CircularProgressIndicator()),
+    //       );
+    //     } else if (snapshot.hasError) {
+    //       return const Scaffold(
+    //         body: Center(child: Text('Lỗi khi kiểm tra trạng thái dữ liệu')),
+    //       );
+    //     } else if (snapshot.hasData && snapshot.data == false) {
+    //       return MaterialApp(
+    //         debugShowCheckedModeBanner: false,
+    //         home: Scaffold(
+    //           backgroundColor: Colors.white,
+    //           body: Center(
+    //             child: Padding(
+    //               padding: const EdgeInsets.all(24.0),
+    //               child: Column(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: [
+    //                   Icon(
+    //                     Icons.warning_amber_rounded,
+    //                     size: 80,
+    //                     color: Colors.orange,
+    //                   ),
+    //                   const SizedBox(height: 20),
+    //                   const Text(
+    //                     'Hệ thống đang bảo trì',
+    //                     style: TextStyle(
+    //                       fontSize: 24,
+    //                       fontWeight: FontWeight.bold,
+    //                       color: Colors.black87,
+    //                     ),
+    //                   ),
+    //                   const SizedBox(height: 10),
+    //                   const Text(
+    //                     'Vui lòng quay lại sau khi bảo trì hoàn tất.',
+    //                     textAlign: TextAlign.center,
+    //                     style: TextStyle(fontSize: 16, color: Colors.black54),
+    //                   ),
+    //                   const SizedBox(height: 30),
+    //                   ElevatedButton.icon(
+    //                     onPressed: () {
+    //                       exit(0); // Thoát app
+    //                     },
+    //                     icon: const Icon(Icons.exit_to_app),
+    //                     label: const Text('Thoát'),
+    //                     style: ElevatedButton.styleFrom(
+    //                       padding: const EdgeInsets.symmetric(
+    //                         horizontal: 32,
+    //                         vertical: 12,
+    //                       ),
+    //                       backgroundColor: Colors.redAccent,
+    //                       foregroundColor: Colors.white,
+    //                       textStyle: const TextStyle(fontSize: 16),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       );
+    //     } else {
+    //       setUpList();
+    //       return ChangeNotifierProvider(
+    //         create: (context) => CartProvider(),
+    //         child: MaterialApp(
+    //           title: 'VNVC',
+    //           debugShowCheckedModeBanner: false,
+    //           theme: ThemeData(
+    //             primaryColor: const Color(0xFF0091FF),
+    //             colorScheme: ColorScheme.fromSeed(
+    //               seedColor: const Color(0xFF0091FF),
+    //             ),
+    //             useMaterial3: true,
+    //             fontFamily: 'Calistoga',
+    //           ),
+    //           home: const NavigationBottom(),
+    //         ),
+    //       );
+    //     }
+    //   },
+    // ),
   }
 }

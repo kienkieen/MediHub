@@ -44,9 +44,29 @@ class ServicesGrid extends StatelessWidget {
       if (useMainLogin != null) {
         bool v = await checkState.getStateUser(context, useMainLogin!.email);
         if (v) {
+          showErrorUser(context);
+          return;
+        }
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => screen()),
+      );
+    }
+
+    void _submitActivitiesRelatveUserAndList(Widget Function() screen) async {
+      if (useMainLogin != null) {
+        bool v = await checkState.getStateUser(context, useMainLogin!.email);
+        if (v) {
           showListError(context);
           return;
         }
+      }
+      bool vp = await checkState.getStateVaccinesPackage(context);
+      bool vc = await checkState.getStateVaccines(context);
+      if (vp || vc) {
+        showListError(context);
+        return;
       }
       Navigator.push(
         context,
