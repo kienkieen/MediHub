@@ -68,12 +68,12 @@ Future<bool> SignIn(String email, String password) async {
       email: email,
       password: password,
     );
-
     User? user = u.user;
     if (user != null) {
       userLogin = FirebaseAuth.instance.currentUser;
       useMainLogin = await getUserMain(user.uid);
     }
+
     return true;
   } catch (e) {
     return false;
@@ -82,6 +82,7 @@ Future<bool> SignIn(String email, String password) async {
 
 Future<void> SignOut() async {
   await FirebaseAuth.instance.signOut();
+
   userLogin = null;
   useMainLogin = null;
   cart = Cart();

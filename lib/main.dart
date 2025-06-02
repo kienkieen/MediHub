@@ -1,15 +1,16 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:flutter/services.dart';
+import 'package:medihub_app/firebase_helper/stateData_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
 import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/models/userMain.dart';
 import 'package:medihub_app/models/vaccine.dart';
-import 'package:medihub_app/models/vaccinePackage_record.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
-import 'package:medihub_app/models/vaccine_record.dart';
 import 'package:provider/provider.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 // import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
@@ -22,15 +23,13 @@ UserMain? useMainLogin;
 List<Vaccine> allVaccines = [];
 List<VaccinePackage> allVaccinePackages = [];
 Cart cart = Cart();
+StateDate_helper checkState = StateDate_helper();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  allVaccines = await loadAllVaccines();
-  allVaccinePackages = await getAllVaccinePackage();
-
-  runApp(const MyApp());
+  runApp(MyApp());
   // final List<Vaccine> allVaccines = [
   //   Vaccine(
   //     id: 'vaccine1',
@@ -200,24 +199,148 @@ void main() async {
   // }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CartProvider(),
-      child: MaterialApp(
-        title: 'VNVC',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: const Color(0xFF0091FF),
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0091FF)),
-          useMaterial3: true,
-          fontFamily: 'Calistoga',
-        ),
+  State<MyApp> createState() => _MyAppState();
 
-        home: const NavigationBottom(), // Change to NavigationScreen
+  // Future<bool> checktStateList(BuildContext context) async {
+  //   bool v = await checkState.getStateVaccines(context);
+  //   bool vp = await checkState.getStateVaccinesPackage(context);
+  //   return !(v && vp);
+  // }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ChangeNotifierProvider(
+  //     create: (context) => CartProvider(),
+  //     child: MaterialApp(
+  //       title: 'VNVC',
+  //       debugShowCheckedModeBanner: false,
+  //       theme: ThemeData(
+  //         primaryColor: const Color(0xFF0091FF),
+  //         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0091FF)),
+  //         useMaterial3: true,
+  //         fontFamily: 'Calistoga',
+  //       ),
+
+  //       home: const NavigationBottom(), // Change to NavigationScreen
+  //     ),
+  //   );
+  // }
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<bool> _checkFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFuture = checktStateList(context);
+  }
+
+  Future<bool> checktStateList(BuildContext context) async {
+    bool v = await checkState.getStateVaccines(context);
+    bool vp = await checkState.getStateVaccinesPackage(context);
+    return (!v && !vp); // true = OK to run
+  }
+
+  void setUpList() async {
+    allVaccines = await loadAllVaccines();
+    allVaccinePackages = await getAllVaccinePackage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: FutureBuilder<bool>(
+        future: _checkFuture, // Future của bạn
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          } else if (snapshot.hasError) {
+            return const Scaffold(
+              body: Center(child: Text('Lỗi khi kiểm tra trạng thái dữ liệu')),
+            );
+          } else if (snapshot.hasData && snapshot.data == false) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          size: 80,
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Hệ thống đang bảo trì',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Vui lòng quay lại sau khi bảo trì hoàn tất.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16, color: Colors.black54),
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            exit(0); // Thoát app
+                          },
+                          icon: const Icon(Icons.exit_to_app),
+                          label: const Text('Thoát'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 12,
+                            ),
+                            backgroundColor: Colors.redAccent,
+                            foregroundColor: Colors.white,
+                            textStyle: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          } else {
+            setUpList();
+            return ChangeNotifierProvider(
+              create: (context) => CartProvider(),
+              child: MaterialApp(
+                title: 'VNVC',
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(
+                  primaryColor: const Color(0xFF0091FF),
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: const Color(0xFF0091FF),
+                  ),
+                  useMaterial3: true,
+                  fontFamily: 'Calistoga',
+                ),
+                home: const NavigationBottom(),
+              ),
+            );
+          }
+        },
       ),
     );
   }

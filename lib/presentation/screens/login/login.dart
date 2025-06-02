@@ -8,6 +8,7 @@ import 'package:medihub_app/core/widgets/login_widgets/text.dart';
 import 'package:medihub_app/core/widgets/login_widgets/password_input_field.dart';
 import 'package:medihub_app/core/widgets/login_widgets/email_input_field.dart';
 import 'package:medihub_app/firebase_helper/cart_helper.dart';
+import 'package:medihub_app/firebase_helper/stateData_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/fogot_password.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
@@ -102,19 +103,24 @@ class _LoginFormState extends State<LoginForm> {
 
   void _submitForm(String email, String password) async {
     if (_formKey.currentState!.validate()) {
-      if (await SignIn(email, password)) {
-        cart = await getCartbyUserID(useMainLogin!.userId);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NavigationBottom()),
-        );
+      bool userState = await checkState.getStateUser(context, email);
+      if (userState) {
+        showErrorUser(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thông tin đăng nhập không đúng')),
-        );
+        if (await SignIn(email, password)) {
+          cart = await getCartbyUserID(useMainLogin!.userId);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Đăng thành công')));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NavigationBottom()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Thông tin đăng nhập không đúng')),
+          );
+        }
       }
     }
   }

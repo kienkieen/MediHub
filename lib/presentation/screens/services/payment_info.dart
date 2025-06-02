@@ -7,8 +7,11 @@ import 'package:medihub_app/api/APIService.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/firebase_helper/stateData_helper.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/bill.dart';
 import 'package:medihub_app/models/booking.dart';
+import 'package:medihub_app/models/cart.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'dart:convert';
 
@@ -90,34 +93,50 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
   }
 
   void _submitbooking() async {
-    // Giả lập việc gửi thông tin đặt lịch
-    ScaffoldMessenger.of(
+    bool v = await checkState.getStateVaccines(context);
+    bool vp = await checkState.getStateVaccinesPackage(context);
+    bool userState = await checkState.getStateUser(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Đang xử lý thanh toán...')));
-    bool up = await insertDataAutoID("DATLICHTIEM", widget.booking.toMap());
-    if (up) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Thanh toán thành công')));
-      Bill bill = Bill(
-        id: orderId,
-        idUser: widget.booking.idUser,
-        paymentMethod: widget.paymentMethod,
-        totalAmount: totalAmount,
-        dueDate: DateTime.now().add(const Duration(days: 30)),
-        isPaid: false,
-      );
-      insertData("HOADON", bill.id, bill.toMap());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => NavigationBottom(initialIndex: 2),
-        ),
-      );
+      widget.booking.idUser,
+    );
+    if (v && vp) {
+      showListError(context);
+      return;
+    } else if (userState) {
+      userLogin = null;
+      useMainLogin = null;
+      cart = Cart();
+      showErrorUser(context);
+      return;
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Thanh toán thất bại')));
+      ).showSnackBar(const SnackBar(content: Text('Đang xử lý thanh toán...')));
+      bool up = await insertDataAutoID("DATLICHTIEM", widget.booking.toMap());
+      if (up) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Thanh toán thành công')));
+        Bill bill = Bill(
+          id: orderId,
+          idUser: widget.booking.idUser,
+          paymentMethod: widget.paymentMethod,
+          totalAmount: totalAmount,
+          dueDate: DateTime.now().add(const Duration(days: 30)),
+          isPaid: false,
+        );
+        insertData("HOADON", bill.id, bill.toMap());
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NavigationBottom(initialIndex: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Thanh toán thất bại')));
+      }
     }
   }
 

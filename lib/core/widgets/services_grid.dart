@@ -1,5 +1,8 @@
 // File: screens/home/widgets/services_grid.dart
 import 'package:flutter/material.dart';
+import 'package:medihub_app/firebase_helper/stateData_helper.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/services/vaccination_process.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_list.dart';
 import 'package:medihub_app/presentation/screens/services/vaccine_for_u.dart';
@@ -13,53 +16,87 @@ class ServicesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _submitListVaccine() async {
+      bool v = await checkState.getStateVaccines(context);
+      if (v) {
+        showListError(context);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VaccineListScreen()),
+        );
+      }
+    }
+
+    void _submitListVaccinePackage() async {
+      bool v = await checkState.getStateVaccinesPackage(context);
+      if (v) {
+        showListError(context);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VaccinePackageScreen()),
+        );
+      }
+    }
+
+    void _submitActivitiesRelatveUser(Widget Function() screen) async {
+      bool v = await checkState.getStateUser(context, useMainLogin!.email);
+      if (v) {
+        showListError(context);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => screen()),
+        );
+      }
+    }
+
     final List<Map<String, dynamic>> topServices = [
       {
         'iconPath': 'assets/icons/grid_service/calendar.png',
         'label': 'Đặt lịch\ntiêm',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const VaccinationBookingScreen(),
-            ),
-          );
+          _submitActivitiesRelatveUser(() => const VaccinationBookingScreen());
         },
       },
       {
         'iconPath': 'assets/icons/grid_service/age.png',
         'label': 'Vắc xin\ncho bạn',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const VaccineForYouScreen(),
-            ),
-          );
+          _submitActivitiesRelatveUser(() => const VaccineForYouScreen());
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => const VaccineForYouScreen(),
+          //   ),
+          // );
         },
       },
       {
         'iconPath': 'assets/icons/grid_service/comments.png',
         'label': 'Góp ý\nphản hồi',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const FeedbackForm()),
-          );
+          _submitActivitiesRelatveUser(() => const FeedbackForm());
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const FeedbackForm()),
+          // );
         },
       },
       {
         'iconPath': 'assets/icons/grid_service/history.png',
         'label': 'Lịch sử\ntiêm chủng',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) =>
-                      const VaccinationHistoryScreen(), // Điều hướng đến màn hình cụ thể
-            ),
-          );
+          _submitActivitiesRelatveUser(() => const VaccinationHistoryScreen());
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder:
+          //         (context) =>
+          //             const VaccinationHistoryScreen(), // Điều hướng đến màn hình cụ thể
+          //   ),
+          // );
         },
       },
     ];
@@ -69,22 +106,14 @@ class ServicesGrid extends StatelessWidget {
         'iconPath': 'assets/icons/grid_service/category.png',
         'label': 'Danh sách\nVắc xin',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const VaccineListScreen()),
-          );
+          _submitListVaccine();
         },
       },
       {
         'iconPath': 'assets/icons/grid_service/buy_vaccine.png',
         'label': 'Các\ngói tiêm',
         'onPressed': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const VaccinePackageScreen(),
-            ),
-          );
+          _submitListVaccinePackage();
         },
       },
       {
@@ -104,12 +133,12 @@ class ServicesGrid extends StatelessWidget {
         'iconPath': 'assets/icons/grid_service/news.png',
         'label': 'Tin tức\nVắc xin',
         'onPressed': () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => const NewsHomeScreen(),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationBottom(initialIndex: 1),
+            ),
+          );
         },
       },
     ];
