@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
+import 'package:medihub_app/models/diseases.dart';
+import 'package:medihub_app/models/supplier.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/core/widgets/services_widgets/filterchip.dart';
 
@@ -13,10 +16,47 @@ class FilterSheet extends StatefulWidget {
 
 class _FilterSheetState extends State<FilterSheet> {
   late FilterOptions _options;
+  List<Diseases> diseases = [];
+  List<Supplier> manufacturers = [];
+
+  // const diseases = [
+  //     'Sởi',
+  //     'Quai bị',
+  //     'Viêm gan B',
+  //     'HPV',
+  //     'COVID-19',
+  //     'Cúm',
+  //     'Bạch hầu',
+  //   ];
+
+  // const manufacturers = [
+  //     'Mỹ',
+  //     'Pháp',
+  //     'Nhật',
+  //     'Hàn Quốc',
+  //     'Việt Nam',
+  //     'Ấn Độ',
+  //   ];
+
+  void fetchDiseases() async {
+    final tmp = await loadDisease();
+    setState(() {
+      diseases = tmp;
+    });
+  }
+
+  void fetchSuppliers() async {
+    final tmp = await loadSupplier();
+    setState(() {
+      manufacturers = tmp;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    fetchDiseases();
+    fetchSuppliers();
     _options = widget.initialOptions;
   }
 
@@ -106,15 +146,6 @@ class _FilterSheetState extends State<FilterSheet> {
   }
 
   Widget _buildDiseaseFilter() {
-    const diseases = [
-      'Sởi',
-      'Quai bị',
-      'Viêm gan B',
-      'HPV',
-      'COVID-19',
-      'Cúm',
-      'Bạch hầu',
-    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -127,14 +158,14 @@ class _FilterSheetState extends State<FilterSheet> {
           children:
               diseases.map((disease) {
                 return CustomFilterChip(
-                  label: disease,
-                  isSelected: _options.diseases.contains(disease),
+                  label: disease.name,
+                  isSelected: _options.diseases.contains(disease.name),
                   onSelected: (selected) {
                     setState(() {
                       if (selected) {
-                        _options.diseases.add(disease);
+                        _options.diseases.add(disease.name);
                       } else {
-                        _options.diseases.remove(disease);
+                        _options.diseases.remove(disease.name);
                       }
                     });
                   },
@@ -182,14 +213,6 @@ class _FilterSheetState extends State<FilterSheet> {
   }
 
   Widget _buildManufacturerFilter() {
-    const manufacturers = [
-      'Mỹ',
-      'Pháp',
-      'Nhật',
-      'Hàn Quốc',
-      'Việt Nam',
-      'Ấn Độ',
-    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -202,14 +225,14 @@ class _FilterSheetState extends State<FilterSheet> {
           children:
               manufacturers.map((manu) {
                 return CustomFilterChip(
-                  label: manu,
-                  isSelected: _options.manufacturers.contains(manu),
+                  label: manu.name,
+                  isSelected: _options.manufacturers.contains(manu.name),
                   onSelected: (selected) {
                     setState(() {
                       if (selected) {
-                        _options.manufacturers.add(manu);
+                        _options.manufacturers.add(manu.name);
                       } else {
-                        _options.manufacturers.remove(manu);
+                        _options.manufacturers.remove(manu.name);
                       }
                     });
                   },

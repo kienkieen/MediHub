@@ -39,15 +39,6 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
   late double totalAmount = 0;
   final apiService = APIService();
   Image? qrImage;
-  String generateRandomString(int length) {
-    const chars =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final rand = Random.secure(); // dùng Random.secure() để bảo mật hơn
-    return List.generate(
-      length,
-      (index) => chars[rand.nextInt(chars.length)],
-    ).join();
-  }
 
   Future<Image> generateQR() async {
     final request = APIRequest(
@@ -89,7 +80,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
   @override
   void initState() {
     totalAmount = widget.booking.totalPrice;
-    orderId = generateRandomString(8);
+    orderId = widget.booking.idBooking;
     _setQRImage();
   }
 
@@ -113,7 +104,11 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Đang xử lý thanh toán...')));
-      bool up = await insertBookingAutoID(widget.booking.toMap());
+      bool up = await insertData(
+        "DATLICHTIEM",
+        widget.booking.idBooking,
+        widget.booking.toMap(),
+      );
       if (up) {
         ScaffoldMessenger.of(
           context,

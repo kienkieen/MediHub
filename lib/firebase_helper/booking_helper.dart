@@ -12,8 +12,6 @@ Future<bool> insertBookingAutoID(Map<String, dynamic> data) async {
         .collection('DATLICHTIEM')
         .add(data);
 
-    data['idBooking'] = docRef.id;
-    updateData("DATLICHTIEM", docRef.id, data);
     return true;
   } catch (e) {
     print(e);

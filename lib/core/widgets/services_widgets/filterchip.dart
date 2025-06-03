@@ -20,7 +20,8 @@ class CustomFilterChip extends StatelessWidget {
           label: Text(
             label,
             style: TextStyle(
-              color: isSelected ? const Color(0xFF206BA8) : Colors.grey.shade800,
+              color:
+                  isSelected ? const Color(0xFF206BA8) : Colors.grey.shade800,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -31,7 +32,8 @@ class CustomFilterChip extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: BorderSide(
-              color: isSelected ? const Color(0xFF2E85CC) : Colors.grey.shade500,
+              color:
+                  isSelected ? const Color(0xFF2E85CC) : Colors.grey.shade500,
               width: 1.5,
             ),
           ),
@@ -48,11 +50,7 @@ class CustomFilterChip extends StatelessWidget {
                 color: Color.fromARGB(255, 35, 103, 220),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.check,
-                size: 14,
-                color: Colors.white,
-              ),
+              child: const Icon(Icons.check, size: 14, color: Colors.white),
             ),
           ),
       ],

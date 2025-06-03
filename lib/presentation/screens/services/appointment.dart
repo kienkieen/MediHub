@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medihub_app/core/widgets/services_widgets/appointment_filter_modal.dart';
@@ -539,6 +541,16 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     'Bệnh viện Bạch Mai',
   ];
 
+  String generateRandomString(int length) {
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final rand = Random.secure();
+    return List.generate(
+      length,
+      (index) => chars[rand.nextInt(chars.length)],
+    ).join();
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -970,8 +982,16 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         _selectedDate != null &&
         _selectedDate!.toString().isNotEmpty &&
         (_selectedVaccines.isNotEmpty || _selectedPackages.isNotEmpty)) {
+      bool isUniqueId = false;
+      String idBooking;
+      do {
+        idBooking = generateRandomString(6);
+        if (!await checkIDExist("DATLICHTIEM", idBooking)) {
+          isUniqueId = true;
+        }
+      } while (isUniqueId == false);
       Booking bk = Booking(
-        idBooking: '',
+        idBooking: idBooking,
         idUser: useMainLogin!.userId,
         bookingCenter: _facilityValue!,
         dateBooking: _selectedDate!,
