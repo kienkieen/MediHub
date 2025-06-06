@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
-import 'package:medihub_app/main.dart';
+//import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
+import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
+import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 
 class VaccinePackageScreen extends StatefulWidget {
   final bool isFromBookingScreen;
@@ -19,14 +21,16 @@ class VaccinePackageScreen extends StatefulWidget {
 
 class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
   Map<String, bool> _expandedPackages = {};
-
-  // Danh sách các gói vắc xin
   List<VaccinePackage> _vaccinePackages = [];
+  List<Vaccine> _allVaccines = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadVaccinePackages();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadVaccinePackages();
+    });
   }
 
   void _toggleExpand(String packageKey) {
@@ -35,17 +39,68 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
     });
   }
 
-  void _loadVaccinePackages() async {
+  Future<void> _loadVaccinePackages() async {
     try {
-      _vaccinePackages = allVaccinePackages;
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Load both vaccine packages and vaccines from Firebase
+      final packagesData = await getAllVaccinePackage();
+      final vaccinesData = await loadAllVaccines();
+
+      setState(() {
+        _vaccinePackages = packagesData;
+        _allVaccines = vaccinesData;
+        _isLoading = false;
+      });
+
+      // Initialize expanded state for each package
       for (var package in _vaccinePackages) {
-        Map<String, bool> packageState = {package.id: false};
-        setState(() {
-          _expandedPackages.addAll(packageState);
-        });
+        _expandedPackages[package.id] = false;
       }
+
     } catch (e) {
       print('Error loading vaccine packages: $e');
+      setState(() {
+        _isLoading = false;
+      });
+      
+      // Show error message to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi tải dữ liệu gói vắc xin: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _refreshData() async {
+    try {
+      // Reload data from Firebase
+      await _loadVaccinePackages();
+      
+      // if (mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Dữ liệu đã được cập nhật'),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+      // }
+    } catch (e) {
+      print('Error refreshing data: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi làm mới dữ liệu: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -56,10 +111,9 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
       appBar: AppbarWidget(
         isBackButton: true,
         title: 'Gói vắc xin',
-        icon:
-            widget.isFromBookingScreen
-                ? Icons.home_rounded
-                : Icons.shopping_bag_outlined,
+        icon: widget.isFromBookingScreen
+            ? Icons.home_rounded
+            : Icons.shopping_bag_outlined,
         onPressed: () {
           if (widget.isFromBookingScreen) {
             Navigator.push(
@@ -74,46 +128,55 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
           }
         },
       ),
-      body:
-          _vaccinePackages.isEmpty
+      body: _isLoading
+          ? _loadingContent()
+          : _vaccinePackages.isEmpty
               ? _emptyContent()
-              : Padding(
-                padding: const EdgeInsets.all(8),
-                child: ListView.builder(
-                  itemCount: _vaccinePackages.length,
-                  itemBuilder:
-                      (context, index) =>
+              : RefreshIndicator(
+                  onRefresh: _refreshData,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ListView.builder(
+                      itemCount: _vaccinePackages.length,
+                      itemBuilder: (context, index) =>
                           _vaccinePackages[index].isActive
                               ? PackageItem(
-                                img: _vaccinePackages[index].imageUrl,
-                                title: _vaccinePackages[index].name,
-                                price:
-                                    _vaccinePackages[index].totalPrice
-                                        .toString(),
-                                discount:
-                                    _vaccinePackages[index].discount.toString(),
-                                packageKey: _vaccinePackages[index].id,
-                                vaccinePackage: _vaccinePackages[index],
-                                expandedPackages: _expandedPackages,
-                                allVaccines: allVaccines,
-                                onExpandToggle: _toggleExpand,
-                                typeBooking: false,
-                                isFromBooking: false,
-                              )
+                                  img: _vaccinePackages[index].imageUrl,
+                                  title: _vaccinePackages[index].name,
+                                  price: _vaccinePackages[index]
+                                      .totalPrice
+                                      .toString(),
+                                  discount: _vaccinePackages[index]
+                                      .discount
+                                      .toString(),
+                                  packageKey: _vaccinePackages[index].id,
+                                  vaccinePackage: _vaccinePackages[index],
+                                  expandedPackages: _expandedPackages,
+                                  allVaccines: _allVaccines,
+                                  onExpandToggle: _toggleExpand,
+                                  typeBooking: false,
+                                  isFromBooking: false,
+                                )
                               : const SizedBox.shrink(),
+                    ),
+                  ),
                 ),
-              ),
-      // body: SingleChildScrollView(
-      //   padding: const EdgeInsets.all(16),
-      //   child: Column(
-      //     children: [
-      //       Expanded(
-      //         child:
+    );
+  }
 
-      //       ),
-      //     ],
-      //   ),
-      // ),
+  Widget _loadingContent() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text(
+            'Đang tải dữ liệu gói vắc xin...',
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 
@@ -126,10 +189,15 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
           children: [
             Image.asset("assets/images/find_vaccie.png"),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Không có gói vắc xin nào, vui lòng thử lại',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _refreshData,
+              child: const Text('Thử lại'),
             ),
           ],
         ),
@@ -152,21 +220,77 @@ class _VaccinePackageDetailScreenState
     extends State<VaccinePackageDetailScreen> {
   final Map<String, bool> _selectedVaccines = {};
   final Map<String, int> _vaccineQuantities = {};
+  List<Vaccine> _allVaccines = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadVaccines();
+    });
+  }
 
-    // Khởi tạo _selectedVaccines và _vaccineQuantities từ package
-    for (var vaccineId in widget.package.vaccineIds) {
-      _selectedVaccines[vaccineId] = true; // Mặc định chọn tất cả vaccine
-      _vaccineQuantities[vaccineId] =
-          widget.package.dosesByVaccine[vaccineId] ?? 1; // Số liều mặc định
+  Future<void> _loadVaccines() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Load vaccines from Firebase
+      final vaccinesData = await loadAllVaccines();
+
+      setState(() {
+        _allVaccines = vaccinesData;
+        _isLoading = false;
+      });
+
+      // Initialize selected vaccines and quantities from package
+      for (var vaccineId in widget.package.vaccineIds) {
+        _selectedVaccines[vaccineId] = true; // Default select all vaccines
+        _vaccineQuantities[vaccineId] =
+            widget.package.dosesByVaccine[vaccineId] ?? 1; // Default doses
+      }
+
+    } catch (e) {
+      print('Error loading vaccines: $e');
+      setState(() {
+        _isLoading = false;
+      });
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi tải dữ liệu vắc xin: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: AppbarWidget(isBackButton: true, title: widget.package.name),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text(
+                'Đang tải thông tin gói vắc xin...',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppbarWidget(isBackButton: true, title: widget.package.name),
@@ -444,7 +568,7 @@ class _VaccinePackageDetailScreenState
   }
 
   Widget _buildVaccineList() {
-    final vaccines = widget.package.getVaccines(allVaccines);
+    final vaccines = widget.package.getVaccines(_allVaccines);
 
     return Container(
       margin: const EdgeInsets.all(7),
@@ -469,23 +593,22 @@ class _VaccinePackageDetailScreenState
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
-              children:
-                  vaccines.map((vaccine) {
-                    return _buildVaccineItem(
-                      disease: vaccine.diseases.join(', '),
-                      name: vaccine.name,
-                      dose:
-                          '${widget.package.dosesByVaccine[vaccine.id] ?? 1} liều',
-                      originalPrice: vaccine.price.toInt(),
-                      pricePrice: vaccine.price.toInt(),
-                      isSelected: _selectedVaccines[vaccine.id] ?? false,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedVaccines[vaccine.id] = value;
-                        });
-                      },
-                    );
-                  }).toList(),
+              children: vaccines.map((vaccine) {
+                return _buildVaccineItem(
+                  disease: vaccine.diseases.join(', '),
+                  name: vaccine.name,
+                  dose:
+                      '${widget.package.dosesByVaccine[vaccine.id] ?? 1} liều',
+                  originalPrice: vaccine.price.toInt(),
+                  pricePrice: vaccine.price.toInt(),
+                  isSelected: _selectedVaccines[vaccine.id] ?? false,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedVaccines[vaccine.id] = value;
+                    });
+                  },
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -543,25 +666,24 @@ class _VaccinePackageDetailScreenState
       if (isSelected) {
         final quantity = _vaccineQuantities[key] ?? 1;
 
-        // Tìm vaccine trong danh sách allVaccines
-        final vaccine = allVaccines!.firstWhere(
+        // Tìm vaccine trong danh sách _allVaccines
+        final vaccine = _allVaccines.firstWhere(
           (v) => v.id.toLowerCase() == key.toLowerCase(),
-          orElse:
-              () => Vaccine(
-                id: '',
-                name: '',
-                description: '',
-                diseases: [],
-                ageRange: '',
-                price: 0,
-                importedDate: DateTime.now(),
-                manufacturer: '',
-                imageUrl: '',
-                vaccinationSchedules: [],
-                administrationRoute: '',
-                contraindications: [],
-                storageCondition: '',
-              ),
+          orElse: () => Vaccine(
+            id: '',
+            name: '',
+            description: '',
+            diseases: [],
+            ageRange: '',
+            price: 0,
+            importedDate: DateTime.now(),
+            manufacturer: '',
+            imageUrl: '',
+            vaccinationSchedules: [],
+            administrationRoute: '',
+            contraindications: [],
+            storageCondition: '',
+          ),
         );
 
         // Tính tổng giá

@@ -14,6 +14,7 @@ import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/providers/cart_provider.dart';
 import 'package:medihub_app/core/widgets/button2.dart';
+import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 
 class VaccineListScreen extends StatefulWidget {
   final String? initialSearch;
@@ -37,6 +38,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
   List<Vaccine> _filteredVaccines = [];
   bool isState = true;
   FilterOptions _filterOptions = FilterOptions();
+  bool _isLoading = false; // Thêm trạng thái loading
 
   @override
   void initState() {
@@ -45,7 +47,9 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
 
     if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
       _searchController.text = widget.initialSearch!;
-      _applyFilters();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _applyFilters();
+      });
     }
   }
 
@@ -55,20 +59,98 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
     });
   }
 
-  void _loadVaccines() {
+  // Hàm refresh dữ liệu từ Firebase
+  Future<void> _refreshData() async {
     setState(() {
-      _vaccines = allVaccines;
-      _filteredVaccines = _vaccines;
-      if (widget.isFromBookingScreen) {
-        _vaccinePackages = allVaccinePackages;
-        for (var package in _vaccinePackages) {
-          Map<String, bool> packageState = {package.id: false};
-          setState(() {
-            _expandedPackages.addAll(packageState);
-          });
-        }
-      }
+      _isLoading = true;
     });
+
+    try {
+      // Gọi Firebase để lấy dữ liệu mới từ vaccine_helper
+      final newVaccines = await loadAllVaccines();
+      
+      setState(() {
+        _vaccines = newVaccines;
+        _filteredVaccines = _vaccines;
+        
+        // Reset expanded packages
+        _expandedPackages.clear();
+        if (widget.isFromBookingScreen) {
+          _vaccinePackages = allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
+          for (var package in _vaccinePackages) {
+            _expandedPackages[package.id] = false;
+          }
+        }
+      });
+      
+      // Áp dụng lại filter
+      _applyFilters();
+      
+      // // Hiển thị thông báo thành công
+      // if (mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Đã cập nhật danh sách vắc xin mới nhất'),
+      //       duration: Duration(seconds: 2),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+      // }
+    } catch (e) {
+      // Xử lý lỗi
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi tải dữ liệu: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _loadVaccines() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Tải dữ liệu từ Firebase
+      final vaccines = await loadAllVaccines();
+      
+      setState(() {
+        _vaccines = vaccines;
+        _filteredVaccines = _vaccines;
+        
+        if (widget.isFromBookingScreen) {
+          _vaccinePackages = allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
+          for (var package in _vaccinePackages) {
+            _expandedPackages[package.id] = false;
+          }
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi tải dữ liệu ban đầu: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _applyFilters() {
@@ -215,69 +297,78 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               ],
             ),
           ),
+          
+          // Thêm RefreshIndicator wrap around Expanded
           Expanded(
-            child:
-                isState
-                    ? _filteredVaccines.isEmpty
-                        ? _emptyContent()
-                        : ListView.builder(
-                          itemCount: _filteredVaccines.length,
-                          itemBuilder:
-                              (context, index) =>
-                                  _buildVaccineCard(_filteredVaccines[index]),
-                        )
-                    : _vaccinePackages.length > 0
-                    ? Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: ListView.builder(
-                        itemCount: _vaccinePackages.length,
-                        itemBuilder:
-                            (context, index) =>
-                                _vaccinePackages[index].isActive
-                                    ? PackageItem(
-                                      img: _vaccinePackages[index].imageUrl,
-                                      title: _vaccinePackages[index].name,
-                                      price:
-                                          _vaccinePackages[index].totalPrice
-                                              .toString(),
-                                      discount:
-                                          _vaccinePackages[index].discount
-                                              .toString(),
-                                      packageKey: _vaccinePackages[index].id,
-                                      vaccinePackage: _vaccinePackages[index],
-                                      expandedPackages: _expandedPackages,
-                                      allVaccines: allVaccines,
-                                      onExpandToggle: _toggleExpand,
-                                      typeBooking: true,
-                                      isFromBooking: true,
-                                    )
-                                    : const SizedBox.shrink(),
-                      ),
-                    )
-                    : _emptyContent(),
-            // : Padding(
-            //   padding: const EdgeInsets.all(8),
-            //   child:
-
-            //   // Column(
-            //   //   children:
-            //   //       _vaccinePackages.map((package) {
-            //   //         return PackageItem(
-            //   //           img: package.imageUrl,
-            //   //           title: package.name,
-            //   //           price: package.totalPrice.toString(),
-            //   //           discount: package.discount.toString(),
-            //   //           packageKey: package.id,
-            //   //           vaccinePackages: allVaccinePackages,
-            //   //           expandedPackages: _expandedPackages,
-            //   //           allVaccines: allVaccines,
-            //   //           onExpandToggle: _toggleExpand,
-            //   //         );
-            //   //       }).toList(),
-            //   // ),
-            // ),
+            child: RefreshIndicator(
+              onRefresh: _refreshData,
+              color: Colors.blue,
+              backgroundColor: Colors.white,
+              strokeWidth: 2.5,
+              child: _buildContent(),
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    // Hiển thị loading indicator nếu đang tải
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (isState) {
+      // Hiển thị danh sách vắc xin
+      if (_filteredVaccines.isEmpty) {
+        return _buildScrollableEmptyContent();
+      }
+      return ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(), // Cho phép scroll ngay cả khi ít item
+        itemCount: _filteredVaccines.length,
+        itemBuilder: (context, index) =>
+            _buildVaccineCard(_filteredVaccines[index]),
+      );
+    } else {
+      // Hiển thị danh sách gói vắc xin
+      if (_vaccinePackages.isEmpty) {
+        return _buildScrollableEmptyContent();
+      }
+      return Padding(
+        padding: const EdgeInsets.all(8),
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: _vaccinePackages.length,
+          itemBuilder: (context, index) =>
+              _vaccinePackages[index].isActive
+                  ? PackageItem(
+                    img: _vaccinePackages[index].imageUrl,
+                    title: _vaccinePackages[index].name,
+                    price: _vaccinePackages[index].totalPrice.toString(),
+                    discount: _vaccinePackages[index].discount.toString(),
+                    packageKey: _vaccinePackages[index].id,
+                    vaccinePackage: _vaccinePackages[index],
+                    expandedPackages: _expandedPackages,
+                    allVaccines: allVaccines,
+                    onExpandToggle: _toggleExpand,
+                    typeBooking: true,
+                    isFromBooking: true,
+                  )
+                  : const SizedBox.shrink(),
+        ),
+      );
+    }
+  }
+
+  Widget _buildScrollableEmptyContent() {
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: _emptyContent(),
       ),
     );
   }
@@ -496,6 +587,15 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                   : 'Không tìm thấy vắc xin nào',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Kéo xuống để làm mới',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
