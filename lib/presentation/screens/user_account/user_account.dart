@@ -48,8 +48,9 @@ class UserAccountScreen extends StatelessWidget {
                       iconColor: Colors.cyan,
                       title: 'Chỉnh sửa tài khoản',
                       onTap: () {
-                        _submitActivitiesRelatveUser() =>
-                            const ProfileScreen(isNewUser: false);
+                        _submitActivitiesRelatveUser(
+                          () => const ProfileScreen(isNewUser: false),
+                        );
                       },
                       showArrow: true,
                     ),
@@ -79,8 +80,9 @@ class UserAccountScreen extends StatelessWidget {
                       iconColor: Colors.blue,
                       title: 'Đổi mật khẩu',
                       onTap: () {
-                        _submitActivitiesRelatveUser() =>
-                            const ChangePasswordScreen();
+                        _submitActivitiesRelatveUser(
+                          () => const ChangePasswordScreen(),
+                        );
                       },
                       showArrow: true,
                     ),
