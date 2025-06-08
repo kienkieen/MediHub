@@ -29,6 +29,38 @@ class UserAccountScreen extends StatelessWidget {
       );
     }
 
+    void _showDialogSignOut() {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Đăng xuất'),
+            content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Hủy'),
+              ),
+              TextButton(
+                onPressed: () {
+                  SignOut();
+                  userLogin = null;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => const NavigationBottom(initialIndex: 4),
+                    ),
+                  );
+                },
+                child: const Text('Đăng xuất'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -91,16 +123,7 @@ class UserAccountScreen extends StatelessWidget {
                       iconColor: Colors.red,
                       title: 'Đăng xuất',
                       onTap: () {
-                        SignOut();
-                        userLogin = null;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    const NavigationBottom(initialIndex: 4),
-                          ),
-                        );
+                        _showDialogSignOut();
                       },
                       showArrow: true,
                     ),

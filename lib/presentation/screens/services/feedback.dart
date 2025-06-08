@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:medihub_app/core/widgets/input_field.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
+import 'package:medihub_app/models/feedback.dart';
+import 'package:medihub_app/firebase_helper/firebase_helper.dart';
+import 'package:medihub_app/presentation/screens/home/navigation.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({Key? key}) : super(key: key);
@@ -15,22 +19,55 @@ class FeedbackForm extends StatefulWidget {
 class _FeedbackFormState extends State<FeedbackForm> {
   final FocusNode _focusNode = FocusNode();
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
 
-  String? _facilityValue;
   final List<String> _facilityOptions = [
-    'Bệnh viện Đa khoa Quốc tế Vinmec',
-    'Bệnh viện Nhiệt đới Trung ương',
-    'Trung tâm Y tế dự phòng Hà Nội',
-    'Bệnh viện Bạch Mai',
-  ];
+  'Bệnh viện Đa khoa Quốc tế Vinmec',
+  'Bệnh viện Nhiệt đới Trung ương',
+  'Trung tâm Y tế dự phòng Hà Nội',
+  'Bệnh viện Bạch Mai',
+  'VNVC Hoàng Văn Thụ',
+  'VNVC Lê Đại Hành',
+  'VNVC Nguyễn Xí',
+  'VNVC Nguyễn Văn Cừ',
+  'VNVC Nguyễn Hữu Thọ',
+  'VNVC Tân Phú',
+  'VNVC Kha Vạn Cân',
+  'VNVC Huỳnh Tấn Phát',
+  'VNVC Vĩnh Lộc B',
+  'VNVC Thạnh Lộc',
+  'VNVC Lê Văn Sỹ',
+  'VNVC Gò Vấp',
+  'VNVC Bình Thạnh',
+  'VNVC Thủ Đức',
+  'VNVC Quận 7',
+  'VNVC Tân Bình',
+  'VNVC Phú Nhuận',
+  'VNVC Quận 3',
+  'VNVC Quận 10',
+  'VNVC Hóc Môn',
+  'VNVC Bình Chánh',
+  'VNVC Nhà Bè',
+  'VNVC Củ Chi',
+  'VNVC Quận 12',
+  'VNVC Quận 9',
+  'VNVC Quận 6',
+  'VNVC Quận 5',
+  'VNVC Quận 4',
+  'VNVC Quận 1',
+  'VNVC Tân Hưng',
+  'VNVC Bình Tân',
+  'VNVC Phạm Văn Chiêu',
+  'VNVC Nguyễn Ảnh Thủ',
+  'VNVC Lê Văn Việt',
+  'VNVC Tô Ký',
+  'VNVC Nguyễn Thiện Thuật',
+  'VNVC Võ Văn Ngân',
+  'VNVC Nguyễn Oanh',
+  'VNVC Phan Văn Trị',
+  'VNVC Nguyễn Trãi',
+];
 
-  String? selectedCenter;
-  int? satisfactionRating;
   Map<String, int> serviceRatings = {
     'Dịch vụ Lễ tân/ Chăm sóc Khách hàng': 0,
     'Dịch vụ Tư vấn vắc xin': 0,
@@ -53,6 +90,19 @@ class _FeedbackFormState extends State<FeedbackForm> {
     'Vệ sinh tại các khu vực': '',
   };
 
+  String generateRandomString(int length) {
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final rand = Random.secure();
+    return List.generate(
+      length,
+      (index) => chars[rand.nextInt(chars.length)],
+    ).join();
+  }
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? _facilityValue;
+  int satisfactionRating = 0;
   String? referralSource;
   String? willContinueUsing;
   String? willRecommend;
@@ -73,6 +123,52 @@ class _FeedbackFormState extends State<FeedbackForm> {
         );
       }
     });
+  }
+
+  void updateFormValidity() {
+    setState(() {
+      _isFormValid =
+          _facilityValue != null &&
+          satisfactionRating > 0 &&
+          referralSource != null &&
+          willContinueUsing != null &&
+          willRecommend != null &&
+          termsAccepted &&
+          serviceRatings.values.every((rating) => rating > 0);
+    });
+  }
+
+  Future<void> submitFeedback() async {
+    try {
+      final feedback = FeedBack(
+        id: generateRandomString(6),
+        idUser: useMainLogin!.userId,
+        facility: _facilityValue,
+        satisfactionRating: satisfactionRating,
+        referralSource: referralSource,
+        willContinueUsing: willContinueUsing,
+        willRecommend: willRecommend,
+        additionalFeedback: additionalFeedback,
+        serviceComments: Map.from(serviceComments),
+        serviceRatings: Map.from(serviceRatings),
+      );
+
+      bool up = await insertData("GOPY", feedback.id, feedback.toMap());
+
+      if (up) {
+        _showSubmitSuccessDialog();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Lỗi khi gửi phản hồi. Vui lòng thử lại'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+    }
   }
 
   @override
@@ -102,10 +198,10 @@ class _FeedbackFormState extends State<FeedbackForm> {
                     onChanged: (newValue) {
                       setState(() {
                         _facilityValue = newValue;
-                        _validateForm();
+                        updateFormValidity();
                       });
                     },
-                    hintText: 'Chọn Dân tộc',
+                    hintText: 'Chọn cơ sở',
                     focusNode: _focusNode,
                   ),
                   const SizedBox(height: 20),
@@ -114,7 +210,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  _buildCustomerInfoFields(),
+                  useMainLogin != null
+                      ? _buildCustomerInfoFields()
+                      : Container(),
                   const SizedBox(height: 20),
                   _buildSatisfactionRating(),
                   const SizedBox(height: 20),
@@ -168,82 +266,26 @@ class _FeedbackFormState extends State<FeedbackForm> {
     );
   }
 
-  Widget _buildCenterSelection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          text: const TextSpan(
-            children: [
-              TextSpan(
-                text: 'Chọn trung tâm dự kiến tiêm ',
-                style: TextStyle(color: Colors.black),
-              ),
-              TextSpan(text: '*', style: TextStyle(color: Colors.red)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        InkWell(
-          onTap: () {
-            // Show center selection dialog or navigate to selection screen
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  selectedCenter ?? 'Chọn địa điểm tiêm',
-                  style: TextStyle(
-                    color: selectedCenter != null ? Colors.black : Colors.grey,
-                  ),
-                ),
-                const Icon(Icons.arrow_forward_ios, size: 16),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildCustomerInfoFields() {
     return Column(
       children: [
         InputField(
-          controller: _nameController,
-          label: 'Họ và tên (có dấu)',
-          hintText: 'Nhập họ và tên',
-          isRequired: true,
+          label: 'Họ và tên',
+          hintText: useMainLogin!.fullName,
+          enable: false,
         ),
         const SizedBox(height: 16),
-        buildPhoneInputField(
-          _phoneController,
-          'Số điện thoại',
-          'Nhập số điện thoại',
-          // validator: (value) {
-          //   if (value == null || value.isEmpty) {
-          //     return 'Vui lòng nhập số điện thoại';
-          //   }
-          //   final phoneRegExp = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$');
-          //   if (!phoneRegExp.hasMatch(value)) {
-          //     return 'Số điện thoại không hợp lệ';
-          //   }
-          //   return null;
-          // },
-        ),
-
-        const SizedBox(height: 16),
-
         InputField(
-          controller: _nameController,
+          label: 'Số điện thoại',
+          hintText: useMainLogin!.phoneNumber,
+          enable: false,
+        ),
+
+        const SizedBox(height: 16),
+        InputField(
           label: 'Email',
-          hintText: 'Nhập email',
+          hintText: useMainLogin!.email,
+          enable: false,
         ),
       ],
     );
@@ -280,6 +322,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   setState(() {
                     satisfactionRating = index + 1;
                   });
+                  updateFormValidity();
                 },
                 child: Container(
                   width: 50,
@@ -368,6 +411,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   setState(() {
                     serviceRatings[serviceName] = index + 1;
                   });
+                  updateFormValidity();
                 },
                 child: Container(
                   width: 50,
@@ -489,6 +533,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   setState(() {
                     referralSource = value;
                   });
+                  updateFormValidity();
                 },
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
@@ -539,11 +584,12 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   ),
                 ),
                 value: option,
-                groupValue: referralSource,
+                groupValue: willContinueUsing,
                 onChanged: (String? value) {
                   setState(() {
-                    referralSource = value;
+                    willContinueUsing = value;
                   });
+                  updateFormValidity();
                 },
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
@@ -593,11 +639,12 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   ),
                 ),
                 value: option,
-                groupValue: referralSource,
+                groupValue: willRecommend,
                 onChanged: (String? value) {
                   setState(() {
-                    referralSource = value;
+                    willRecommend = value;
                   });
+                  updateFormValidity();
                 },
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
@@ -665,6 +712,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
               setState(() {
                 termsAccepted = value ?? false;
               });
+              updateFormValidity();
             },
           ),
           Expanded(
@@ -696,11 +744,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          if (_formKey.currentState!.validate() &&
-              termsAccepted &&
-              _isFormValid) {
+          if (_formKey.currentState!.validate() && _isFormValid) {
             // Submit the form
-            _showSubmitSuccessDialog();
+            submitFeedback();
           } else if (!termsAccepted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Vui lòng đồng ý với điều khoản')),
@@ -755,36 +801,19 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => const NavigationBottom(initialIndex: 0),
+                    ),
+                  );
                 },
                 child: const Text('Đóng'),
               ),
             ],
           ),
     );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
-
-  void _validateForm() {
-    setState(() {
-      _isFormValid =
-          _nameController.text.isNotEmpty &&
-          _phoneController.text.isNotEmpty &&
-          _emailController.text.isNotEmpty;
-    });
-
-    if (_isFormValid != _isFormValid) {
-      // Chỉ setState khi có thay đổi
-      setState(() {
-        _isFormValid = _isFormValid;
-      });
-    }
   }
 }

@@ -67,6 +67,7 @@ Widget buildPhoneInputField(
   String label,
   String hintText, {
   String? Function(String?)? validator,
+  final bool enable = true,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,6 +128,7 @@ Widget buildPhoneInputField(
                     horizontal: 12,
                     vertical: 12,
                   ),
+                  enabled: enable,
                 ),
                 keyboardType: TextInputType.phone,
                 validator: validator,

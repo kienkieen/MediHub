@@ -36,7 +36,6 @@ class _ProfileState extends State<ProfileScreen> {
   String? _ethnicValue;
   String? _provinceValue;
   String? _districtValue;
-  String? _wardValue;
 
   // Form sections data
   final List<String> _genderOptions = ['Nam', 'Nữ', 'Khác'];
@@ -61,6 +60,7 @@ class _ProfileState extends State<ProfileScreen> {
     'Đức',
     'Anh',
     'Úc',
+    'Khác',
   ];
   final List<String> _ethnicOptions = ['Kinh', 'Tày', 'Thái', 'Mường', 'Khác'];
   final List<String> _provinceOptions = [
@@ -153,7 +153,6 @@ class _ProfileState extends State<ProfileScreen> {
       _ethnicValue = useMainLogin!.ethnicity;
       _provinceValue = useMainLogin!.city;
       _districtValue = useMainLogin!.district;
-      _wardValue = useMainLogin!.ward;
       _jobValue = useMainLogin!.job;
     }
   }
@@ -171,7 +170,6 @@ class _ProfileState extends State<ProfileScreen> {
           _ethnicValue != null &&
           _provinceValue != null &&
           _districtValue != null &&
-          _wardValue != null &&
           _phoneController.text.isNotEmpty;
     });
 
@@ -236,7 +234,6 @@ class _ProfileState extends State<ProfileScreen> {
       useMainLogin?.ethnicity = _ethnicValue.toString();
       useMainLogin?.city = _provinceValue.toString();
       useMainLogin?.district = _districtValue.toString();
-      useMainLogin?.ward = _wardValue.toString();
       useMainLogin?.address = _addressController.text;
       bool up = await updateData(
         "THONGTIN_NGUOIDUNG",
@@ -269,6 +266,12 @@ class _ProfileState extends State<ProfileScreen> {
                 actions: [
                   TextButton(
                     onPressed: () {
+                      Navigator.of(context).pop(); // Đóng dialog
+                    },
+                    child: const Text('Không'),
+                  ),
+                  TextButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -278,12 +281,6 @@ class _ProfileState extends State<ProfileScreen> {
                       );
                     },
                     child: const Text('OK'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Đóng dialog
-                    },
-                    child: const Text('Không'),
                   ),
                 ],
               );
@@ -451,7 +448,6 @@ class _ProfileState extends State<ProfileScreen> {
                     _provinceValue = newValue;
                     // Reset dependent fields
                     _districtValue = null;
-                    _wardValue = null;
                     _validateForm();
                   });
                 },
@@ -467,8 +463,6 @@ class _ProfileState extends State<ProfileScreen> {
                 onChanged: (newValue) {
                   setState(() {
                     _districtValue = newValue;
-                    // Reset dependent field
-                    _wardValue = null;
                     _validateForm();
                   });
                 },
@@ -476,25 +470,10 @@ class _ProfileState extends State<ProfileScreen> {
                 focusNode: _focusNode,
               ),
 
-              DropdownField(
-                label: 'Phường/Xã',
-                value: _wardValue,
-                items: _getWardsForDistrict(_districtValue),
-                isRequired: true,
-                onChanged: (newValue) {
-                  setState(() {
-                    _wardValue = newValue;
-                    _validateForm();
-                  });
-                },
-                hintText: 'Chọn Phường/Xã',
-                focusNode: _focusNode,
-              ),
-
               InputField(
                 controller: _addressController,
-                label: 'Số nhà/ Tên đường/ Ấp thôn xóm',
-                hintText: 'Chỉ nhập số nhà, tên đường, ấp thôn xóm',
+                label: 'Số nhà/ Tên đường/ Xã phường',
+                hintText: 'Chỉ nhập số nhà, tên đường, xã phường',
               ),
 
               const SizedBox(height: 30),
@@ -641,20 +620,113 @@ class _ProfileState extends State<ProfileScreen> {
   List<String> _getDistrictsForProvince(String? province) {
     if (province == null) return ['Chọn Quận/Huyện'];
 
-    // Return dummy data based on province
+    // Return districts based on province
     switch (province) {
       case 'Hà Nội':
-        return ['Ba Đình', 'Hoàn Kiếm', 'Đống Đa', 'Cầu Giấy'];
+        return [
+          'Ba Đình',
+          'Hoàn Kiếm',
+          'Đống Đa',
+          'Cầu Giấy',
+          'Tây Hồ',
+          'Hà Đông',
+          'Nam Từ Liêm',
+          'Bắc Từ Liêm',
+          'Thanh Xuân',
+          'Khác',
+        ];
+      case 'Hải Phòng':
+        return [
+          'Hồng Bàng',
+          'Ngô Quyền',
+          'Lê Chân',
+          'Hải An',
+          'Kiến An',
+          'Đồ Sơn',
+          'Khác',
+        ];
+      case 'Quảng Ninh':
+        return ['Hạ Long', 'Hải Hà', 'Cẩm Phả', 'Uông Bí', 'Khác'];
+      case 'Bắc Ninh':
+        return ['Thành phố Bắc Ninh', 'Yên Phong', 'Tiên Du', 'Khác'];
+      case 'Hải Dương':
+        return ['Thành phố Hải Dương', 'Chí Linh', 'Kinh Môn', 'Khác'];
+      case 'Hưng Yên':
+        return ['Thành phố Hưng Yên', 'Văn Lâm', 'Mỹ Hào', 'Khác'];
+      case 'Thái Bình':
+        return ['Thành phố Thái Bình', 'Hưng Hà', 'Tiền Hải', 'Khác'];
+      case 'Nam Định':
+        return ['Thành phố Nam Định', 'Mỹ Lộc', 'Vụ Bản', 'Khác'];
+      case 'Ninh Bình':
+        return ['Thành phố Ninh Bình', 'Tam Điệp', 'Yên Khánh', 'Khác'];
+      case 'Đà Nẵng':
+        return [
+          'Hải Châu',
+          'Thanh Khê',
+          'Sơn Trà',
+          'Ngũ Hành Sơn',
+          'Liên Chiểu',
+          'Khác',
+        ];
+      case 'Thừa Thiên Huế':
+        return ['Thành phố Huế', 'Hương Thủy', 'Phú Vang', 'Khác'];
+      case 'Quảng Nam':
+        return ['Thành phố Hội An', 'Thành phố Tam Kỳ', 'Điện Bàn', 'Khác'];
+      case 'Quảng Ngãi':
+        return ['Thành phố Quảng Ngãi', 'Bình Sơn', 'Sơn Tịnh', 'Khác'];
+      case 'Bình Định':
+        return ['Thành phố Quy Nhơn', 'An Lão', 'Tuy Phước', 'Khác'];
+      case 'Khánh Hòa':
+        return ['Thành phố Nha Trang', 'Cam Ranh', 'Diên Khánh', 'Khác'];
+      case 'Phú Yên':
+        return ['Thành phố Tuy Hòa', 'Sông Cầu', 'Đồng Xuân', 'Khác'];
       case 'TP.HCM':
-        return ['Quận 1', 'Quận 2', 'Quận 3', 'Tân Bình', 'Tân Phú'];
+        return [
+          'Quận 1',
+          'Quận 2',
+          'Quận 3',
+          'Quận 4',
+          'Quận 5',
+          'Quận 6',
+          'Quận 7',
+          'Quận 8',
+          'Quận 9',
+          'Quận 10',
+          'Quận 11',
+          'Quận 12',
+          'Tân Bình',
+          'Tân Phú',
+          'Bình Thạnh',
+          'Gò Vấp',
+          'Phú Nhuận',
+          'Thủ Đức',
+          'Bình Tân',
+          'Khác',
+        ];
+      case 'Cần Thơ':
+        return ['Ninh Kiều', 'Bình Thủy', 'Cái Răng', 'Thốt Nốt', 'Khác'];
+      case 'Bình Dương':
+        return [
+          'Thành phố Thủ Dầu Một',
+          'Bình Dương',
+          'Dĩ An',
+          'Thuận An',
+          'Khác',
+        ];
+      case 'Đồng Nai':
+        return ['Thành phố Biên Hòa', 'Long Thành', 'Nhơn Trạch', 'Khác'];
+      case 'Bà Rịa - Vũng Tàu':
+        return ['Thành phố Vũng Tàu', 'Bà Rịa', 'Long Điền', 'Khác'];
+      case 'Long An':
+        return ['Thành phố Tân An', 'Cần Giuộc', 'Bến Lức', 'Khác'];
+      case 'Tiền Giang':
+        return ['Thành phố Mỹ Tho', 'Cai Lậy', 'Châu Thành', 'Khác'];
+      case 'An Giang':
+        return ['Thành phố Long Xuyên', 'Châu Đốc', 'Tri Tôn', 'Khác'];
+      case 'Khác':
+        return ['Chọn Quận/Huyện', 'Khác'];
       default:
-        return ['Chọn Quận/Huyện'];
+        return ['Chọn Quận/Huyện', 'Khác'];
     }
-  }
-
-  List<String> _getWardsForDistrict(String? district) {
-    if (district == null) return ['Chọn Phường/Xã'];
-
-    return ['Phường 1', 'Phường 2', 'Phường 3', 'Xã An Phú'];
   }
 }

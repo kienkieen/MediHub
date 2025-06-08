@@ -118,7 +118,10 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           Expanded(
-            child: buildList(_filteredCartItems, _listCartVaccinePackages),
+            child:
+                (_filteredCartItems.isEmpty && _listCartVaccinePackages.isEmpty)
+                    ? _emptyContent()
+                    : buildList(_filteredCartItems, _listCartVaccinePackages),
 
             // ListView(
             //   children: [
