@@ -137,28 +137,28 @@ class UserAccountScreen extends StatelessWidget {
                 items: [
                   _ContactItem(
                     logoAsset: 'assets/images/logo-vnvc.png',
-                    title: 'Tiêm chủng VNVC',
+                    title: 'Tổng đài toàn quốc',
                     phone: '028 7102 6595',
                   ),
                   _ContactItem(
                     logoAsset: 'assets/images/logo-vnvc.png',
-                    title: 'Tâm Anh TP HCM',
-                    phone: '0287 102 6789',
+                    title: 'Hot line đặt lịch tiêm',
+                    phone: '1900 633 858',
                   ),
                   _ContactItem(
                     logoAsset: 'assets/images/logo-vnvc.png',
-                    title: 'Tâm Anh Hà Nội',
-                    phone: '024 3872 3872',
+                    title: 'Tư vấn tiêm chủng',
+                    phone: '028 7300 6595',
                   ),
                   _ContactItem(
                     logoAsset: 'assets/images/logo-vnvc.png',
-                    title: 'Nutrihome',
-                    phone: '1900 633 599',
+                    title: 'Hotline CSKH',
+                    phone: '1900 252 559',
                   ),
                   _ContactItem(
                     logoAsset: 'assets/images/logo-vnvc.png',
-                    title: 'Eco Pharma',
-                    phone: '1800 556 889',
+                    title: 'Hotline Khiếu nại',
+                    phone: '028 7300 1088',
                   ),
                 ],
               ),

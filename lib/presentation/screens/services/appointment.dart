@@ -294,16 +294,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             actions: [
                               TextButton(
                                 onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Không'),
+                              ),
+                              TextButton(
+                                onPressed: () {
                                   onCancel();
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text('Có'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Không'),
                               ),
                             ],
                           );
@@ -539,6 +539,46 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     'Bệnh viện Nhiệt đới Trung ương',
     'Trung tâm Y tế dự phòng Hà Nội',
     'Bệnh viện Bạch Mai',
+    'VNVC Hoàng Văn Thụ',
+    'VNVC Lê Đại Hành',
+    'VNVC Nguyễn Xí',
+    'VNVC Nguyễn Văn Cừ',
+    'VNVC Nguyễn Hữu Thọ',
+    'VNVC Tân Phú',
+    'VNVC Kha Vạn Cân',
+    'VNVC Huỳnh Tấn Phát',
+    'VNVC Vĩnh Lộc B',
+    'VNVC Thạnh Lộc',
+    'VNVC Lê Văn Sỹ',
+    'VNVC Gò Vấp',
+    'VNVC Bình Thạnh',
+    'VNVC Thủ Đức',
+    'VNVC Quận 7',
+    'VNVC Tân Bình',
+    'VNVC Phú Nhuận',
+    'VNVC Quận 3',
+    'VNVC Quận 10',
+    'VNVC Hóc Môn',
+    'VNVC Bình Chánh',
+    'VNVC Nhà Bè',
+    'VNVC Củ Chi',
+    'VNVC Quận 12',
+    'VNVC Quận 9',
+    'VNVC Quận 6',
+    'VNVC Quận 5',
+    'VNVC Quận 4',
+    'VNVC Quận 1',
+    'VNVC Tân Hưng',
+    'VNVC Bình Tân',
+    'VNVC Phạm Văn Chiêu',
+    'VNVC Nguyễn Ảnh Thủ',
+    'VNVC Lê Văn Việt',
+    'VNVC Tô Ký',
+    'VNVC Nguyễn Thiện Thuật',
+    'VNVC Võ Văn Ngân',
+    'VNVC Nguyễn Oanh',
+    'VNVC Phan Văn Trị',
+    'VNVC Nguyễn Trãi',
   ];
 
   String generateRandomString(int length) {

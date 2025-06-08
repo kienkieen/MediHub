@@ -216,13 +216,16 @@ class ListVaccine extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Phòng bệnh: ${vaccine.diseases.join(', ')}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                  Expanded(
+                    child: Text(
+                      'Phòng bệnh: ${vaccine.diseases.join(', ')}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
+                  SizedBox(width: 5),
                   Text(
                     '${vaccine.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}đ',
                     style: TextStyle(
