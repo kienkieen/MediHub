@@ -293,6 +293,10 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
                     width: 150,
                     height: 42,
                     onPressed: () {
+                      setState(() {
+                        sumBill += vaccine.price;
+                        selectedVaccinesBooKing.add(vaccine);
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -552,6 +552,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                       height: 42,
                       onPressed: () {
                         setState(() {
+                          sumBill += vaccine.price;
                           selectedVaccinesBooKing.add(vaccine);
                         });
                         Navigator.push(
