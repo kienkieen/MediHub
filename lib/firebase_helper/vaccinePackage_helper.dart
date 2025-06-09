@@ -7,3 +7,7 @@ Future<List<VaccinePackage>> getAllVaccinePackage() async {
 
   return dataList.map((data) => VaccinePackage.fromMap(data)).toList();
 }
+
+Future<void> updateAmountVaccinePackage(VaccinePackage v) async {
+  await updateData('GOI_VACCINE', v.id, v.toMap());
+}

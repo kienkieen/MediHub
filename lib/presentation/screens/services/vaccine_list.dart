@@ -68,24 +68,25 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
     try {
       // Gọi Firebase để lấy dữ liệu mới từ vaccine_helper
       final newVaccines = await loadAllVaccines();
-      
+
       setState(() {
         _vaccines = newVaccines;
         _filteredVaccines = _vaccines;
-        
+
         // Reset expanded packages
         _expandedPackages.clear();
         if (widget.isFromBookingScreen) {
-          _vaccinePackages = allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
+          _vaccinePackages =
+              allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
           for (var package in _vaccinePackages) {
             _expandedPackages[package.id] = false;
           }
         }
       });
-      
+
       // Áp dụng lại filter
       _applyFilters();
-      
+
       // // Hiển thị thông báo thành công
       // if (mounted) {
       //   ScaffoldMessenger.of(context).showSnackBar(
@@ -124,13 +125,14 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
 
       // Tải dữ liệu từ Firebase
       final vaccines = await loadAllVaccines();
-      
+
       setState(() {
         _vaccines = vaccines;
         _filteredVaccines = _vaccines;
-        
+
         if (widget.isFromBookingScreen) {
-          _vaccinePackages = allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
+          _vaccinePackages =
+              allVaccinePackages; // Nếu có hàm load packages từ Firebase thì thay thế
           for (var package in _vaccinePackages) {
             _expandedPackages[package.id] = false;
           }
@@ -297,7 +299,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
               ],
             ),
           ),
-          
+
           // Thêm RefreshIndicator wrap around Expanded
           Expanded(
             child: RefreshIndicator(
@@ -316,9 +318,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
   Widget _buildContent() {
     // Hiển thị loading indicator nếu đang tải
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (isState) {
@@ -327,10 +327,14 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
         return _buildScrollableEmptyContent();
       }
       return ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(), // Cho phép scroll ngay cả khi ít item
+        physics:
+            const AlwaysScrollableScrollPhysics(), // Cho phép scroll ngay cả khi ít item
         itemCount: _filteredVaccines.length,
-        itemBuilder: (context, index) =>
-            _buildVaccineCard(_filteredVaccines[index]),
+        itemBuilder:
+            (context, index) =>
+                _filteredVaccines[index].isActive
+                    ? _buildVaccineCard(_filteredVaccines[index])
+                    : const SizedBox.shrink(),
       );
     } else {
       // Hiển thị danh sách gói vắc xin
@@ -342,22 +346,23 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _vaccinePackages.length,
-          itemBuilder: (context, index) =>
-              _vaccinePackages[index].isActive
-                  ? PackageItem(
-                    img: _vaccinePackages[index].imageUrl,
-                    title: _vaccinePackages[index].name,
-                    price: _vaccinePackages[index].totalPrice.toString(),
-                    discount: _vaccinePackages[index].discount.toString(),
-                    packageKey: _vaccinePackages[index].id,
-                    vaccinePackage: _vaccinePackages[index],
-                    expandedPackages: _expandedPackages,
-                    allVaccines: allVaccines,
-                    onExpandToggle: _toggleExpand,
-                    typeBooking: true,
-                    isFromBooking: true,
-                  )
-                  : const SizedBox.shrink(),
+          itemBuilder:
+              (context, index) =>
+                  _vaccinePackages[index].isActive
+                      ? PackageItem(
+                        img: _vaccinePackages[index].imageUrl,
+                        title: _vaccinePackages[index].name,
+                        price: _vaccinePackages[index].totalPrice.toString(),
+                        discount: _vaccinePackages[index].discount.toString(),
+                        packageKey: _vaccinePackages[index].id,
+                        vaccinePackage: _vaccinePackages[index],
+                        expandedPackages: _expandedPackages,
+                        allVaccines: allVaccines,
+                        onExpandToggle: _toggleExpand,
+                        typeBooking: true,
+                        isFromBooking: true,
+                      )
+                      : const SizedBox.shrink(),
         ),
       );
     }
@@ -592,10 +597,7 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
             Text(
               'Kéo xuống để làm mới',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
           ],
         ),

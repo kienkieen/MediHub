@@ -9,10 +9,14 @@ import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/firebase_helper/booking_helper.dart';
 import 'package:medihub_app/firebase_helper/firebase_helper.dart';
 import 'package:medihub_app/firebase_helper/stateData_helper.dart';
+import 'package:medihub_app/firebase_helper/vaccinePackage_helper.dart';
+import 'package:medihub_app/firebase_helper/vaccine_helper.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/bill.dart';
 import 'package:medihub_app/models/booking.dart';
 import 'package:medihub_app/models/cart.dart';
+import 'package:medihub_app/models/vaccine.dart';
+import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'dart:convert';
 
@@ -110,6 +114,61 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
         widget.booking.toMap(),
       );
       if (up) {
+        if (widget.booking.lstVaccine.isNotEmpty) {
+          List<Vaccine> vaccines = await loadAllVaccines();
+          List<VaccinePackage> vaccinePackages = await getAllVaccinePackage();
+          for (String i in widget.booking.lstVaccine) {
+            Vaccine v = vaccines.where((vaccine) => vaccine.id == i).first;
+
+            if (v.amount > 0) {
+              v.amount -= 1;
+            }
+
+            if (v.amount > 0) {
+              await updateData('VACCINE', v.id, v.toMap());
+            } else {
+              v.isActive = false;
+              await updateData('VACCINE', v.id, v.toMap());
+              for (VaccinePackage vp in vaccinePackages) {
+                if (vp.vaccineIds.contains(v.id)) {
+                  if (vp.isActive) {
+                    vp.isActive = false;
+                    await updateData('GOI_VACCINE', vp.id, vp.toMap());
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (widget.booking.lstVaccinePackage.isNotEmpty) {
+          List<Vaccine> vaccines = await loadAllVaccines();
+          List<VaccinePackage> vaccinePackages = await getAllVaccinePackage();
+          for (String i in widget.booking.lstVaccinePackage) {
+            VaccinePackage vp =
+                vaccinePackages.where((package) => package.id == i).first;
+
+            for (String vaccineId in vp.vaccineIds) {
+              Vaccine v =
+                  vaccines.where((vaccine) => vaccine.id == vaccineId).first;
+              if (v.amount > 0) {
+                v.amount -= 1;
+              }
+
+              if (v.amount > 0) {
+                await updateData('VACCINE', v.id, v.toMap());
+              } else {
+                v.isActive = false;
+                await updateData('VACCINE', v.id, v.toMap());
+                if (vp.isActive) {
+                  vp.isActive = false;
+                  await updateData('GOI_VACCINE', vp.id, vp.toMap());
+                }
+              }
+            }
+          }
+        }
+
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Thanh toán thành công')));

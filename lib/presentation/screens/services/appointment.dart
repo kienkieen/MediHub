@@ -633,16 +633,28 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     );
 
     if (result != null && result is Vaccine) {
-      setState(() {
-        selectedVaccine = result;
-        _selectedVaccines.add(result);
-        _plusVaccineBill(result);
-      });
+      if (_selectedVaccines.any((v) => v.id == result.id)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
+      } else {
+        setState(() {
+          selectedVaccine = result;
+          _selectedVaccines.add(result);
+          _plusVaccineBill(result);
+        });
+      }
     } else if (result != null && result is VaccinePackage) {
-      setState(() {
-        _selectedPackages.add(result);
-        _plusVaccinePackageBill(result);
-      });
+      if (_selectedPackages.any((p) => p.id == result.id)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
+      } else {
+        setState(() {
+          _selectedPackages.add(result);
+          _plusVaccinePackageBill(result);
+        });
+      }
     }
   }
 
@@ -656,16 +668,28 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     );
 
     if (result != null && result is Vaccine) {
-      setState(() {
-        selectedVaccine = result;
-        _selectedVaccines.add(result);
-        _plusVaccineBill(result);
-      });
+      if (_selectedVaccines.any((v) => v.id == result.id)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
+      } else {
+        setState(() {
+          selectedVaccine = result;
+          _selectedVaccines.add(result);
+          _plusVaccineBill(result);
+        });
+      }
     } else if (result != null && result is VaccinePackage) {
-      setState(() {
-        _selectedPackages.add(result);
-        _plusVaccinePackageBill(result);
-      });
+      if (_selectedPackages.any((p) => p.id == result.id)) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
+      } else {
+        setState(() {
+          _selectedPackages.add(result);
+          _plusVaccinePackageBill(result);
+        });
+      }
     }
   }
 

@@ -59,13 +59,12 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
       for (var package in _vaccinePackages) {
         _expandedPackages[package.id] = false;
       }
-
     } catch (e) {
       print('Error loading vaccine packages: $e');
       setState(() {
         _isLoading = false;
       });
-      
+
       // Show error message to user
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +81,7 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
     try {
       // Reload data from Firebase
       await _loadVaccinePackages();
-      
+
       // if (mounted) {
       //   ScaffoldMessenger.of(context).showSnackBar(
       //     const SnackBar(
@@ -111,9 +110,10 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
       appBar: AppbarWidget(
         isBackButton: true,
         title: 'Gói vắc xin',
-        icon: widget.isFromBookingScreen
-            ? Icons.home_rounded
-            : Icons.shopping_bag_outlined,
+        icon:
+            widget.isFromBookingScreen
+                ? Icons.home_rounded
+                : Icons.shopping_bag_outlined,
         onPressed: () {
           if (widget.isFromBookingScreen) {
             Navigator.push(
@@ -128,27 +128,29 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
           }
         },
       ),
-      body: _isLoading
-          ? _loadingContent()
-          : _vaccinePackages.isEmpty
+      body:
+          _isLoading
+              ? _loadingContent()
+              : _vaccinePackages.isEmpty
               ? _emptyContent()
               : RefreshIndicator(
-                  onRefresh: _refreshData,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ListView.builder(
-                      itemCount: _vaccinePackages.length,
-                      itemBuilder: (context, index) =>
-                          _vaccinePackages[index].isActive
-                              ? PackageItem(
+                onRefresh: _refreshData,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ListView.builder(
+                    itemCount: _vaccinePackages.length,
+                    itemBuilder:
+                        (context, index) =>
+                            _vaccinePackages[index].isActive
+                                ? PackageItem(
                                   img: _vaccinePackages[index].imageUrl,
                                   title: _vaccinePackages[index].name,
-                                  price: _vaccinePackages[index]
-                                      .totalPrice
-                                      .toString(),
-                                  discount: _vaccinePackages[index]
-                                      .discount
-                                      .toString(),
+                                  price:
+                                      _vaccinePackages[index].totalPrice
+                                          .toString(),
+                                  discount:
+                                      _vaccinePackages[index].discount
+                                          .toString(),
                                   packageKey: _vaccinePackages[index].id,
                                   vaccinePackage: _vaccinePackages[index],
                                   expandedPackages: _expandedPackages,
@@ -157,10 +159,10 @@ class _VaccinePackageScreenState extends State<VaccinePackageScreen> {
                                   typeBooking: false,
                                   isFromBooking: false,
                                 )
-                              : const SizedBox.shrink(),
-                    ),
+                                : const SizedBox.shrink(),
                   ),
                 ),
+              ),
     );
   }
 
@@ -251,13 +253,12 @@ class _VaccinePackageDetailScreenState
         _vaccineQuantities[vaccineId] =
             widget.package.dosesByVaccine[vaccineId] ?? 1; // Default doses
       }
-
     } catch (e) {
       print('Error loading vaccines: $e');
       setState(() {
         _isLoading = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -593,22 +594,23 @@ class _VaccinePackageDetailScreenState
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
-              children: vaccines.map((vaccine) {
-                return _buildVaccineItem(
-                  disease: vaccine.diseases.join(', '),
-                  name: vaccine.name,
-                  dose:
-                      '${widget.package.dosesByVaccine[vaccine.id] ?? 1} liều',
-                  originalPrice: vaccine.price.toInt(),
-                  pricePrice: vaccine.price.toInt(),
-                  isSelected: _selectedVaccines[vaccine.id] ?? false,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedVaccines[vaccine.id] = value;
-                    });
-                  },
-                );
-              }).toList(),
+              children:
+                  vaccines.map((vaccine) {
+                    return _buildVaccineItem(
+                      disease: vaccine.diseases.join(', '),
+                      name: vaccine.name,
+                      dose:
+                          '${widget.package.dosesByVaccine[vaccine.id] ?? 1} liều',
+                      originalPrice: vaccine.price.toInt(),
+                      pricePrice: vaccine.price.toInt(),
+                      isSelected: _selectedVaccines[vaccine.id] ?? false,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedVaccines[vaccine.id] = value;
+                        });
+                      },
+                    );
+                  }).toList(),
             ),
           ),
         ],
@@ -669,21 +671,25 @@ class _VaccinePackageDetailScreenState
         // Tìm vaccine trong danh sách _allVaccines
         final vaccine = _allVaccines.firstWhere(
           (v) => v.id.toLowerCase() == key.toLowerCase(),
-          orElse: () => Vaccine(
-            id: '',
-            name: '',
-            description: '',
-            diseases: [],
-            ageRange: '',
-            price: 0,
-            importedDate: DateTime.now(),
-            manufacturer: '',
-            imageUrl: '',
-            vaccinationSchedules: [],
-            administrationRoute: '',
-            contraindications: [],
-            storageCondition: '',
-          ),
+          orElse:
+              () => Vaccine(
+                id: '',
+                name: '',
+                description: '',
+                diseases: [],
+                ageRange: '',
+                price: 0,
+                importedDate: DateTime.now(),
+                manufacturer: '',
+                imageUrl: '',
+                vaccinationSchedules: [],
+                administrationRoute: '',
+                contraindications: [],
+                storageCondition: '',
+                precautions: [],
+                sideEffects: [],
+                amount: 0,
+              ),
         );
 
         // Tính tổng giá

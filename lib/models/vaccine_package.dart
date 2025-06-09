@@ -10,7 +10,7 @@ class VaccinePackage {
   final double totalPrice; // Tổng giá tiền
   final double discount; // Giảm giá
   final String imageUrl; // Ảnh đại diện gói
-  final bool isActive; // Trạng thái hoạt động của gói
+  bool isActive; // Trạng thái hoạt động của gói
 
   VaccinePackage({
     required this.id,
@@ -22,7 +22,7 @@ class VaccinePackage {
     required this.totalPrice,
     required this.discount,
     required this.imageUrl,
-    required this.isActive,
+    this.isActive = false,
   });
 
   // Lấy danh sách vaccine từ danh sách ID

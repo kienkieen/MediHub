@@ -18,6 +18,8 @@ class Vaccine {
   final String storageCondition; // Bảo quản
   final List<String> precautions; // Điều cần thận trọng
   final List<String> sideEffects; // Tác dụng phụ
+  int amount;
+  bool isActive;
 
   Vaccine({
     required this.id,
@@ -36,6 +38,8 @@ class Vaccine {
     required this.storageCondition,
     this.precautions = const [],
     this.sideEffects = const [],
+    this.amount = 0,
+    this.isActive = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -57,6 +61,8 @@ class Vaccine {
       'storageCondition': storageCondition,
       'precautions': precautions,
       'sideEffects': sideEffects,
+      'amount': amount,
+      'isActive': isActive,
     };
   }
 
@@ -81,6 +87,8 @@ class Vaccine {
       storageCondition: map['storageCondition'] ?? '',
       precautions: List<String>.from(map['precautions'] ?? []),
       sideEffects: List<String>.from(map['sideEffects'] ?? []),
+      amount: map['amount'] ?? 0,
+      isActive: map['isActive'] ?? false,
     );
   }
 }
