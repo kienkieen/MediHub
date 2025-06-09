@@ -24,6 +24,9 @@ List<Vaccine> allVaccines = [];
 List<VaccinePackage> allVaccinePackages = [];
 Cart cart = Cart();
 StateDate_helper checkState = StateDate_helper();
+List<Vaccine> selectedVaccinesBooKing = [];
+List<VaccinePackage> selectedPackagesBooking = [];
+double sumBill = 0;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

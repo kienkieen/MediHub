@@ -143,7 +143,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   Future<void> _cancelBooking(int index) async {
     final bookingToCancel = _filteredBookings[index];
     final originalIndex = _allBookings.indexOf(bookingToCancel);
-
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Đã hủy lịch tiêm')));
     if (originalIndex != -1) {
       setState(() {
         _allBookings[originalIndex].isConfirmed = -1;
@@ -220,6 +222,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       default:
         return Colors.grey;
     }
+  }
+
+  void _updateBookingStatus(Booking b) async {
+    bool result = await updateData("DATLICHTIEM", b.idBooking, b.toMap());
   }
 
   Widget _buildBookingCard(Booking booking, VoidCallback onCancel) {
@@ -301,6 +307,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               TextButton(
                                 onPressed: () {
                                   onCancel();
+                                  _updateBookingStatus(booking);
                                   Navigator.of(context).pop();
                                 },
                                 child: const Text('Có'),
@@ -464,8 +471,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       color: Colors.white,
       child: Row(
         children: [
-          const Text(
-            'Danh sách lịch hẹn (0)',
+          Text(
+            'Danh sách lịch hẹn (${_filteredBookings.length})',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -526,10 +533,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   final FocusNode _focusNode = FocusNode();
   DateTime? _selectedDate;
   Vaccine? selectedVaccine;
-  double sumBill = 0;
 
-  final List<Vaccine> _selectedVaccines = [];
-  final List<VaccinePackage> _selectedPackages = [];
   final Color _primaryColor = const Color(0xFF019BD3);
   final Color _secondaryColor = const Color(0xA701CBEE);
 
@@ -617,11 +621,11 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   }
 
   void _plusVaccinePackageBill(VaccinePackage package) {
-    sumBill += (package.totalPrice - package.discount);
+    sumBill += (package.totalPrice * (1 - package.discount));
   }
 
   void _minusVaccinePackageBill(VaccinePackage package) {
-    sumBill -= (package.totalPrice - package.discount);
+    sumBill -= (package.totalPrice * (1 - package.discount));
   }
 
   void _openCartToSelectVaccine() async {
@@ -633,25 +637,25 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     );
 
     if (result != null && result is Vaccine) {
-      if (_selectedVaccines.any((v) => v.id == result.id)) {
+      if (selectedVaccinesBooKing.any((v) => v.id == result.id)) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
       } else {
         setState(() {
           selectedVaccine = result;
-          _selectedVaccines.add(result);
+          selectedVaccinesBooKing.add(result);
           _plusVaccineBill(result);
         });
       }
     } else if (result != null && result is VaccinePackage) {
-      if (_selectedPackages.any((p) => p.id == result.id)) {
+      if (selectedVaccinesBooKing.any((p) => p.id == result.id)) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
       } else {
         setState(() {
-          _selectedPackages.add(result);
+          selectedPackagesBooking.add(result);
           _plusVaccinePackageBill(result);
         });
       }
@@ -668,25 +672,25 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
     );
 
     if (result != null && result is Vaccine) {
-      if (_selectedVaccines.any((v) => v.id == result.id)) {
+      if (selectedVaccinesBooKing.any((v) => v.id == result.id)) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
       } else {
         setState(() {
           selectedVaccine = result;
-          _selectedVaccines.add(result);
+          selectedVaccinesBooKing.add(result);
           _plusVaccineBill(result);
         });
       }
     } else if (result != null && result is VaccinePackage) {
-      if (_selectedPackages.any((p) => p.id == result.id)) {
+      if (selectedPackagesBooking.any((p) => p.id == result.id)) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('${result.name} đã được chọn')));
       } else {
         setState(() {
-          _selectedPackages.add(result);
+          selectedPackagesBooking.add(result);
           _plusVaccinePackageBill(result);
         });
       }
@@ -825,8 +829,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                       // Phần chọn vắc xin
                       _buildSectionTitle('Chọn vắc xin'),
                       SizedBox(height: 8),
-                      if (_selectedPackages.isEmpty &&
-                          _selectedVaccines.isEmpty) ...[
+                      if (selectedPackagesBooking.isEmpty &&
+                          selectedVaccinesBooKing.isEmpty) ...[
                         Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -836,7 +840,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                           ),
                         ),
                       ] else ...[
-                        if (_selectedVaccines.isNotEmpty) ...[
+                        if (selectedVaccinesBooKing.isNotEmpty) ...[
                           Container(
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey.shade400),
@@ -845,7 +849,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _selectedVaccines.length,
+                              itemCount: selectedVaccinesBooKing.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   decoration: BoxDecoration(
@@ -866,7 +870,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            _selectedVaccines[index].name,
+                                            selectedVaccinesBooKing[index].name,
                                             style: const TextStyle(
                                               fontSize: 15,
                                             ),
@@ -877,8 +881,10 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                                           onTap: () {
                                             setState(() {
                                               final vaccineToRemove =
-                                                  _selectedVaccines[index];
-                                              _selectedVaccines.removeAt(index);
+                                                  selectedVaccinesBooKing[index];
+                                              selectedVaccinesBooKing.removeAt(
+                                                index,
+                                              );
                                               _minusVaccineBill(
                                                 vaccineToRemove,
                                               );
@@ -898,7 +904,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                             ),
                           ),
                         ],
-                        if (_selectedPackages.length > 0) ...[
+                        if (selectedPackagesBooking.length > 0) ...[
                           const SizedBox(height: 16),
                           Container(
                             decoration: BoxDecoration(
@@ -908,7 +914,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _selectedPackages.length,
+                              itemCount: selectedPackagesBooking.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   decoration: BoxDecoration(
@@ -929,7 +935,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            _selectedPackages[index].name,
+                                            selectedPackagesBooking[index].name,
                                             style: const TextStyle(
                                               fontSize: 15,
                                             ),
@@ -940,8 +946,10 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
                                           onTap: () {
                                             setState(() {
                                               final vaccinePackageToRemove =
-                                                  _selectedPackages[index];
-                                              _selectedPackages.removeAt(index);
+                                                  selectedPackagesBooking[index];
+                                              selectedPackagesBooking.removeAt(
+                                                index,
+                                              );
                                               _minusVaccinePackageBill(
                                                 vaccinePackageToRemove,
                                               );
@@ -1033,11 +1041,11 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
   }
 
   List<String> _getSelectedVaccines() {
-    return _selectedVaccines.map((v) => v.id).toList();
+    return selectedVaccinesBooKing.map((v) => v.id).toList();
   }
 
   List<String> _getSelectedPackages() {
-    return _selectedPackages.map((p) => p.id).toList();
+    return selectedPackagesBooking.map((p) => p.id).toList();
   }
 
   Future<void> _submitBooking() async {
@@ -1045,7 +1053,8 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         _facilityValue!.isNotEmpty &&
         _selectedDate != null &&
         _selectedDate!.toString().isNotEmpty &&
-        (_selectedVaccines.isNotEmpty || _selectedPackages.isNotEmpty)) {
+        (selectedVaccinesBooKing.isNotEmpty ||
+            selectedVaccinesBooKing.isNotEmpty)) {
       bool isUniqueId = false;
       String idBooking;
       do {

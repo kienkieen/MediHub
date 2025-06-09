@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
@@ -291,7 +292,14 @@ class _VaccineForYouScreenState extends State<VaccineForYouScreen> {
                     textSize: 14,
                     width: 150,
                     height: 42,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VaccinationBookingScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

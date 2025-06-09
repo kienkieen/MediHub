@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/search_bar.dart';
@@ -549,7 +550,17 @@ class _VaccineListScreenState extends State<VaccineListScreen> {
                       textSize: 14,
                       width: 140,
                       height: 42,
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          selectedVaccinesBooKing.add(vaccine);
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VaccinationBookingScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

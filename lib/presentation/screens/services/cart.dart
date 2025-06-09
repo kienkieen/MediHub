@@ -59,6 +59,9 @@ class _CartScreenState extends State<CartScreen> {
             context,
             listen: false,
           ).getCart.vaccinePackages;
+      for (var package in _listCartVaccinePackages) {
+        _expandedPackages[package.packageId] = false;
+      }
     });
   }
 

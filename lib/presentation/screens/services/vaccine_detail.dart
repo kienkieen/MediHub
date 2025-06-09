@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/main.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:provider/provider.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/models/vaccine.dart';
@@ -149,7 +151,16 @@ class VaccineDetailPage extends StatelessWidget {
             textSize: 14,
             width: 160,
             height: 42,
-            onPressed: () {},
+            onPressed: () {
+              selectedVaccinesBooKing.add(vaccine);
+              sumBill += vaccine.price;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VaccinationBookingScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/presentation/screens/services/appointment.dart';
@@ -288,6 +289,10 @@ class ListVaccine extends StatelessWidget {
                     if (typeBooking) {
                       Navigator.pop(context, vaccinePackage);
                     } else {
+                      selectedPackagesBooking.add(vaccinePackage);
+                      sumBill +=
+                          (vaccinePackage.totalPrice *
+                              (1 - vaccinePackage.discount));
                       Navigator.push(
                         context,
                         MaterialPageRoute(

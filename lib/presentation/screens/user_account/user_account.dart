@@ -7,6 +7,7 @@ import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/presentation/screens/login/login.dart';
 import 'package:medihub_app/presentation/screens/services/policy_and_privacy.dart';
 import 'package:medihub_app/presentation/screens/services/terms_of_service.dart';
+import 'package:medihub_app/presentation/screens/services/vaccination_history.dart';
 import 'package:medihub_app/presentation/screens/user_account/profile.dart';
 import 'package:medihub_app/presentation/screens/user_account/change_password.dart';
 
@@ -90,23 +91,27 @@ class UserAccountScreen extends StatelessWidget {
                       icon: Icons.description_outlined,
                       iconColor: Colors.purple,
                       title: 'Quản lý hồ sơ tiêm chủng',
-                      onTap: () {},
+                      onTap: () {
+                        _submitActivitiesRelatveUser(
+                          () => const VaccinationHistoryScreen(),
+                        );
+                      },
                       showArrow: true,
                     ),
-                    _MenuItem(
-                      icon: Icons.card_giftcard_outlined,
-                      iconColor: Colors.green,
-                      title: 'Ưu đãi của tôi',
-                      onTap: () {},
-                      showArrow: true,
-                    ),
-                    _MenuItem(
-                      icon: Icons.help_outline,
-                      iconColor: Colors.orange,
-                      title: 'Tra cứu điểm thưởng',
-                      onTap: () {},
-                      showArrow: true,
-                    ),
+                    // _MenuItem(
+                    //   icon: Icons.card_giftcard_outlined,
+                    //   iconColor: Colors.green,
+                    //   title: 'Ưu đãi của tôi',
+                    //   onTap: () {},
+                    //   showArrow: true,
+                    // ),
+                    // _MenuItem(
+                    //   icon: Icons.help_outline,
+                    //   iconColor: Colors.orange,
+                    //   title: 'Tra cứu điểm thưởng',
+                    //   onTap: () {},
+                    //   showArrow: true,
+                    // ),
                     _MenuItem(
                       icon: Icons.lock_outline,
                       iconColor: Colors.blue,

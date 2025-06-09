@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:medihub_app/core/widgets/appbar.dart';
 import 'package:medihub_app/core/widgets/services_widgets/package_item.dart';
+import 'package:medihub_app/main.dart';
 //import 'package:medihub_app/main.dart';
 import 'package:medihub_app/models/vaccine_package.dart';
 import 'package:medihub_app/models/vaccine.dart';
 import 'package:medihub_app/core/widgets/noti.dart';
+import 'package:medihub_app/presentation/screens/services/appointment.dart';
 import 'package:medihub_app/presentation/screens/services/cart.dart';
 import 'package:medihub_app/presentation/screens/home/navigation.dart';
 import 'package:medihub_app/core/widgets/login_widgets/button.dart';
@@ -315,7 +317,7 @@ class _VaccinePackageDetailScreenState
             _buildVaccineList(),
 
             const SizedBox(height: 24),
-            _buildSummarySection(),
+            _buildSummarySection(widget.package),
           ],
         ),
       ),
@@ -618,7 +620,7 @@ class _VaccinePackageDetailScreenState
     );
   }
 
-  Widget _buildSummarySection() {
+  Widget _buildSummarySection(VaccinePackage vpackage) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -633,7 +635,15 @@ class _VaccinePackageDetailScreenState
           PrimaryButton(
             text: 'ĐẶT LỊCH TIÊM NGAY',
             borderRadius: 48,
-            onPressed: () => {},
+            onPressed:
+                () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VaccinationBookingScreen(),
+                    ),
+                  ),
+                },
           ),
         ],
       ),
