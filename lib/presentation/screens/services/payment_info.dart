@@ -178,7 +178,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
           idBookig: widget.booking.idBooking,
           paymentMethod: widget.paymentMethod,
           totalAmount: totalAmount,
-          dueDate: DateTime.now().add(const Duration(days: 30)),
+          dueDate: DateTime.now(),
           isPaid: false,
         );
         insertData("HOADON", bill.id, bill.toMap());

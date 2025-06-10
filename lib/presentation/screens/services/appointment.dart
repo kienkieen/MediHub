@@ -1054,7 +1054,7 @@ class _VaccinationBookingScreenState extends State<VaccinationBookingScreen> {
         _selectedDate != null &&
         _selectedDate!.toString().isNotEmpty &&
         (selectedVaccinesBooKing.isNotEmpty ||
-            selectedVaccinesBooKing.isNotEmpty)) {
+            selectedPackagesBooking.isNotEmpty)) {
       bool isUniqueId = false;
       String idBooking;
       do {

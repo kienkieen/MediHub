@@ -67,11 +67,25 @@ class _PackageItemState extends State<PackageItem> {
                 height: 85,
                 child: Row(
                   children: [
-                    Image.asset(
-                      widget.img,
-                      width: 82,
-                      height: 82,
-                      fit: BoxFit.cover,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          widget.img,
+                          width: 82,
+                          height: 82,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Padding(

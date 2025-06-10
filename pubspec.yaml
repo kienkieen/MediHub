@@ -32,10 +32,10 @@ flutter:
   assets:
     - assets/images/
     - assets/images/vaccine/
+    - assets/images/vaccine_package/
     - assets/icons/
     - assets/icons/navigation/
     - assets/icons/grid_service/
-    - assets/icons/vaccine_package/
   fonts:
     - family: Oswald
       fonts:

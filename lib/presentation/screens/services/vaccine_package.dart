@@ -435,7 +435,7 @@ class _VaccinePackageDetailScreenState
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4),
                         child: Image.asset(
-                          'assets/icons/vaccine_package/light.png',
+                          'assets/images/vaccine_package/light.png',
                           width: 16,
                           height: 16,
                         ),
