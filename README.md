@@ -1,4 +1,4 @@
-# medihub_app
+# Vaccination Booking App
 
 A new Flutter project.
 
